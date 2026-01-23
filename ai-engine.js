@@ -136,19 +136,15 @@ async function generateRecoveryPlan(patientData) {
         }
     } catch (err) { }
 
-    // 2. Puter (DISABLED FOR MOBILE STABILITY)
-    // Puter.js causes iframe/popup blocking issues on iOS/Android.
-    // We now default to High-Quality Offline Mode if no OpenAI Key.
-    /*
+    // 2. Puter (RESTORED AS PRIMARY FREE ENGINE)
     if (!aiResponseText) {
         try {
             if (typeof puter !== 'undefined' && puter.ai) {
                 const response = await puter.ai.chat(prompt);
                 aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
             }
-        } catch (err) {}
+        } catch (err) { }
     }
-    */
 
     if (aiResponseText) {
         try {
@@ -157,11 +153,8 @@ async function generateRecoveryPlan(patientData) {
         } catch (e) { console.error(e); }
     }
 
-    // Default: Instant Offline Plan (Reliable on Mobile)
-    console.log("Using Offline Clinical Protocol (Mobile Safe)");
-
-    // Simulate slight delay so it feels like "Calculating"
-    await new Promise(r => setTimeout(r, 2000));
+    // Default: Offline Clinical Protocol (Only if Puter fails/timeout)
+    console.warn("Using Offline Clinical Protocol (Fallback)");
     return getFallbackPlan(patientData);
 }
 
