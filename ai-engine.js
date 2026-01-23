@@ -136,24 +136,29 @@ async function generateRecoveryPlan(patientData) {
         }
     } catch (err) { }
 
-    // 2. Puter (RESTORED AS PRIMARY FREE ENGINE)
+    // 2. Pollinations.ai (Free, High-Quality, No Auth, Fetch-Based)
+    // Solves the "Puter Login Redirect" issue on mobile while keeping GPT-4 level smarts.
     if (!aiResponseText) {
         try {
-            if (typeof puter !== 'undefined' && puter.ai) {
-                const response = await puter.ai.chat(prompt);
-                aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
+            console.log("Attempting Pollinations Free AI...");
+            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(prompt)}`;
+            const response = await fetch(pollUrl);
+            if (response.ok) {
+                aiResponseText = await response.text();
             }
-        } catch (err) { }
+        } catch (err) {
+            console.warn("Pollinations AI Failed:", err);
+        }
     }
 
     if (aiResponseText) {
         try {
             const plan = processAIResponse(aiResponseText);
             return enrichWithSmartLinks(plan);
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Parsing Error:", e); }
     }
 
-    // Default: Offline Clinical Protocol (Only if Puter fails/timeout)
+    // Default: Offline Clinical Protocol (Fallback)
     console.warn("Using Offline Clinical Protocol (Fallback)");
     return getFallbackPlan(patientData);
 }
