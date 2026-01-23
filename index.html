@@ -48,7 +48,7 @@
                 <div class="glass-panel">
                     <div class="panel-header">
                         <h2>📋 Patient Profile</h2>
-                        <span class="step-indicator" id="stepIndicator">Step 1 of 3</span>
+                        <span class="step-indicator" id="stepIndicator">Step 1 of 4</span>
                     </div>
 
                     <form id="patientForm" class="compact-form">
@@ -103,13 +103,48 @@
                             </div>
                             <div class="nav-buttons">
                                 <button type="button" class="btn btn-secondary" onclick="nextStep(1)">Back</button>
-                                <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next: Symptoms
+                                <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next: Medical
+                                    History ➔</button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: MEDICAL HISTORY (NEW) -->
+                        <div class="form-step hidden" id="step3">
+                            <div class="clinical-group">
+                                <h3>Medical Profile</h3>
+                                <div class="checkbox-group">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="condition_diabetes" value="yes">
+                                        <span>Diabetes</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="condition_bp" value="yes">
+                                        <span>High BP</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="condition_heart" value="yes">
+                                        <span>Heart Issue</span>
+                                    </label>
+                                </div>
+
+                                <div class="floating-input" style="margin-top:1rem;">
+                                    <select id="recentSurgery" name="recentSurgery" class="input-field">
+                                        <option value="no">No Recent Surgery</option>
+                                        <option value="yes_minor">Yes (Minor / < 3 months)</option>
+                                        <option value="yes_major">Yes (Major Operation)</option>
+                                    </select>
+                                    <label for="recentSurgery">Recent Operations?</label>
+                                </div>
+                            </div>
+                            <div class="nav-buttons">
+                                <button type="button" class="btn btn-secondary" onclick="nextStep(2)">Back</button>
+                                <button type="button" class="btn btn-primary" onclick="nextStep(4)">Next: Symptoms
                                     ➔</button>
                             </div>
                         </div>
 
-                        <!-- STEP 3: SYMPTOMS (With Pain Scale) -->
-                        <div class="form-step hidden" id="step3">
+                        <!-- STEP 4: SYMPTOMS (Was Step 3) -->
+                        <div class="form-step hidden" id="step4">
                             <div class="clinical-group">
                                 <h3>Tell us about the pain</h3>
                                 <div class="floating-input">
@@ -146,7 +181,7 @@
                                 </div>
                             </div>
                             <div class="nav-buttons">
-                                <button type="button" class="btn btn-secondary" onclick="nextStep(2)">Back</button>
+                                <button type="button" class="btn btn-secondary" onclick="nextStep(3)">Back</button>
                                 <button type="submit" class="btn btn-primary btn-pulse">Generate Plan ⚡</button>
                             </div>
                         </div>
@@ -191,7 +226,7 @@
                 target.classList.add('active');
 
                 // Update indicator
-                document.getElementById('stepIndicator').innerText = `Step ${stepNumber} of 3`;
+                document.getElementById('stepIndicator').innerText = `Step ${stepNumber} of 4`;
             }
         }
     </script>

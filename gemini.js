@@ -9,27 +9,38 @@ const ApiManager = {
 async function generateRecoveryPlan(patientData) {
     console.log("Generating plan for:", patientData);
 
+    // --- GATHER MEDICAL HISTORY ---
+    const conditions = [];
+    if (patientData.condition_diabetes) conditions.push("Diabetes");
+    if (patientData.condition_bp) conditions.push("High Blood Pressure");
+    if (patientData.condition_heart) conditions.push("Heart Conditions");
+    const historyString = conditions.length > 0 ? conditions.join(", ") : "None";
+    const surgeryStatus = patientData.recentSurgery !== 'no' ? `Recent Surgery: ${patientData.recentSurgery}` : "No Recent Surgery";
+
     // --- OPTIMIZED EMPATHIC PROMPT ---
     const prompt = `
     You are an expert, empathetic Senior Physiotherapist. 
     Analyze the following patient profile deeply:
     - Name: ${patientData.name}
     - Age: ${patientData.age}
-    - Profession: ${patientData.occupation} (Consider how this job affects their pain)
+    - Profession: ${patientData.occupation}
     - Condition: ${patientData.problemArea}
     - Symptoms: ${patientData.problemStatement}
     - Diet: ${patientData.dietPreference}
+    - MEDICAL HISTORY: ${historyString}
+    - SURGICAL STATUS: ${surgeryStatus}
     
     INSTRUCTIONS:
     1. Speak directly to ${patientData.name} in a warm, reassuring tone.
-    2. Acknowledge their specific age and profession. Explain WHY their job as a "${patientData.occupation}" might be making the "${patientData.problemArea}" worse.
-    3. Be specific, not generic. Use medical reasoning but simple language.
+    2. Acknowledge their specific age and profession.
+    3. CRITICAL: If they have Diabetes/BP, adjust diet recommendations specific to that (e.g. low sugar/sodium).
+    4. CRITICAL: If they had Recent Surgery, ensure exercises are gentle/safe.
     
     RETURN ONLY JSON (No markdown):
     {
       "analysis": { 
-        "understanding": "Hello [Name], I understand you are suffering from... As a [Profession] at [Age], this is common because...", 
-        "likelyCauses": "Specific biomechanical cause...", 
+        "understanding": "Hello [Name]... considering your history of [Conditions]...", 
+        "likelyCauses": "...", 
         "severity": "...", 
         "prognosis": "..." 
       },
