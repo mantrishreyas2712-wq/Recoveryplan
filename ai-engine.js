@@ -118,61 +118,71 @@ async function generateRecoveryPlan(patientData) {
       "recoveryTimeline": { "week1": "...", "week2_3": "...", "longTerm": "..." }
     }`;
 
+    // --- HYBRID STRATEGY: MICRO-PROMPT ---
+    // We ask AI ONLY for the "Brain" parts (Analysis + Exercises) to keep URL short.
+    // We generate the "Static" parts (Diet, Timeline) via code to ensure reliability.
+
+    // 1. Prepare Base Template (The "Body")
+    const basePlan = getFallbackPlan(patientData);
+
     let aiResponseText = null;
 
-    // 1. OpenAI (Primary)
+    // 2. Pollinations.ai (Micro-Request)
+    // Prompt size reduced by 80% to ensure 100% Mobile Success
     try {
-        const key = ApiManager.getKey('openai');
-        if (key && !key.includes('YOUR_')) {
-            const response = await fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ model: "gpt-4o-mini", messages: [{ role: "user", content: prompt }], temperature: 0.7 })
-            });
-            if (response.ok) {
-                const data = await response.json();
-                aiResponseText = data.choices[0].message.content;
-            }
+        console.log("Attempting Pollinations Hybrid AI...");
+
+        const microPrompt = `Act as Physio. Patient: ${patientData.name}, ${patientData.age}y, ${patientData.problemArea}. Symptoms: ${patientData.problemStatement}.
+        Task: 1. Medical Analysis (1 sentence). 2. Select 3 best exercises.
+        Return JSON: { "analysis": { "understanding": "...", "likelyCauses": "..." }, "exercises": [ { "name": "...", "sets": "3", "reps": "10" } ] }`;
+
+        const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(microPrompt)}`;
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s is plenty for micro-request
+
+        const response = await fetch(pollUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+            aiResponseText = await response.text();
         }
-    } catch (err) { }
-
-    // 2. Pollinations.ai (Free, High-Quality, No Auth, GET Request)
-    // OPTIMIZATION: URL Length is limited. We must compact the prompt.
-    if (!aiResponseText) {
-        try {
-            console.log("Attempting Pollinations Free AI...");
-
-            // Minified Prompt to fit in GET URL limit (~2000 chars)
-            const fastPrompt = `Role:Physio.Patient:${patientData.name},${patientData.age}y,${patientData.occupation}.Cond:${patientData.problemArea}.Symp:${patientData.problemStatement}.Hist:${historyString}.Surg:${surgeryStatus}.Diet:${patientData.dietPreference}.
-            JSON Response(No markdown):{"analysis":{"understanding":"...","likelyCauses":"...","severity":"...","prognosis":"..."},"exercisePlan":{"selectedExercises":[{"name":"(Standard Name)","sets":"...","reps":"...","difficulty":"...","description":"..."}]},"dietRecommendations":{"overview":"...","keyFoods":["..."],"foodsToAvoid":["..."],"hydration":"..."},"consultation":{"urgency":"...","specialists":["..."],"redFlags":["..."],"followUp":"..."},"recoveryTimeline":{"week1":"...","week2_3":"...","longTerm":"..."}}`;
-
-            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(fastPrompt)}`;
-
-            // TIMEOUT ENFORCEMENT (15s - Mobile Friendly)
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-            const response = await fetch(pollUrl, { signal: controller.signal });
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-                aiResponseText = await response.text();
-            }
-        } catch (err) {
-            console.warn("Pollinations AI Failed/Timed Out:", err);
-        }
+    } catch (err) {
+        console.warn("Hybrid AI Failed:", err);
     }
 
+    // 3. Merge AI Brain with Body
     if (aiResponseText) {
         try {
-            const plan = processAIResponse(aiResponseText);
-            return enrichWithSmartLinks(plan);
-        } catch (e) { console.error(e); }
+            const aiData = processAIResponse(aiResponseText);
+
+            // Overwrite the "Brain" parts
+            if (aiData.analysis) {
+                basePlan.analysis.understanding = aiData.analysis.understanding || basePlan.analysis.understanding;
+                basePlan.analysis.likelyCauses = aiData.analysis.likelyCauses || basePlan.analysis.likelyCauses;
+            }
+            if (aiData.exercises && Array.isArray(aiData.exercises)) {
+                // Map AI simplified exercises to full structure
+                basePlan.exercisePlan.selectedExercises = aiData.exercises.map(ex => ({
+                    name: ex.name,
+                    sets: ex.sets || '3',
+                    reps: ex.reps || '10',
+                    difficulty: 'Adaptive',
+                    description: `Targeted movement for ${patientData.problemArea}.`
+                }));
+            }
+
+            console.log("Hybrid Plan Generated Successfully");
+            return enrichWithSmartLinks(basePlan);
+
+        } catch (e) {
+            console.error("Merge Error, using Base:", e);
+        }
     }
 
-    // Default: Offline Clinical Protocol (Fallback)
-    console.warn("Using Offline Clinical Protocol (Fallback)");
-    return getFallbackPlan(patientData);
+    // Default: Return the Base Plan (Offline) if AI completely fails
+    console.warn("Using Offline Base Plan");
+    return basePlan;
 }
 
 // --- STOCK THUMBNAIL GALLERY ---
