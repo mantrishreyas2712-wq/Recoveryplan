@@ -8,7 +8,7 @@ const CONFIG = {
 
     // STEP 1: Deploy the Worker (see worker/physio-ai-proxy.js)
     // STEP 2: Paste your Worker URL below (e.g., https://physio-ai-proxy.yourname.workers.dev)
-    WORKER_URL: "",
+    WORKER_URL: "https://physio-ai-proxy.mantrishreyas2712.workers.dev",
 
     // ==========================================================================
     // LEGACY (Not recommended for production - keys exposed in browser)
