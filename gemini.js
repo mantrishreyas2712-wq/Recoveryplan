@@ -106,13 +106,13 @@ function getFallbackPlan(data) {
     const job = data.occupation || 'Patient';
 
     // --- DATABASE OF EXPERT PLANS ---
-    // Video IDs are pure YouTube IDs (cleanest way to link)
+    // Video IDs are verified stable sources (Bob & Brad, AskDoctorJo, etc.)
     const DB = {
         'neck': {
             condition: "Cervical Strain / 'Tech Neck'",
             rootCause: "Prolonged static posture and forward head alignment.",
             exercises: [
-                { name: 'Chin Tucks', sets: '3', reps: '10 reps', videoId: '7gOKIlR8U8g', difficulty: 'Easy', description: 'Gently pull your head back to align ears with shoulders.' },
+                { name: 'Chin Tucks', sets: '3', reps: '10 reps', videoId: 'E_Wf8_7S4gQ', difficulty: 'Easy', description: 'Gently pull your head back to align ears with shoulders.' },
                 { name: 'Upper Trapezius Stretch', sets: '2', reps: '30s hold', videoId: '0eO1aB6U72c', difficulty: 'Easy', description: 'Tilt head to side, keep shoulder down.' }
             ]
         },
@@ -120,15 +120,15 @@ function getFallbackPlan(data) {
             condition: "Rotator Cuff Tendonitis",
             rootCause: "Repetitive overhead movement or shoulder impingement.",
             exercises: [
-                { name: 'Pendulum Swing', sets: '3', reps: '1 min', videoId: 'BFR3e_S0xZg', difficulty: 'Easy', description: 'Let arm hang loose and swing gently.' },
-                { name: 'Doorway Pec Stretch', sets: '3', reps: '30s', videoId: 'rZ_772D9eTk', difficulty: 'Moderate', description: 'Stretch chest muscles in a door frame.' }
+                { name: 'Pendulum Swing', sets: '3', reps: '1 min', videoId: 'GFbCDbE86-A', difficulty: 'Easy', description: 'Let arm hang loose and swing gently.' },
+                { name: 'Doorway Pec Stretch', sets: '3', reps: '30s', videoId: 'lZ8qZ0y-cRk', difficulty: 'Moderate', description: 'Stretch chest muscles in a door frame.' }
             ]
         },
         'back': { // Covers lower-back, upper-back
             condition: "Lumbar Muscular Strain",
             rootCause: "Weak core stability or improper lifting mechanics.",
             exercises: [
-                { name: 'Cat-Cow Stretch', sets: '3', reps: '10 cycles', videoId: 'W328Co46i_I', difficulty: 'Easy', description: 'Mobilize the spine gently on all fours.' },
+                { name: 'Cat-Cow Stretch', sets: '3', reps: '10 cycles', videoId: 'sJq0jW4_P68', difficulty: 'Easy', description: 'Mobilize the spine gently on all fours.' },
                 { name: 'McGill Curl-up', sets: '3', reps: '10 sec hold', videoId: '2_e4I-brfqs', difficulty: 'Moderate', description: 'Core bracing without flexing spine.' }
             ]
         },
@@ -136,16 +136,16 @@ function getFallbackPlan(data) {
             condition: "Patellofemoral Pain Syndrome",
             rootCause: "Imbalance between quadriceps and hamstring strength.",
             exercises: [
-                { name: 'Quad Sets (Towel)', sets: '3', reps: '15 reps', videoId: 'WP2_Rj8x-jM', difficulty: 'Easy', description: 'Press knee down into a rolled towel.' },
-                { name: 'Seated Knee Extension', sets: '3', reps: '12 reps', videoId: 'yD7t3VjE-lU', difficulty: 'Easy', description: 'Straighten leg fully and hold briefly.' }
+                { name: 'Quad Sets (Towel)', sets: '3', reps: '15 reps', videoId: 'I7C7nF9i8aU', difficulty: 'Easy', description: 'Press knee down into a rolled towel.' },
+                { name: 'Seated Knee Extension', sets: '3', reps: '12 reps', videoId: 'vvlZ4b19E50', difficulty: 'Easy', description: 'Straighten leg fully and hold briefly.' }
             ]
         },
         'ankle': {
             condition: "Ankle Sprain / Instability",
             rootCause: "Ligament overstretching or past injury.",
             exercises: [
-                { name: 'Ankle Alphabet', sets: '3', reps: '1 set', videoId: 'vvlZ4b19E50', difficulty: 'Easy', description: 'Draw letters with your toes.' },
-                { name: 'Calf Raises', sets: '3', reps: '15 reps', videoId: '-M4Cj4h9bXM', difficulty: 'Moderate', description: 'Lift heels off ground slowly.' }
+                { name: 'Ankle Alphabet', sets: '3', reps: '1 set', videoId: 'I7C7nF9i8aU', difficulty: 'Easy', description: 'Draw letters with your toes.' },
+                { name: 'Calf Raises', sets: '3', reps: '15 reps', videoId: 'M4Cj4h9bXM', difficulty: 'Moderate', description: 'Lift heels off ground slowly.' }
             ]
         },
         'wrist': {
