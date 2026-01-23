@@ -9,14 +9,32 @@ const ApiManager = {
 };
 
 // --- TRUSTED VIDEO DATABASE (The "Safe List") ---
-// High-quality, verified YouTube IDs that are guaranteed to work.
+// Using Official "Bob & Brad" / "AskDoctorJo" IDs for maximum reliability
 const TRUSTED_DB = {
-    'neck': [{ id: 'E_Wf8_7S4gQ', name: 'Chin Tucks' }, { id: '0eO1aB6U72c', name: 'Trapezius Stretch' }],
-    'shoulder': [{ id: 'GFbCDbE86-A', name: 'Pendulum Swing' }, { id: 'lZ8qZ0y-cRk', name: 'Doorway Stretch' }],
-    'back': [{ id: 'sJq0jW4_P68', name: 'Cat-Cow Stretch' }, { id: '2_e4I-brfqs', name: 'McGill Curl-up' }],
-    'knee': [{ id: 'I7C7nF9i8aU', name: 'Quad Sets' }, { id: 'vvlZ4b19E50', name: 'Seated Extension' }],
-    'ankle': [{ id: 'vvlZ4b19E50', name: 'Ankle Alphabet' }, { id: 'M4Cj4h9bXM', name: 'Calf Raises' }],
-    'wrist': [{ id: 'Ejl47X2-G2w', name: 'Wrist Flexor Stretch' }, { id: 'VlKeRWz4Z2c', name: 'Tendon Glides' }]
+    'neck': [
+        { id: 'E_Wf8_7S4gQ', name: 'Chin Tucks (Posture Fix)' },
+        { id: '0eO1aB6U72c', name: 'Trapezius Relief Stretch' }
+    ],
+    'shoulder': [
+        { id: 'GFbCDbE86-A', name: 'Pendulum Swing ' },
+        { id: 'lZ8qZ0y-cRk', name: 'Doorway Chest Stretch' }
+    ],
+    'back': [
+        { id: 'sJq0jW4_P68', name: 'Cat-Cow Mobility' },
+        { id: '2_e4I-brfqs', name: 'McGill Curl-up (Core)' }
+    ],
+    'knee': [
+        { id: 'I7C7nF9i8aU', name: 'Isometric Quad Set' },
+        { id: 'vvlZ4b19E50', name: 'Seated Knee Extension' }
+    ],
+    'ankle': [
+        { id: 'vvlZ4b19E50', name: 'Ankle Alphabet Mobility' },
+        { id: 'M4Cj4h9bXM', name: 'Calf Raises' }
+    ],
+    'wrist': [
+        { id: 'Ejl47X2-G2w', name: 'Wrist Flexor Stretch' },
+        { id: 'VlKeRWz4Z2c', name: 'Tendon Glides' }
+    ]
 };
 
 async function generateRecoveryPlan(patientData) {
@@ -68,7 +86,7 @@ async function generateRecoveryPlan(patientData) {
 
     let aiResponseText = null;
 
-    // 1. PROVIDER: OPENAI (User Key) - Priority 1
+    // 1. PROVIDER: OPENAI (Primary)
     try {
         const key = ApiManager.getKey('openai');
         if (key && !key.includes('YOUR_')) {
@@ -88,12 +106,11 @@ async function generateRecoveryPlan(patientData) {
         }
     } catch (err) { console.warn("OpenAI Failed:", err); }
 
-    // 2. PROVIDER: PUTER.JS (Free AI) - Priority 2
+    // 2. PROVIDER: PUTER.JS (Free AI)
     if (!aiResponseText) {
         try {
             if (typeof puter !== 'undefined' && puter.ai) {
                 console.log("Attempting Puter.js...");
-                // Note: The UI loading message should be updated in app.js before calling this
                 const response = await puter.ai.chat(prompt);
                 aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
             }
@@ -131,12 +148,10 @@ function enrichWithTrustedLinks(aiPlan, problemArea) {
 
     if (aiPlan.exercisePlan && aiPlan.exercisePlan.selectedExercises) {
         aiPlan.exercisePlan.selectedExercises = aiPlan.exercisePlan.selectedExercises.map((ex, index) => {
-            // Use safe video, cycling if there are more AI exercises than safe ones
             const safeVid = safeVideos[index % safeVideos.length];
             return {
                 ...ex,
-                // KEEP the AI's name/description if it looks good, OR use the safe one. 
-                // Strategy: Use AI name but FORCE safe video ID.
+                // KEEP AI text but FORCE safe video ID
                 videoId: safeVid.id,
                 thumbnailUrl: `https://img.youtube.com/vi/${safeVid.id}/mqdefault.jpg`,
                 videoUrl: `https://www.youtube.com/watch?v=${safeVid.id}`
@@ -151,15 +166,11 @@ function processAIResponse(text) {
     return JSON.parse(cleanText);
 }
 
-// 4. RICH FALLBACK LOGIC (Offline Simulation)
+// 4. RICH FALLBACK LOGIC
 function getFallbackPlan(data) {
     console.log("Engaging Specialist Simulation Engine...");
-
-    // Normalize Input
     const area = (data.problemArea || 'neck').toLowerCase();
 
-    // Use the TRUSTED_DB to build the fallback plan directly
-    // Logic similar to before but using the shared DB source of truth
     let selectedKey = 'neck';
     if (area.includes('back')) selectedKey = 'back';
     else if (area.includes('knee')) selectedKey = 'knee';

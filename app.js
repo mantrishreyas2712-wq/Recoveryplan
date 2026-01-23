@@ -10,7 +10,7 @@ document.getElementById('patientForm').addEventListener('submit', async function
     const loadingSection = document.getElementById('loadingSection');
     loadingSection.classList.remove('hidden');
 
-    // Dynamic Feedback - Show User we are working on it
+    // Dynamic Feedback
     const loadingText = loadingSection.querySelector('p');
     const loadingHeader = loadingSection.querySelector('h3');
     if (loadingText) loadingText.innerText = "Consulting Cloud AI Specialist...";
@@ -22,7 +22,6 @@ document.getElementById('patientForm').addEventListener('submit', async function
         renderResults(plan, data);
     } catch (error) {
         console.error("Plan Gen Error:", error);
-        // Silent Fallback (User doesn't need to know it failed, just show the result)
         const backup = getFallbackPlan(data);
         renderResults(backup, data);
     }
@@ -36,22 +35,13 @@ function renderResults(plan, userData) {
     loadingSection.classList.add('hidden');
     resultsSection.classList.remove('hidden');
 
-    // Generate Diet List HTML
+    // Generate Diet List
     const dietList = plan.dietRecommendations.keyFoods.map(food => `<li>${food}</li>`).join('');
 
-    // Generate Exercises HTML (THUMBNAIL STRATEGY)
+    // Generate Exercises (Hybrid Video Links)
     const exerciseCards = plan.exercisePlan.selectedExercises.map((ex, index) => {
-        // Fallback for ID extraction if needed
-        let vidId = ex.videoId;
-        if (!vidId && ex.videoUrl) {
-            const urlParts = ex.videoUrl.split('v=');
-            if (urlParts.length > 1) vidId = urlParts[1];
-        }
+        let vidId = ex.videoId || 'E_Wf8_7S4gQ';
 
-        // Ensure we have a valid ID for thumbnail
-        vidId = vidId || 'E_Wf8_7S4gQ'; // Ultimate fallback
-
-        // Use the Hybrid URL logic (should already be set by gemini.js, but double check)
         const thumbUrl = ex.thumbnailUrl || `https://img.youtube.com/vi/${vidId}/mqdefault.jpg`;
         const linkUrl = ex.videoUrl || `https://www.youtube.com/watch?v=${vidId}`;
 
@@ -86,20 +76,24 @@ function renderResults(plan, userData) {
         `;
     }).join('');
 
-    // Inject HTML
+    // Inject HTML - CHANGED ORDER HERE
     resultsSection.innerHTML = `
         <div class="results-header">
             <h2>Recovery Plan for ${userData.name}</h2>
-            <div class="condition-badge">
+            
+            <!-- 1. AI SPECIALIST ANALYSIS (MOVED TO TOP) -->
+            <div class="ai-insight" style="background:#F0F9FF; padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid #BAE6FD;">
+                <strong style="color:#0284C7; display:block; margin-bottom:0.5rem;">💡 Specialist Analysis</strong>
+                <p style="font-size:1.05rem; line-height:1.6; color:#0C4A6E;">"${plan.analysis.understanding}"</p>
+            </div>
+
+            <!-- 2. CONDITION BADGE -->
+            <div class="condition-badge" style="margin-top:0;">
                 <span class="icon">🩺</span>
                 <div>
                     <strong>Target Condition</strong>
                     <p>${plan.analysis.likelyCauses}</p>
                 </div>
-            </div>
-            <div class="ai-insight" style="background:#F0F9FF; padding:1rem; border-radius:12px; margin-top:1rem; border:1px solid #BAE6FD;">
-                <strong>💡 Specialist Analysis:</strong>
-                <p style="margin-top:0.5rem; font-style:italic;">"${plan.analysis.understanding}"</p>
             </div>
         </div>
 
@@ -146,6 +140,5 @@ function renderResults(plan, userData) {
         </div>
     `;
 
-    // Smooth scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
