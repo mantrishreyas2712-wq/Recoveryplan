@@ -83,8 +83,8 @@ function renderResults(plan, userData) {
 
     // Generate WhatsApp Business Message
     const expertMsg = encodeURIComponent(`Hi, I just generated a PhysioAssist Plan for ${userData.problemArea}. I'd like to book a professional consultation to review it.`);
-    // Use api.whatsapp.com for better mobile/desktop compatibility
-    const waLink = `https://api.whatsapp.com/send?text=${expertMsg}`;
+    // Optimized Shortlink for faster redirection
+    const waLink = `https://wa.me/?text=${expertMsg}`;
 
     // Generate Exercises (Smart Hybrid Buttons + Affiliate Links)
     const exerciseCards = plan.exercisePlan.selectedExercises.map((ex, index) => {
