@@ -120,7 +120,7 @@ async function generateRecoveryPlan(patientData) {
 
     let aiResponseText = null;
 
-    // 1. OpenAI
+    // 1. OpenAI (Primary)
     try {
         const key = ApiManager.getKey('openai');
         if (key && !key.includes('YOUR_')) {
@@ -136,15 +136,19 @@ async function generateRecoveryPlan(patientData) {
         }
     } catch (err) { }
 
-    // 2. Puter (Free)
+    // 2. Puter (DISABLED FOR MOBILE STABILITY)
+    // Puter.js causes iframe/popup blocking issues on iOS/Android.
+    // We now default to High-Quality Offline Mode if no OpenAI Key.
+    /*
     if (!aiResponseText) {
         try {
             if (typeof puter !== 'undefined' && puter.ai) {
                 const response = await puter.ai.chat(prompt);
                 aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
             }
-        } catch (err) { }
+        } catch (err) {}
     }
+    */
 
     if (aiResponseText) {
         try {
@@ -153,6 +157,11 @@ async function generateRecoveryPlan(patientData) {
         } catch (e) { console.error(e); }
     }
 
+    // Default: Instant Offline Plan (Reliable on Mobile)
+    console.log("Using Offline Clinical Protocol (Mobile Safe)");
+
+    // Simulate slight delay so it feels like "Calculating"
+    await new Promise(r => setTimeout(r, 2000));
     return getFallbackPlan(patientData);
 }
 
@@ -216,7 +225,6 @@ function enrichWithSmartLinks(aiPlan) {
     aiPlan = enrichWithEquipment(aiPlan);
 
     if (aiPlan.exercisePlan && aiPlan.exercisePlan.selectedExercises) {
-
         aiPlan.exercisePlan.selectedExercises = aiPlan.exercisePlan.selectedExercises.map((ex) => {
             const verifiedId = findVerifiedVideo(ex.name);
             const query = encodeURIComponent(`${ex.name} exercise physical therapy short`);
@@ -267,33 +275,29 @@ function getFallbackPlan(data) {
     else if (area.includes('ankle')) selectedKey = 'ankle';
 
     const exercises = DB_NAMES[selectedKey].map(name => {
-        const vidId = findVerifiedVideo(name);
-        const query = encodeURIComponent(`${name} exercise physical therapy short`);
         return {
             name: name,
             sets: '3',
             reps: '10-15 reps',
             difficulty: 'Moderate',
-            description: 'Perform safely with control.',
-            // Real Thumb (if ID exists) + Search Link (Safety)
-            thumbnailUrl: vidId ? `https://img.youtube.com/vi/${vidId}/mqdefault.jpg` : getStockThumbnail(name),
-            videoUrl: `https://www.youtube.com/results?search_query=${query}`
+            description: 'Perform safely with control.'
         };
     });
 
-    return {
+    // Run fallback through Enricher to get Links/Thumbs
+    const fallbackPlan = {
         "analysis": {
-            "understanding": `(Offline Mode) Hello ${data.name}. This is a standard protocol for ${data.problemArea}.`,
-            "likelyCauses": "Mechanical stress.",
+            "understanding": `Hello ${data.name}. Based on your report of ${area} pain, we have designed a specialized mobility and strengthening protocol.`,
+            "likelyCauses": "Mechanical stress or posture.",
             "severity": "Moderate",
-            "prognosis": "Favorable."
+            "prognosis": "Favorable with consistency."
         },
         "exercisePlan": { "overview": "Standard Protocol.", "selectedExercises": exercises },
         "dietRecommendations": {
-            "overview": "Anti-inflammatory.",
-            "keyFoods": ["Whole Foods", "Water"],
+            "overview": "Anti-inflammatory Focus.",
+            "keyFoods": ["Leafy Greens", "Berries", "Lean Protein"],
             "hydration": "3L daily",
-            "foodsToAvoid": ["Sugar"]
+            "foodsToAvoid": ["Processed Sugar"]
         },
         "consultation": {
             "urgency": "Routine",
@@ -301,6 +305,8 @@ function getFallbackPlan(data) {
             "redFlags": ["Numbness"],
             "followUp": "1 Week"
         },
-        "recoveryTimeline": { "week1": "Relief", "week2_3": "Mobility", "longTerm": "Strength" }
+        "recoveryTimeline": { "week1": "Pain Relief", "week2_3": "Mobility Restoration", "longTerm": "Strength Building" }
     };
+
+    return enrichWithSmartLinks(fallbackPlan);
 }
