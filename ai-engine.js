@@ -160,21 +160,22 @@ async function generateRecoveryPlan(patientData) {
     }
 
     // 3. Pollinations.ai (Backup Free Engine - High Quality)
-    // If Puter fails (common on mobile), this saves the day with GPT-4 quality.
+    // SWITCHED TO POST: Solves the "URL Too Long" issue. 
+    // Allows sending the FULL DETAILED PROMPT without truncation.
     if (!aiResponseText) {
         try {
-            console.log("Attempting Pollinations (Backup)...");
+            console.log("Attempting Pollinations (Backup via POST)...");
 
-            // Slightly compressed prompt to fit URL but keep DETAIL
-            const backupPrompt = `Role:Physio.Patient:${patientData.name},${patientData.age},${patientData.problemArea}.Symp:${patientData.problemStatement}.Hist:${historyString}.
-            TASK:Detailed Analysis,Diet,Exercises.
-            JSON ONLY:{"analysis":{"understanding":"(Detailed empathetic analysis)","likelyCauses":"...","severity":"...","prognosis":"..."},"exercisePlan":{"selectedExercises":[{"name":"...","sets":"3","reps":"10","difficulty":"...","description":"..."}]},"dietRecommendations":{"overview":"...","keyFoods":["..."],"foodsToAvoid":["..."],"hydration":"..."},"consultation":{"urgency":"...","specialists":["..."],"redFlags":["..."],"followUp":"..."},"recoveryTimeline":{"week1":"...","week2_3":"...","longTerm":"..."}}`;
-
-            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(backupPrompt)}`;
+            const pollUrl = 'https://text.pollinations.ai/';
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s Timeout
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s Timeout for POST
 
-            const response = await fetch(pollUrl, { signal: controller.signal });
+            const response = await fetch(pollUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' }, // Pollinations expects raw text
+                body: prompt, // SENDS THE FULL DETAILED PROMPT
+                signal: controller.signal
+            });
             clearTimeout(timeoutId);
 
             if (response.ok) {
