@@ -136,15 +136,21 @@ async function generateRecoveryPlan(patientData) {
         }
     } catch (err) { }
 
-    // 2. Pollinations.ai (Free, High-Quality, No Auth, Fetch-Based)
+    // 2. Pollinations.ai (Free, High-Quality, No Auth, GET Request)
+    // OPTIMIZATION: URL Length is limited. We must compact the prompt.
     if (!aiResponseText) {
         try {
             console.log("Attempting Pollinations Free AI...");
-            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(prompt)}`;
 
-            // TIMEOUT ENFORCEMENT for Mobile Networks (8s)
+            // Minified Prompt to fit in GET URL limit (~2000 chars)
+            const fastPrompt = `Role:Physio.Patient:${patientData.name},${patientData.age}y,${patientData.occupation}.Cond:${patientData.problemArea}.Symp:${patientData.problemStatement}.Hist:${historyString}.Surg:${surgeryStatus}.Diet:${patientData.dietPreference}.
+            JSON Response(No markdown):{"analysis":{"understanding":"...","likelyCauses":"...","severity":"...","prognosis":"..."},"exercisePlan":{"selectedExercises":[{"name":"(Standard Name)","sets":"...","reps":"...","difficulty":"...","description":"..."}]},"dietRecommendations":{"overview":"...","keyFoods":["..."],"foodsToAvoid":["..."],"hydration":"..."},"consultation":{"urgency":"...","specialists":["..."],"redFlags":["..."],"followUp":"..."},"recoveryTimeline":{"week1":"...","week2_3":"...","longTerm":"..."}}`;
+
+            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(fastPrompt)}`;
+
+            // TIMEOUT ENFORCEMENT (15s - Mobile Friendly)
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
 
             const response = await fetch(pollUrl, { signal: controller.signal });
             clearTimeout(timeoutId);
@@ -161,7 +167,7 @@ async function generateRecoveryPlan(patientData) {
         try {
             const plan = processAIResponse(aiResponseText);
             return enrichWithSmartLinks(plan);
-        } catch (e) { console.error("Parsing Error:", e); }
+        } catch (e) { console.error(e); }
     }
 
     // Default: Offline Clinical Protocol (Fallback)
