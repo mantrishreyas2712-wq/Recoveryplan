@@ -53,12 +53,31 @@ body {
 .header {
     background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
     color: white;
-    padding: 1.5rem 1rem;
+    padding: 0;
+    /* Remove padding for banner */
     text-align: center;
     box-shadow: var(--shadow-lg);
     position: sticky;
     top: 0;
     z-index: 100;
+    overflow: hidden;
+}
+
+.header-banner {
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+
+.header .logo {
+    padding: 1rem 0 0.5rem;
 }
 
 .header h1 {
