@@ -29,179 +29,119 @@
         </div>
     </div>
 
+    <!-- Dynamic Background -->
+    <div class="dynamic-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
     <!-- Main Application -->
     <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-banner">
-                <img src="physio_hero_banner.png" alt="Physio Recovery Banner" class="hero-image">
-            </div>
-            <div class="logo">
-                <span class="logo-icon">🏥</span>
+
+        <!-- Immersive Hero Header -->
+        <header class="hero-section">
+            <div class="hero-content">
+                <div class="logo-badge">
+                    <span class="logo-icon">🏥</span>
+                </div>
                 <h1>PhysioAssist</h1>
+                <p>AI-Powered Recovery Intelligence</p>
             </div>
-            <p class="tagline">AI-Powered Physiotherapy Recovery Plans</p>
+            <div class="wave-shape">
+                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"
+                    preserveAspectRatio="none">
+                    <path
+                        d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+                        class="shape-fill"></path>
+                </svg>
+            </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- Patient Form Section -->
-            <section id="formSection" class="section">
-                <div class="section-header">
-                    <h2>📋 Patient Information</h2>
-                    <p>Please fill in your details for a personalized recovery plan</p>
-                </div>
+            <section id="formSection" class="section active">
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <h2>📋 Patient Profile</h2>
+                        <span class="step-indicator">Step 1/3</span>
+                    </div>
 
-                <form id="patientForm" class="patient-form glass-card">
-                    <!-- Personal Details -->
-                    <div class="form-section">
-                        <h3>Personal Details</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="name">Full Name *</label>
-                                <input type="text" id="name" name="name" required placeholder="Enter your full name"
+                    <form id="patientForm" class="compact-form">
+                        <!-- Group 1: Identity -->
+                        <div class="input-group">
+                            <div class="floating-input">
+                                <input type="text" id="name" name="name" required placeholder=" " class="input-field">
+                                <label for="name">Full Name</label>
+                            </div>
+
+                            <div class="row-inputs">
+                                <div class="floating-input">
+                                    <input type="number" id="age" name="age" required placeholder=" "
+                                        class="input-field">
+                                    <label for="age">Age</label>
+                                </div>
+                                <div class="floating-input">
+                                    <select id="gender" name="gender" required class="input-field">
+                                        <option value="" disabled selected></option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <label for="gender">Gender</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 2: Lifestyle -->
+                        <div class="input-group">
+                            <div class="floating-input">
+                                <input type="text" id="occupation" name="occupation" placeholder=" "
                                     class="input-field">
+                                <label for="occupation">Occupation / Job Role</label>
                             </div>
-                            <div class="form-group">
-                                <label for="age">Age *</label>
-                                <input type="number" id="age" name="age" required min="1" max="120" placeholder="Years"
-                                    class="input-field">
-                            </div>
-                            <div class="form-group">
-                                <label for="gender">Gender *</label>
-                                <select id="gender" name="gender" required class="input-field">
-                                    <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="occupation">Occupation</label>
-                                <input type="text" id="occupation" name="occupation" placeholder="Your job/profession"
-                                    class="input-field">
-                            </div>
-                            <div class="form-group">
-                                <label for="dietPreference">Diet Preference *</label>
+                            <div class="floating-input">
                                 <select id="dietPreference" name="dietPreference" required class="input-field">
-                                    <option value="">Select Diet Type</option>
+                                    <option value="" disabled selected></option>
                                     <option value="veg">Vegetarian</option>
-                                    <option value="non-veg">Non-Vegetarian</option>
-                                    <option value="eggitarian">Eggitarian</option>
+                                    <option value="non-veg">Non-Vegetarian (High Protein)</option>
                                     <option value="vegan">Vegan</option>
-                                    <option value="jain">Jain (No onion/garlic)</option>
+                                    <option value="keto">Keto / Low Carb</option>
                                 </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contact Details -->
-                    <div class="form-section">
-                        <h3>Contact Information</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="mobile">Mobile Number *</label>
-                                <input type="tel" id="mobile" name="mobile" required placeholder="+91 98765 43210"
-                                    class="input-field">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email Address *</label>
-                                <input type="email" id="email" name="email" required placeholder="your@email.com"
-                                    class="input-field">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Problem Statement -->
-                    <div class="form-section">
-                        <h3>Your Condition</h3>
-                        <div class="form-group">
-                            <label for="problemArea">Affected Body Part *</label>
-                            <select id="problemArea" name="problemArea" required class="input-field">
-                                <option value="">Select affected area</option>
-                                <option value="neck">Neck</option>
-                                <option value="shoulder">Shoulder</option>
-                                <option value="upper-back">Upper Back</option>
-                                <option value="lower-back">Lower Back</option>
-                                <option value="hip">Hip</option>
-                                <option value="knee">Knee</option>
-                                <option value="ankle">Ankle/Foot</option>
-                                <option value="wrist">Wrist/Hand</option>
-                                <option value="elbow">Elbow</option>
-                                <option value="posture">Posture Issues</option>
-                                <option value="multiple">Multiple Areas</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="problemStatement">Describe Your Problem *</label>
-                            <textarea id="problemStatement" name="problemStatement" required rows="8"
-                                class="input-field textarea">
-Please write your answer next to each question:
-
-- What symptoms are you experiencing?
-- When did it start?
-- What makes it better or worse?
-- Any previous injuries in this area?</textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="painLevel">Pain Level: <span id="painValue">5</span>/10</label>
-                            <input type="range" id="painLevel" name="painLevel" min="1" max="10" value="5"
-                                class="pain-slider">
-                            <div class="pain-labels">
-                                <span>Mild</span>
-                                <span>Moderate</span>
-                                <span>Severe</span>
+                                <label for="dietPreference">Diet Type</label>
                             </div>
                         </div>
 
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="duration">Duration of Condition *</label>
-                                <select id="duration" name="duration" required class="input-field">
-                                    <option value="">How long have you had this?</option>
-                                    <option value="few-days">Few days</option>
-                                    <option value="1-2-weeks">1-2 weeks</option>
-                                    <option value="2-4-weeks">2-4 weeks</option>
-                                    <option value="1-3-months">1-3 months</option>
-                                    <option value="3-6-months">3-6 months</option>
-                                    <option value="6-12-months">6 months - 1 year</option>
-                                    <option value="more-than-year">More than 1 year</option>
+                        <!-- Group 3: Clinical Data -->
+                        <div class="clinical-group">
+                            <h3>Tell us about the pain</h3>
+
+                            <div class="floating-input">
+                                <select id="problemArea" name="problemArea" required class="input-field">
+                                    <option value="" disabled selected></option>
+                                    <option value="neck">Neck & Cervical</option>
+                                    <option value="shoulder">Shoulder & Rotator Cuff</option>
+                                    <option value="lower-back">Lower Back (Lumbar)</option>
+                                    <option value="knee">Knee & Ligaments</option>
+                                    <option value="wrist">Wrist & Hand (RSI)</option>
+                                    <option value="ankle">Ankle & Foot</option>
                                 </select>
+                                <label for="problemArea">Affected Area</label>
                             </div>
-                            <div class="form-group">
-                                <label for="activityLevel">Activity Level</label>
-                                <select id="activityLevel" name="activityLevel" class="input-field">
-                                    <option value="sedentary">Sedentary (Desk job)</option>
-                                    <option value="light">Light Activity</option>
-                                    <option value="moderate">Moderate Activity</option>
-                                    <option value="active">Active/Athletic</option>
-                                </select>
+
+                            <div class="floating-input">
+                                <textarea id="problemStatement" name="problemStatement" required rows="4"
+                                    placeholder=" " class="input-field textarea"></textarea>
+                                <label for="problemStatement">Describe symptoms & duration...</label>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="previousTreatment">Previous Treatments (if any)</label>
-                            <textarea id="previousTreatment" name="previousTreatment" rows="3"
-                                placeholder="List any treatments you've tried: medications, physiotherapy, surgery, etc."
-                                class="input-field textarea"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="medicalHistory">Relevant Medical History</label>
-                            <textarea id="medicalHistory" name="medicalHistory" rows="3"
-                                placeholder="Any conditions we should know about: diabetes, heart disease, osteoporosis, etc."
-                                class="input-field textarea"></textarea>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-large">
-                        <span class="btn-icon">✨</span>
-                        Generate My Recovery Plan
-                    </button>
-                </form>
+                        <button type="submit" class="btn btn-primary btn-pulse">
+                            <span class="btn-text">Generate Recovery Plan</span>
+                            <span class="btn-icon">⚡</span>
+                        </button>
+                    </form>
+                </div>
             </section>
 
             <!-- Loading Section -->
