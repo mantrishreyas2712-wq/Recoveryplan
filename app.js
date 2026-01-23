@@ -69,7 +69,11 @@ function renderResults(plan, userData) {
     // Generate Diet List
     const dietList = plan.dietRecommendations.keyFoods.map(food => `<li>${food}</li>`).join('');
 
-    // Generate Exercises (Smart Hybrid Buttons)
+    // Generate WhatsApp Business Message
+    const expertMsg = encodeURIComponent(`Hi, I just generated a PhysioAssist Plan for ${userData.problemArea}. I'd like to book a professional consultation to review it.`);
+    const waLink = `https://wa.me/?text=${expertMsg}`;
+
+    // Generate Exercises (Smart Hybrid Buttons + Affiliate Links)
     const exerciseCards = plan.exercisePlan.selectedExercises.map((ex, index) => {
         const linkUrl = ex.videoUrl;
         const thumbUrl = ex.thumbnailUrl;
@@ -78,6 +82,12 @@ function renderResults(plan, userData) {
         const isDirect = ex.type === 'direct';
         const btnIcon = isDirect ? '▶' : '🔎';
         const btnText = isDirect ? 'Watch Now' : 'Find Video';
+
+        // Affiliate Button Logic
+        let equipBtn = '';
+        if (ex.equipmentUrl) {
+            equipBtn = `<a href="${ex.equipmentUrl}" target="_blank" class="btn-micro-shop">🛒 Buy ${ex.equipmentName}</a>`;
+        }
 
         return `
         <div class="exercise-card">
@@ -94,6 +104,9 @@ function renderResults(plan, userData) {
                     <h4>${index + 1}. ${ex.name}</h4>
                     <span class="badge">${ex.difficulty || 'Easy'}</span>
                 </div>
+                <!-- Affiliate Button -->
+                ${equipBtn}
+
                 <div class="exercise-meta">
                     <div class="meta-item">
                         <span class="meta-label">SETS</span>
@@ -168,9 +181,13 @@ function renderResults(plan, userData) {
             </div>
         </div>
 
-        <div class="action-bar sticky-bottom">
-            <button onclick="window.print()" class="btn btn-secondary">🖨️ Save PDF</button>
-            <button onclick="location.reload()" class="btn btn-outline">🔄 Start Over</button>
+        <!-- STICKY BUSINESS BAR (Consultation & Sharing) -->
+        <div class="action-bar sticky-bottom business-bar">
+            <a href="${waLink}" target="_blank" class="btn btn-whatsapp">💬 Book Expert</a>
+            <div class="secondary-actions">
+                <button onclick="window.print()" class="btn-icon" title="Print Plan">🖨️</button>
+                <button onclick="location.reload()" class="btn-icon" title="New Patient">🔄</button>
+            </div>
         </div>
     `;
 

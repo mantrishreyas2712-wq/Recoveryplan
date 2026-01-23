@@ -175,9 +175,48 @@ function getStockThumbnail(name) {
     return STOCK_IMAGES[index];
 }
 
+// --- AFFILIATE / EQUIPMENT LOGIC ---
+const EQUIPMENT_MAP = {
+    'band': 'https://www.amazon.in/s?k=resistance+bands+physio&tag=YOUR_TAG_HERE',
+    'ball': 'https://www.amazon.in/s?k=exercise+ball+physio&tag=YOUR_TAG_HERE',
+    'roller': 'https://www.amazon.in/s?k=foam+roller&tag=YOUR_TAG_HERE',
+    'dumbbell': 'https://www.amazon.in/s?k=dumbbells+1kg&tag=YOUR_TAG_HERE',
+    'weight': 'https://www.amazon.in/s?k=ankle+weights+physio&tag=YOUR_TAG_HERE',
+    'towel': 'https://www.amazon.in/s?k=microfiber+gym+towel&tag=YOUR_TAG_HERE',
+    'mat': 'https://www.amazon.in/s?k=yoga+mat+thick&tag=YOUR_TAG_HERE'
+};
+
+function enrichWithEquipment(aiPlan) {
+    if (aiPlan.exercisePlan && aiPlan.exercisePlan.selectedExercises) {
+        aiPlan.exercisePlan.selectedExercises = aiPlan.exercisePlan.selectedExercises.map((ex) => {
+            let equipLink = null;
+            let equipName = null;
+
+            // Check for keywords
+            const lowerName = ex.name.toLowerCase();
+            const lowerDesc = (ex.description || '').toLowerCase();
+
+            for (const [key, url] of Object.entries(EQUIPMENT_MAP)) {
+                if (lowerName.includes(key) || lowerDesc.includes(key)) {
+                    equipLink = url;
+                    equipName = key.charAt(0).toUpperCase() + key.slice(1); // Capitalize match (e.g. "Band")
+                    break; // Only one link per card to keep UI clean
+                }
+            }
+
+            return { ...ex, equipmentUrl: equipLink, equipmentName: equipName };
+        });
+    }
+    return aiPlan;
+}
+
 // --- SMART LINK STRATEGY (SAFE MODE) ---
 function enrichWithSmartLinks(aiPlan) {
+    // First, add Equipment Links
+    aiPlan = enrichWithEquipment(aiPlan);
+
     if (aiPlan.exercisePlan && aiPlan.exercisePlan.selectedExercises) {
+
         aiPlan.exercisePlan.selectedExercises = aiPlan.exercisePlan.selectedExercises.map((ex) => {
             const verifiedId = findVerifiedVideo(ex.name);
             const query = encodeURIComponent(`${ex.name} exercise physical therapy short`);
