@@ -45,14 +45,26 @@ document.getElementById('patientForm').addEventListener('submit', async function
         }
     }, 2500);
 
-    // 3. AI Generation
+    // 3. AI Generation with Safety Timeout (12s Max)
+    const TIMEOUT_MS = 12000;
+    const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("AI_TIMEOUT")), TIMEOUT_MS)
+    );
+
     try {
-        const plan = await generateRecoveryPlan(data);
+        // Race: AI Generation vs 12s Timer
+        // This prevents the "Stuck Loading" issue on mobile
+        const plan = await Promise.race([
+            generateRecoveryPlan(data),
+            timeoutPromise
+        ]);
+
         clearInterval(intervalId); // Stop animation
         renderResults(plan, data);
     } catch (error) {
-        console.error("Plan Gen Error:", error);
+        console.warn("Plan Gen Error/Timeout. Using Backup.", error);
         clearInterval(intervalId);
+        // Instant Fallback on Error or Timeout
         const backup = getFallbackPlan(data);
         renderResults(backup, data);
     }
@@ -71,7 +83,8 @@ function renderResults(plan, userData) {
 
     // Generate WhatsApp Business Message
     const expertMsg = encodeURIComponent(`Hi, I just generated a PhysioAssist Plan for ${userData.problemArea}. I'd like to book a professional consultation to review it.`);
-    const waLink = `https://wa.me/?text=${expertMsg}`;
+    // Use api.whatsapp.com for better mobile/desktop compatibility
+    const waLink = `https://api.whatsapp.com/send?text=${expertMsg}`;
 
     // Generate Exercises (Smart Hybrid Buttons + Affiliate Links)
     const exerciseCards = plan.exercisePlan.selectedExercises.map((ex, index) => {
