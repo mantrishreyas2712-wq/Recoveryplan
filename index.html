@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhysioAssist - AI-Powered Recovery Plans</title>
+    <meta name="description"
+        content="Get personalized physiotherapy recovery plans with AI-powered analysis. Includes exercises, diet recommendations, and expert consultation guidance.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="modal">
+        <div class="modal-content glass-card">
+            <div class="modal-icon">🔐</div>
+            <h2>Welcome to PhysioAssist</h2>
+            <p>Please enter your Gemini API key to enable AI-powered analysis</p>
+            <div class="form-group">
+                <input type="password" id="apiKeyInput" placeholder="Enter your Gemini API key" class="input-field">
+            </div>
+            <p class="hint">Get your free API key from <a href="https://aistudio.google.com/apikey"
+                    target="_blank">Google AI Studio</a></p>
+            <button id="saveApiKey" class="btn btn-primary">Save & Continue</button>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🏥</span>
+                <h1>PhysioAssist</h1>
+            </div>
+            <p class="tagline">AI-Powered Physiotherapy Recovery Plans</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Patient Form Section -->
+            <section id="formSection" class="section">
+                <div class="section-header">
+                    <h2>📋 Patient Information</h2>
+                    <p>Please fill in your details for a personalized recovery plan</p>
+                </div>
+
+                <form id="patientForm" class="patient-form glass-card">
+                    <!-- Personal Details -->
+                    <div class="form-section">
+                        <h3>Personal Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Full Name *</label>
+                                <input type="text" id="name" name="name" required placeholder="Enter your full name"
+                                    class="input-field">
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age *</label>
+                                <input type="number" id="age" name="age" required min="1" max="120" placeholder="Years"
+                                    class="input-field">
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender *</label>
+                                <select id="gender" name="gender" required class="input-field">
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="occupation">Occupation</label>
+                                <input type="text" id="occupation" name="occupation" placeholder="Your job/profession"
+                                    class="input-field">
+                            </div>
+                            <div class="form-group">
+                                <label for="dietPreference">Diet Preference *</label>
+                                <select id="dietPreference" name="dietPreference" required class="input-field">
+                                    <option value="">Select Diet Type</option>
+                                    <option value="veg">Vegetarian</option>
+                                    <option value="non-veg">Non-Vegetarian</option>
+                                    <option value="eggitarian">Eggitarian</option>
+                                    <option value="vegan">Vegan</option>
+                                    <option value="jain">Jain (No onion/garlic)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Details -->
+                    <div class="form-section">
+                        <h3>Contact Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="mobile">Mobile Number *</label>
+                                <input type="tel" id="mobile" name="mobile" required placeholder="+91 98765 43210"
+                                    class="input-field">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required placeholder="your@email.com"
+                                    class="input-field">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Problem Statement -->
+                    <div class="form-section">
+                        <h3>Your Condition</h3>
+                        <div class="form-group">
+                            <label for="problemArea">Affected Body Part *</label>
+                            <select id="problemArea" name="problemArea" required class="input-field">
+                                <option value="">Select affected area</option>
+                                <option value="neck">Neck</option>
+                                <option value="shoulder">Shoulder</option>
+                                <option value="upper-back">Upper Back</option>
+                                <option value="lower-back">Lower Back</option>
+                                <option value="hip">Hip</option>
+                                <option value="knee">Knee</option>
+                                <option value="ankle">Ankle/Foot</option>
+                                <option value="wrist">Wrist/Hand</option>
+                                <option value="elbow">Elbow</option>
+                                <option value="posture">Posture Issues</option>
+                                <option value="multiple">Multiple Areas</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="problemStatement">Describe Your Problem *</label>
+                            <textarea id="problemStatement" name="problemStatement" required rows="8"
+                                class="input-field textarea">
+Please write your answer next to each question:
+
+- What symptoms are you experiencing?
+- When did it start?
+- What makes it better or worse?
+- Any previous injuries in this area?</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="painLevel">Pain Level: <span id="painValue">5</span>/10</label>
+                            <input type="range" id="painLevel" name="painLevel" min="1" max="10" value="5"
+                                class="pain-slider">
+                            <div class="pain-labels">
+                                <span>Mild</span>
+                                <span>Moderate</span>
+                                <span>Severe</span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="duration">Duration of Condition *</label>
+                                <select id="duration" name="duration" required class="input-field">
+                                    <option value="">How long have you had this?</option>
+                                    <option value="few-days">Few days</option>
+                                    <option value="1-2-weeks">1-2 weeks</option>
+                                    <option value="2-4-weeks">2-4 weeks</option>
+                                    <option value="1-3-months">1-3 months</option>
+                                    <option value="3-6-months">3-6 months</option>
+                                    <option value="6-12-months">6 months - 1 year</option>
+                                    <option value="more-than-year">More than 1 year</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="activityLevel">Activity Level</label>
+                                <select id="activityLevel" name="activityLevel" class="input-field">
+                                    <option value="sedentary">Sedentary (Desk job)</option>
+                                    <option value="light">Light Activity</option>
+                                    <option value="moderate">Moderate Activity</option>
+                                    <option value="active">Active/Athletic</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="previousTreatment">Previous Treatments (if any)</label>
+                            <textarea id="previousTreatment" name="previousTreatment" rows="3"
+                                placeholder="List any treatments you've tried: medications, physiotherapy, surgery, etc."
+                                class="input-field textarea"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="medicalHistory">Relevant Medical History</label>
+                            <textarea id="medicalHistory" name="medicalHistory" rows="3"
+                                placeholder="Any conditions we should know about: diabetes, heart disease, osteoporosis, etc."
+                                class="input-field textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span class="btn-icon">✨</span>
+                        Generate My Recovery Plan
+                    </button>
+                </form>
+            </section>
+
+            <!-- Loading Section -->
+            <section id="loadingSection" class="section hidden">
+                <div class="loading-container glass-card">
+                    <div class="loading-animation">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring"></div>
+                        <span class="loading-icon">🧠</span>
+                    </div>
+                    <h2>Analyzing Your Condition</h2>
+                    <p class="loading-text">Our AI is carefully reviewing your information to create a personalized
+                        recovery plan...</p>
+                    <div class="loading-steps">
+                        <div class="step active" id="step1">
+                            <span class="step-icon">📊</span>
+                            <span>Analyzing symptoms</span>
+                        </div>
+                        <div class="step" id="step2">
+                            <span class="step-icon">🏋️</span>
+                            <span>Selecting exercises</span>
+                        </div>
+                        <div class="step" id="step3">
+                            <span class="step-icon">🥗</span>
+                            <span>Planning nutrition</span>
+                        </div>
+                        <div class="step" id="step4">
+                            <span class="step-icon">📋</span>
+                            <span>Preparing recommendations</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="section hidden">
+                <div class="results-header">
+                    <h2>🎯 Your Personalized Recovery Plan</h2>
+                    <p>Prepared for <span id="patientNameDisplay"></span></p>
+
+                    <!-- Dr. Vanshika Contact Header -->
+                    <div class="contact-card glass-card-inner"
+                        style="margin-top: 1rem; margin-bottom: 1.5rem; background: rgba(var(--primary-rgb), 0.1); border: 1px solid rgba(var(--primary-rgb), 0.2); padding: 1rem;">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="font-size: 2.5rem;">👩‍⚕️</span>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--primary);">Dr. Vanshika</h4>
+                                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Senior Physiotherapist</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <p
+                                    style="margin: 0; font-size: 0.9rem; font-style: italic; display: none; @media(min-width: 768px){display: block;}">
+                                    "Your recovery is my priority."</p>
+                                <a href="tel:+919993521601" class="btn btn-primary"
+                                    style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    📞 Call +91 99935 21601
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="results-actions">
+                        <button id="printPlan" class="btn btn-secondary">
+                            <span>🖨️</span> Print Plan
+                        </button>
+                        <button id="newAssessment" class="btn btn-outline">
+                            <span>🔄</span> New Assessment
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Condition Analysis -->
+                <div class="result-card glass-card" id="analysisCard">
+                    <div class="card-header">
+                        <span class="card-icon">🔍</span>
+                        <h3>Condition Analysis</h3>
+                    </div>
+                    <div class="card-content" id="analysisContent">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Exercise Plan -->
+                <div class="result-card glass-card" id="exerciseCard">
+                    <div class="card-header">
+                        <span class="card-icon">🏋️</span>
+                        <h3>Exercise Plan</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="exercises-grid" id="exercisesGrid">
+                            <!-- Dynamic exercise cards -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diet Recommendations -->
+                <div class="result-card glass-card" id="dietCard">
+                    <div class="card-header">
+                        <span class="card-icon">🥗</span>
+                        <h3>Diet & Nutrition</h3>
+                    </div>
+                    <div class="card-content" id="dietContent">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Consultation Notes -->
+                <div class="result-card glass-card" id="consultationCard">
+                    <div class="card-header">
+                        <span class="card-icon">👨‍⚕️</span>
+                        <h3>Professional Consultation</h3>
+                    </div>
+                    <div class="card-content" id="consultationContent">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Recovery Timeline -->
+                <div class="result-card glass-card" id="timelineCard">
+                    <div class="card-header">
+                        <span class="card-icon">📅</span>
+                        <h3>Recovery Timeline</h3>
+                    </div>
+                    <div class="card-content" id="timelineContent">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="disclaimer">
+                    <p><strong>⚠️ Important Disclaimer:</strong> This plan is generated by AI for informational purposes
+                        only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always
+                        consult with a qualified healthcare provider before starting any exercise or diet program. If
+                        you experience severe pain, numbness, or any concerning symptoms, seek immediate medical
+                        attention.</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 PhysioAssist | AI-Powered Physiotherapy Solutions</p>
+            <p class="footer-note">Powered by Google Gemini AI</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="exercises.js"></script>
+    <script src="diet.js"></script>
+    <script src="gemini.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API Diagnostic</title>
+</head>
+
+<body>
+    <h1>API Connection Test</h1>
+    <div id="status">Testing...</div>
+    <div id="log" style="white-space: pre; font-family: monospace;"></div>
+
+    <script src="config.js"></script>
+    <script>
+        const log = (msg) => document.getElementById('log').textContent += msg + '\n';
+        const status = (msg) => document.getElementById('status').textContent = msg;
+
+        async function test() {
+            try {
+                if (typeof CONFIG === 'undefined') {
+                    throw new Error("CONFIG not found. config.js failed to load.");
+                }
+
+                const key = CONFIG.GEMINI_API_KEY;
+                log(`API Key found: ${key ? key.substring(0, 5) + '...' : 'NO KEY'}`);
+
+                if (!key || key.includes('YOUR_API_KEY')) {
+                    throw new Error("Invalid API Key in config.js");
+                }
+
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+
+                log(`Attempting Fetch to: ${url.split('?')[0]}`);
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: "Hi" }] }]
+                    })
+                });
+
+                log(`Response Status: ${response.status} ${response.statusText}`);
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    log(`Error Body: ${errText}`);
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                log(`Success! Response: ${JSON.stringify(data).substring(0, 100)}...`);
+                status("SUCCESS");
+
+            } catch (e) {
+                log(`CRITICAL FAILURE: ${e.message}`);
+                console.error(e);
+                status("FAILED");
+            }
+        }
+
+        test();
+    </script>
+</body>
+
+</html>
