@@ -136,22 +136,44 @@ async function generateRecoveryPlan(patientData) {
         }
     } catch (err) { }
 
-    // --- STRATEGY: DYNAMIC PUTER LOAD (High Quality, Late Init) ---
-    // User demands "Detailed Analysis" (Puter) but hates "Login Page".
-    // Solution: We load Puter *only* when needed, preventing page-load redirects.
-
+    // 2. Puter (Dynamic Load - Primary Free Engine)
     if (!aiResponseText) {
         try {
-            console.log("Loading Puter dynamically for High-Quality Analysis...");
+            console.log("Loading Puter dynamically...");
             await ensurePuterLoaded();
 
             if (typeof puter !== 'undefined' && puter.ai) {
-                // We use the FULL PROMPT here for maximum detail
                 const response = await puter.ai.chat(prompt);
                 aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
             }
         } catch (err) {
-            console.warn("Puter AI Failed (Login/Network):", err);
+            console.warn("Puter AI Failed (Login/Network). Switching to Backup...", err);
+        }
+    }
+
+    // 3. Pollinations.ai (Backup Free Engine - High Quality)
+    // If Puter fails (common on mobile), this saves the day with GPT-4 quality.
+    if (!aiResponseText) {
+        try {
+            console.log("Attempting Pollinations (Backup)...");
+
+            // Slightly compressed prompt to fit URL but keep DETAIL
+            const backupPrompt = `Role:Physio.Patient:${patientData.name},${patientData.age},${patientData.problemArea}.Symp:${patientData.problemStatement}.Hist:${historyString}.
+            TASK:Detailed Analysis,Diet,Exercises.
+            JSON ONLY:{"analysis":{"understanding":"(Detailed empathetic analysis)","likelyCauses":"...","severity":"...","prognosis":"..."},"exercisePlan":{"selectedExercises":[{"name":"...","sets":"3","reps":"10","difficulty":"...","description":"..."}]},"dietRecommendations":{"overview":"...","keyFoods":["..."],"foodsToAvoid":["..."],"hydration":"..."},"consultation":{"urgency":"...","specialists":["..."],"redFlags":["..."],"followUp":"..."},"recoveryTimeline":{"week1":"...","week2_3":"...","longTerm":"..."}}`;
+
+            const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(backupPrompt)}`;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s Timeout
+
+            const response = await fetch(pollUrl, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                aiResponseText = await response.text();
+            }
+        } catch (err) {
+            console.warn("Pollinations Backup Failed:", err);
         }
     }
 
@@ -159,7 +181,9 @@ async function generateRecoveryPlan(patientData) {
         try {
             const plan = processAIResponse(aiResponseText);
             return enrichWithSmartLinks(plan);
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error("Parsing Error:", e);
+        }
     }
 
     // Default: Offline Clinical Protocol (Fallback)
