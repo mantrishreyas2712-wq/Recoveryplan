@@ -41,7 +41,6 @@ async function generateRecoveryPlan(patientData) {
     const historyString = conditions.length > 0 ? conditions.join(", ") : "None";
     const surgeryStatus = patientData.recentSurgery !== 'no' ? `Recent Surgery: ${patientData.recentSurgery}` : "No Recent Surgery";
 
-    // 1. FULL DETAILED PROMPT (For All Engines)
     const prompt = `
     You are an expert, empathetic Senior Physiotherapist. 
     Analyze the following patient profile deeply:
@@ -89,7 +88,7 @@ async function generateRecoveryPlan(patientData) {
 
     let aiResponseText = null;
 
-    // --- ENGINE 1: OPENAI / CHATANYWHERE (User Key) ---
+    // --- CHOICE 1: YOUR CUSTOM OPENAI KEY ---
     try {
         const key = ApiManager.getKey('openai');
         if (key && (key.startsWith('sk-') || key.length > 10)) {
@@ -113,72 +112,27 @@ async function generateRecoveryPlan(patientData) {
         }
     } catch (err) { console.warn("OpenAI Key Failed:", err); }
 
-    // --- ENGINE 2: POLLINATIONS OPENAI PROXY (Primary Free - Nice JSON) ---
+    // --- CHOICE 2: PUTER JAVASCRIPT API (Free + High Quality) ---
+    // The user trusts this method. It is the Primary Free Option.
     if (!aiResponseText) {
         try {
-            console.log("Attempting Pollinations (OpenAI Proxy Mode)...");
-            const pollUrl = 'https://text.pollinations.ai/openai/chat/completions';
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 40000); // 40s Safety
-
-            const response = await fetch(pollUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: 'gpt-4o-mini',
-                    messages: [{ role: 'user', content: prompt }]
-                }),
-                signal: controller.signal
-            });
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-                const data = await response.json();
-                aiResponseText = data.choices[0].message.content;
-            } else {
-                throw new Error("Proxy Status: " + response.status);
-            }
-        } catch (err) {
-            console.warn("Pollinations Proxy Failed:", err);
-        }
-    }
-
-    // --- ENGINE 3: POLLINATIONS RAW TEXT (Robust Backup) ---
-    // If the Proxy wrapper fails (500/429), the Raw endpoint often still works.
-    if (!aiResponseText) {
-        try {
-            console.log("Attempting Pollinations (Raw Text Backup)...");
-            const rawUrl = 'https://text.pollinations.ai/';
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 40000);
-
-            const response = await fetch(rawUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: prompt, // Send raw body
-                signal: controller.signal
-            });
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-                aiResponseText = await response.text();
-            }
-        } catch (err) {
-            console.warn("Pollinations Raw Failed:", err);
-        }
-    }
-
-    // --- ENGINE 4: PUTER (Backup Free Engine) ---
-    if (!aiResponseText) {
-        try {
-            console.log("Loading Puter as Backup...");
+            console.log("Attempting Puter JS API...");
             await ensurePuterLoaded();
+
             if (typeof puter !== 'undefined' && puter.ai) {
+                // DIRECT CALL (No wrapper, just pure Puter)
                 const response = await puter.ai.chat(prompt);
+                // Handle object vs string response
                 aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
+            } else {
+                throw new Error("Puter Object Missing");
             }
         } catch (err) {
-            console.warn("Puter AI Failed:", err);
+            // CRITICAL VERBOSE ERROR:
+            // If this fails, we want to know WHY (Login? Network?)
+            console.error("Puter Error:", err);
+            // We ALERT the user so they can diagnose the specific block
+            alert("AI Engine Error (Puter): " + err.message + "\n\nIf you see 'Sign In', please sign in to Puter to enable AI.");
         }
     }
 
@@ -189,12 +143,12 @@ async function generateRecoveryPlan(patientData) {
             return enrichWithSmartLinks(plan);
         } catch (e) {
             console.error("AI Parse Error:", e);
-            throw new Error("AI data corrupted. Please retry.");
+            throw new Error("Received invalid data from AI. Please retry.");
         }
     }
 
     // --- STRICT FAILURE (No Offline) ---
-    throw new Error("AI Busy. Please check internet & retry.");
+    throw new Error("Connectivity Issue. AI could not generate response.");
 }
 
 // Helper: Lazy Load Puter (Only if needed)
@@ -204,9 +158,9 @@ async function ensurePuterLoaded() {
         const script = document.createElement('script');
         script.src = 'https://js.puter.com/v2/';
         script.onload = () => resolve();
-        script.onerror = () => reject(new Error("Failed to load Puter script"));
+        script.onerror = () => reject(new Error("Failed to load Puter script (Check AdBlock/Network)"));
         document.head.appendChild(script);
-        setTimeout(() => reject(new Error("Puter Load Timeout")), 8000);
+        setTimeout(() => reject(new Error("Puter Load Timeout")), 10000);
     });
 }
 
