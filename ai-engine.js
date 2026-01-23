@@ -1,11 +1,3 @@
-const ApiManager = {
-    getKey(provider) {
-        if (typeof CONFIG === 'undefined') return '';
-        if (provider === 'openai') return CONFIG.OPENAI_API_KEY;
-        return '';
-    }
-};
-
 // --- VERIFIED EXERCISE LIBRARY ---
 const EXERCISE_LIBRARY = {
     'chin tuck': 'E_Wf8_7S4gQ', 'neck tilt': '0eO1aB6U72c', 'upper trap': '1Y1_T7y7KzI',
@@ -29,11 +21,16 @@ function findVerifiedVideo(exerciseName) {
     return null;
 }
 
-// --- MAIN AI ENGINE ---
+// --- MAIN AI ENGINE (Secure Backend Proxy) ---
 async function generateRecoveryPlan(patientData) {
     console.log("Generating plan for:", patientData);
 
-    // MEDICAL HISTORY
+    // Check if Worker URL is configured
+    if (typeof CONFIG === 'undefined' || !CONFIG.WORKER_URL) {
+        throw new Error("Backend not configured. Please deploy the Cloudflare Worker and add the URL to config.js");
+    }
+
+    // Build the prompt
     const conditions = [];
     if (patientData.condition_diabetes) conditions.push("Diabetes");
     if (patientData.condition_bp) conditions.push("High Blood Pressure");
@@ -86,82 +83,29 @@ async function generateRecoveryPlan(patientData) {
       "recoveryTimeline": { "week1": "...", "week2_3": "...", "longTerm": "..." }
     }`;
 
-    let aiResponseText = null;
+    // Call the secure backend proxy
+    console.log("Calling Worker Proxy:", CONFIG.WORKER_URL);
 
-    // --- CHOICE 1: YOUR CUSTOM OPENAI KEY ---
-    try {
-        const key = ApiManager.getKey('openai');
-        if (key && (key.startsWith('sk-') || key.length > 10)) {
-            const baseUrl = (typeof CONFIG !== 'undefined' && CONFIG.OPENAI_BASE_URL)
-                ? CONFIG.OPENAI_BASE_URL
-                : "https://api.openai.com/v1";
-
-            const apiUrl = baseUrl.endsWith('/') ? `${baseUrl}chat/completions` : `${baseUrl}/chat/completions`;
-            console.log(`Using Custom API Key via ${apiUrl}`);
-
-            const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ model: "gpt-3.5-turbo", messages: [{ role: "user", content: prompt }], temperature: 0.7 })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                aiResponseText = data.choices[0].message.content;
-            }
-        }
-    } catch (err) { console.warn("OpenAI Key Failed:", err); }
-
-    // --- CHOICE 2: PUTER JAVASCRIPT API (Free + High Quality) ---
-    // The user trusts this method. It is the Primary Free Option.
-    if (!aiResponseText) {
-        try {
-            console.log("Attempting Puter JS API...");
-            await ensurePuterLoaded();
-
-            if (typeof puter !== 'undefined' && puter.ai) {
-                // DIRECT CALL (No wrapper, just pure Puter)
-                const response = await puter.ai.chat(prompt);
-                // Handle object vs string response
-                aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
-            } else {
-                throw new Error("Puter Object Missing");
-            }
-        } catch (err) {
-            // CRITICAL VERBOSE ERROR:
-            // If this fails, we want to know WHY (Login? Network?)
-            console.error("Puter Error:", err);
-            // We ALERT the user so they can diagnose the specific block
-            alert("AI Engine Error (Puter): " + err.message + "\n\nIf you see 'Sign In', please sign in to Puter to enable AI.");
-        }
-    }
-
-    // --- PARSE & FINALIZE ---
-    if (aiResponseText) {
-        try {
-            const plan = processAIResponse(aiResponseText);
-            return enrichWithSmartLinks(plan);
-        } catch (e) {
-            console.error("AI Parse Error:", e);
-            throw new Error("Received invalid data from AI. Please retry.");
-        }
-    }
-
-    // --- STRICT FAILURE (No Offline) ---
-    throw new Error("Connectivity Issue. AI could not generate response.");
-}
-
-// Helper: Lazy Load Puter (Only if needed)
-async function ensurePuterLoaded() {
-    if (typeof puter !== 'undefined') return;
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://js.puter.com/v2/';
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error("Failed to load Puter script (Check AdBlock/Network)"));
-        document.head.appendChild(script);
-        setTimeout(() => reject(new Error("Puter Load Timeout")), 10000);
+    const response = await fetch(CONFIG.WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
     });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Backend Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.success || !data.response) {
+        throw new Error(data.error || "Invalid response from backend");
+    }
+
+    // Parse AI response
+    const plan = processAIResponse(data.response);
+    return enrichWithSmartLinks(plan);
 }
 
 // --- ENRICHMENT LOGIC ---
