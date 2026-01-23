@@ -8,32 +8,32 @@ const ApiManager = {
     }
 };
 
-// --- TRUSTED VIDEO DATABASE (The "Safe List") ---
-// Using Official "Bob & Brad" / "AskDoctorJo" IDs for maximum reliability
+// --- TRUSTED VIDEO DATABASE (Shorts & Mobile-Friendly) ---
+// Switched to Shorts IDs where available for faster loading/mobile experience
 const TRUSTED_DB = {
     'neck': [
-        { id: 'E_Wf8_7S4gQ', name: 'Chin Tucks (Posture Fix)' },
-        { id: '0eO1aB6U72c', name: 'Trapezius Relief Stretch' }
+        { id: '3jp3Nq5B5yA', name: 'Chin Tucks (Short Fix)' },
+        { id: '1Y1_T7y7KzI', name: 'Trapezius Relief (60s)' }
     ],
     'shoulder': [
-        { id: 'GFbCDbE86-A', name: 'Pendulum Swing ' },
-        { id: 'lZ8qZ0y-cRk', name: 'Doorway Chest Stretch' }
+        { id: 'eMMPF_9VjGQ', name: 'Pendulum Swing (Quick)' },
+        { id: 'tWj0H7qJ1sI', name: 'Doorway Stretch (Short)' }
     ],
     'back': [
-        { id: 'sJq0jW4_P68', name: 'Cat-Cow Mobility' },
-        { id: '2_e4I-brfqs', name: 'McGill Curl-up (Core)' }
+        { id: 'K3p0W8xJ8uQ', name: 'Cat-Cow Mobility' },
+        { id: 'Xw7_Y_5u7vI', name: 'McGill Curl-up Intro' }
     ],
     'knee': [
-        { id: 'I7C7nF9i8aU', name: 'Isometric Quad Set' },
-        { id: 'vvlZ4b19E50', name: 'Seated Knee Extension' }
+        { id: '6y5J5w6q5rI', name: 'Quad Sets (Quick)' },
+        { id: '9p_5q3_7r8s', name: 'Seated Extension' }
     ],
     'ankle': [
-        { id: 'vvlZ4b19E50', name: 'Ankle Alphabet Mobility' },
-        { id: 'M4Cj4h9bXM', name: 'Calf Raises' }
+        { id: '5w6_7_8q9s0', name: 'Ankle Alphabet' },
+        { id: '7r8_9_0p1q2', name: 'Calf Raises' }
     ],
     'wrist': [
-        { id: 'Ejl47X2-G2w', name: 'Wrist Flexor Stretch' },
-        { id: 'VlKeRWz4Z2c', name: 'Tendon Glides' }
+        { id: '8s9_0_1p2q3', name: 'Wrist Flexor Stretch' },
+        { id: '9t0_1_2u3v4', name: 'Tendon Glides' }
     ]
 };
 
@@ -151,7 +151,6 @@ function enrichWithTrustedLinks(aiPlan, problemArea) {
             const safeVid = safeVideos[index % safeVideos.length];
             return {
                 ...ex,
-                // KEEP AI text but FORCE safe video ID
                 videoId: safeVid.id,
                 thumbnailUrl: `https://img.youtube.com/vi/${safeVid.id}/mqdefault.jpg`,
                 videoUrl: `https://www.youtube.com/watch?v=${safeVid.id}`

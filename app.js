@@ -51,7 +51,7 @@ function renderResults(plan, userData) {
                 <div class="exercise-thumb" style="background-image: url('${thumbUrl}');">
                     <div class="play-overlay">
                         <div class="play-btn">▶</div>
-                        <span>Watch Video</span>
+                        <span>Watch Short 📱</span>
                     </div>
                 </div>
             </a>
