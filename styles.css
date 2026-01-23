@@ -228,11 +228,9 @@ body {
     font-size: 1rem;
 }
 
-/* Active State (Float to top) */
+/* Active State (Float to top) - UNIFORM LOGIC */
 .input-field:focus~label,
-.input-field:not(:placeholder-shown)~label,
-.input-field:valid~label {
-    /* Ensures Selects float */
+.input-field:not(:placeholder-shown)~label {
     top: 8px;
     font-size: 0.75rem;
     color: var(--primary);
