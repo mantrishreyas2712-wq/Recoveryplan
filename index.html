@@ -3,31 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhysioAssist - AI-Powered Recovery Plans</title>
-    <meta name="description"
-        content="Get personalized physiotherapy recovery plans with AI-powered analysis. Includes exercises, diet recommendations, and expert consultation guidance.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PhysioAssist - AI Recovery</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
 </head>
 
 <body>
-    <!-- API Key Modal -->
-    <div id="apiKeyModal" class="modal">
-        <div class="modal-content glass-card">
-            <div class="modal-icon">🔐</div>
-            <h2>Welcome to PhysioAssist</h2>
-            <p>Please enter your Gemini API key to enable AI-powered analysis</p>
-            <div class="form-group">
-                <input type="password" id="apiKeyInput" placeholder="Enter your Gemini API key" class="input-field">
-            </div>
-            <p class="hint">Get your free API key from <a href="https://aistudio.google.com/apikey"
-                    target="_blank">Google AI Studio</a></p>
-            <button id="saveApiKey" class="btn btn-primary">Save & Continue</button>
-        </div>
-    </div>
 
     <!-- Dynamic Background -->
     <div class="dynamic-bg">
@@ -41,9 +24,7 @@
         <!-- Immersive Hero Header -->
         <header class="hero-section">
             <div class="hero-content">
-                <div class="logo-badge">
-                    <span class="logo-icon">🏥</span>
-                </div>
+                <div class="logo-badge"><span class="logo-icon">🏥</span></div>
                 <h1>PhysioAssist</h1>
                 <p>AI-Powered Recovery Intelligence</p>
             </div>
@@ -59,245 +40,144 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Patient Form Section -->
+
+            <!-- WIZARD FORM SECTION -->
             <section id="formSection" class="section active">
                 <div class="glass-panel">
                     <div class="panel-header">
                         <h2>📋 Patient Profile</h2>
-                        <span class="step-indicator">Step 1/3</span>
+                        <span class="step-indicator" id="stepIndicator">Step 1 of 3</span>
                     </div>
 
                     <form id="patientForm" class="compact-form">
-                        <!-- Group 1: Identity -->
-                        <div class="input-group">
-                            <div class="floating-input">
-                                <input type="text" id="name" name="name" required placeholder=" " class="input-field">
-                                <label for="name">Full Name</label>
-                            </div>
 
-                            <div class="row-inputs">
+                        <!-- STEP 1: PERSONAL IDENTITY -->
+                        <div class="form-step active" id="step1">
+                            <div class="input-group">
                                 <div class="floating-input">
-                                    <input type="number" id="age" name="age" required placeholder=" "
+                                    <input type="text" id="name" name="name" required placeholder=" "
                                         class="input-field">
-                                    <label for="age">Age</label>
+                                    <label for="name">Full Name</label>
+                                </div>
+                                <div class="row-inputs">
+                                    <div class="floating-input">
+                                        <input type="number" id="age" name="age" required placeholder=" "
+                                            class="input-field">
+                                        <label for="age">Age</label>
+                                    </div>
+                                    <div class="floating-input">
+                                        <select id="gender" name="gender" required class="input-field">
+                                            <option value="" disabled selected></option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <label for="gender">Gender</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next: Lifestyle
+                                ➔</button>
+                        </div>
+
+                        <!-- STEP 2: LIFESTYLE -->
+                        <div class="form-step hidden" id="step2">
+                            <div class="input-group">
+                                <div class="floating-input">
+                                    <input type="text" id="occupation" name="occupation" placeholder=" "
+                                        class="input-field">
+                                    <label for="occupation">Occupation</label>
                                 </div>
                                 <div class="floating-input">
-                                    <select id="gender" name="gender" required class="input-field">
+                                    <select id="dietPreference" name="dietPreference" required class="input-field">
                                         <option value="" disabled selected></option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
+                                        <option value="veg">Vegetarian</option>
+                                        <option value="non-veg">Non-Vegetarian</option>
+                                        <option value="vegan">Vegan</option>
+                                        <option value="keto">Keto</option>
                                     </select>
-                                    <label for="gender">Gender</label>
+                                    <label for="dietPreference">Diet Type</label>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Group 2: Lifestyle -->
-                        <div class="input-group">
-                            <div class="floating-input">
-                                <input type="text" id="occupation" name="occupation" placeholder=" "
-                                    class="input-field">
-                                <label for="occupation">Occupation / Job Role</label>
-                            </div>
-                            <div class="floating-input">
-                                <select id="dietPreference" name="dietPreference" required class="input-field">
-                                    <option value="" disabled selected></option>
-                                    <option value="veg">Vegetarian</option>
-                                    <option value="non-veg">Non-Vegetarian (High Protein)</option>
-                                    <option value="vegan">Vegan</option>
-                                    <option value="keto">Keto / Low Carb</option>
-                                </select>
-                                <label for="dietPreference">Diet Type</label>
+                            <div class="nav-buttons">
+                                <button type="button" class="btn btn-secondary" onclick="nextStep(1)">Back</button>
+                                <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next: Symptoms
+                                    ➔</button>
                             </div>
                         </div>
 
-                        <!-- Group 3: Clinical Data -->
-                        <div class="clinical-group">
-                            <h3>Tell us about the pain</h3>
-
-                            <div class="floating-input">
-                                <select id="problemArea" name="problemArea" required class="input-field">
-                                    <option value="" disabled selected></option>
-                                    <option value="neck">Neck & Cervical</option>
-                                    <option value="shoulder">Shoulder & Rotator Cuff</option>
-                                    <option value="lower-back">Lower Back (Lumbar)</option>
-                                    <option value="knee">Knee & Ligaments</option>
-                                    <option value="wrist">Wrist & Hand (RSI)</option>
-                                    <option value="ankle">Ankle & Foot</option>
-                                </select>
-                                <label for="problemArea">Affected Area</label>
+                        <!-- STEP 3: SYMPTOMS -->
+                        <div class="form-step hidden" id="step3">
+                            <div class="clinical-group">
+                                <h3>Tell us about the pain</h3>
+                                <div class="floating-input">
+                                    <select id="problemArea" name="problemArea" required class="input-field">
+                                        <option value="" disabled selected></option>
+                                        <option value="neck">Neck & Cervical</option>
+                                        <option value="shoulder">Shoulder</option>
+                                        <option value="back">Back (Upper/Lower)</option>
+                                        <option value="knee">Knee</option>
+                                        <option value="ankle">Ankle & Foot</option>
+                                        <option value="wrist">Wrist & Hand</option>
+                                    </select>
+                                    <label for="problemArea">Affected Area</label>
+                                </div>
+                                <div class="floating-input">
+                                    <textarea id="problemStatement" name="problemStatement" required rows="4"
+                                        placeholder=" " class="input-field textarea"></textarea>
+                                    <label for="problemStatement">Describe symptoms...</label>
+                                </div>
                             </div>
-
-                            <div class="floating-input">
-                                <textarea id="problemStatement" name="problemStatement" required rows="4"
-                                    placeholder=" " class="input-field textarea"></textarea>
-                                <label for="problemStatement">Describe symptoms & duration...</label>
+                            <div class="nav-buttons">
+                                <button type="button" class="btn btn-secondary" onclick="nextStep(2)">Back</button>
+                                <button type="submit" class="btn btn-primary btn-pulse">Generate Plan ⚡</button>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-pulse">
-                            <span class="btn-text">Generate Recovery Plan</span>
-                            <span class="btn-icon">⚡</span>
-                        </button>
                     </form>
                 </div>
             </section>
 
             <!-- Loading Section -->
             <section id="loadingSection" class="section hidden">
-                <div class="loading-container glass-card">
-                    <div class="loading-animation">
-                        <div class="pulse-ring"></div>
-                        <div class="pulse-ring"></div>
-                        <div class="pulse-ring"></div>
-                        <span class="loading-icon">🧠</span>
-                    </div>
-                    <h2>Analyzing Your Condition</h2>
-                    <p class="loading-text">Our AI is carefully reviewing your information to create a personalized
-                        recovery plan...</p>
-                    <div class="loading-steps">
-                        <div class="step active" id="step1">
-                            <span class="step-icon">📊</span>
-                            <span>Analyzing symptoms</span>
-                        </div>
-                        <div class="step" id="step2">
-                            <span class="step-icon">🏋️</span>
-                            <span>Selecting exercises</span>
-                        </div>
-                        <div class="step" id="step3">
-                            <span class="step-icon">🥗</span>
-                            <span>Planning nutrition</span>
-                        </div>
-                        <div class="step" id="step4">
-                            <span class="step-icon">📋</span>
-                            <span>Preparing recommendations</span>
-                        </div>
-                    </div>
+                <div class="loading-container glass-panel">
+                    <div class="pulse-ring"></div>
+                    <h3>Analyzing Symptoms...</h3>
+                    <p>Consulting AI Knowledge Base</p>
                 </div>
             </section>
 
             <!-- Results Section -->
             <section id="resultsSection" class="section hidden">
-                <div class="results-header">
-                    <h2>🎯 Your Personalized Recovery Plan</h2>
-                    <p>Prepared for <span id="patientNameDisplay"></span></p>
-
-                    <!-- Dr. Vanshika Contact Header -->
-                    <div class="contact-card glass-card-inner"
-                        style="margin-top: 1rem; margin-bottom: 1.5rem; background: rgba(var(--primary-rgb), 0.1); border: 1px solid rgba(var(--primary-rgb), 0.2); padding: 1rem;">
-                        <div
-                            style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <span style="font-size: 2.5rem;">👩‍⚕️</span>
-                                <div>
-                                    <h4 style="margin: 0; color: var(--primary);">Dr. Vanshika</h4>
-                                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Senior Physiotherapist</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <p
-                                    style="margin: 0; font-size: 0.9rem; font-style: italic; display: none; @media(min-width: 768px){display: block;}">
-                                    "Your recovery is my priority."</p>
-                                <a href="tel:+919993521601" class="btn btn-primary"
-                                    style="padding: 0.5rem 1rem; font-size: 0.9rem;">
-                                    📞 Call +91 99935 21601
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="results-actions">
-                        <button id="printPlan" class="btn btn-secondary">
-                            <span>🖨️</span> Print Plan
-                        </button>
-                        <button id="newAssessment" class="btn btn-outline">
-                            <span>🔄</span> New Assessment
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Condition Analysis -->
-                <div class="result-card glass-card" id="analysisCard">
-                    <div class="card-header">
-                        <span class="card-icon">🔍</span>
-                        <h3>Condition Analysis</h3>
-                    </div>
-                    <div class="card-content" id="analysisContent">
-                        <!-- Dynamic content -->
-                    </div>
-                </div>
-
-                <!-- Exercise Plan -->
-                <div class="result-card glass-card" id="exerciseCard">
-                    <div class="card-header">
-                        <span class="card-icon">🏋️</span>
-                        <h3>Exercise Plan</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="exercises-grid" id="exercisesGrid">
-                            <!-- Dynamic exercise cards -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Diet Recommendations -->
-                <div class="result-card glass-card" id="dietCard">
-                    <div class="card-header">
-                        <span class="card-icon">🥗</span>
-                        <h3>Diet & Nutrition</h3>
-                    </div>
-                    <div class="card-content" id="dietContent">
-                        <!-- Dynamic content -->
-                    </div>
-                </div>
-
-                <!-- Consultation Notes -->
-                <div class="result-card glass-card" id="consultationCard">
-                    <div class="card-header">
-                        <span class="card-icon">👨‍⚕️</span>
-                        <h3>Professional Consultation</h3>
-                    </div>
-                    <div class="card-content" id="consultationContent">
-                        <!-- Dynamic content -->
-                    </div>
-                </div>
-
-                <!-- Recovery Timeline -->
-                <div class="result-card glass-card" id="timelineCard">
-                    <div class="card-header">
-                        <span class="card-icon">📅</span>
-                        <h3>Recovery Timeline</h3>
-                    </div>
-                    <div class="card-content" id="timelineContent">
-                        <!-- Dynamic content -->
-                    </div>
-                </div>
-
-                <!-- Disclaimer -->
-                <div class="disclaimer">
-                    <p><strong>⚠️ Important Disclaimer:</strong> This plan is generated by AI for informational purposes
-                        only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always
-                        consult with a qualified healthcare provider before starting any exercise or diet program. If
-                        you experience severe pain, numbness, or any concerning symptoms, seek immediate medical
-                        attention.</p>
-                </div>
+                <!-- Injected via JavaScript -->
             </section>
-        </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>© 2026 PhysioAssist | AI-Powered Physiotherapy Solutions</p>
-            <p class="footer-note">Powered by Google Gemini AI</p>
-        </footer>
+        </main>
     </div>
 
     <!-- Scripts -->
     <script src="config.js"></script>
-    <script src="exercises.js"></script>
-    <script src="diet.js"></script>
     <script src="gemini.js"></script>
     <script src="app.js"></script>
+
+    <!-- Wizard Logic Script -->
+    <script>
+        function nextStep(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.form-step').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+
+            // Show target step
+            const target = document.getElementById('step' + stepNumber);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('active');
+
+                // Update indicator
+                document.getElementById('stepIndicator').innerText = `Step ${stepNumber} of 3`;
+            }
+        }
+    </script>
 </body>
 
 </html>

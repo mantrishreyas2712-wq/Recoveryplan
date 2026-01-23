@@ -192,7 +192,8 @@ function getFallbackPlan(data) {
             "overview": "Focus on unloading the injured tissue followed by progressive loading.",
             "selectedExercises": selectedPlan.exercises.map(ex => ({
                 ...ex,
-                // App.js logic handles videoUrl, so we format it standard:
+                // NEW STRATEGY: Thumbnails + Direct Links (Bypasses Embed Blocking)
+                thumbnailUrl: `https://img.youtube.com/vi/${ex.videoId}/mqdefault.jpg`,
                 videoUrl: `https://www.youtube.com/watch?v=${ex.videoId}`
             }))
         },
