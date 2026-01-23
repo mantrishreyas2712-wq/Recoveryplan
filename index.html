@@ -106,7 +106,7 @@
                             </div>
                         </div>
 
-                        <!-- STEP 3: SYMPTOMS -->
+                        <!-- STEP 3: SYMPTOMS (With Pain Scale) -->
                         <div class="form-step hidden" id="step3">
                             <div class="clinical-group">
                                 <h3>Tell us about the pain</h3>
@@ -122,10 +122,25 @@
                                     </select>
                                     <label for="problemArea">Affected Area</label>
                                 </div>
+
                                 <div class="floating-input">
                                     <textarea id="problemStatement" name="problemStatement" required rows="4"
                                         placeholder=" " class="input-field textarea"></textarea>
                                     <label for="problemStatement">Describe symptoms...</label>
+                                </div>
+
+                                <!-- PAIN SCALE ADDED HERE -->
+                                <div class="pain-scale-container">
+                                    <label class="pain-label">Pain Level: <span id="painValueDisplay"
+                                            style="color:var(--accent); font-weight:800;">5</span>/10</label>
+                                    <input type="range" id="painLevel" name="painLevel" min="1" max="10" value="5"
+                                        class="pain-slider"
+                                        oninput="document.getElementById('painValueDisplay').innerText = this.value">
+                                    <div class="pain-markers">
+                                        <span>🙂 Mild</span>
+                                        <span>😐 Moderate</span>
+                                        <span>😫 Severe</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="nav-buttons">

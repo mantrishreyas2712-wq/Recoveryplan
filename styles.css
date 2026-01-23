@@ -238,6 +238,58 @@ body {
     padding-top: 1.5rem;
 }
 
+/* --- Pain Slider Styles --- */
+.pain-scale-container {
+    margin-top: 1.5rem;
+    background: #FFF1F2;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #FECDD3;
+}
+
+.pain-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: #9F1239;
+    font-size: 0.9rem;
+}
+
+.pain-slider {
+    width: 100%;
+    height: 6px;
+    background: #fb7185;
+    border-radius: 5px;
+    outline: none;
+    -webkit-appearance: none;
+    margin: 10px 0;
+}
+
+.pain-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #F43F5E;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: 0.2s;
+}
+
+.pain-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.pain-markers {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #881337;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
 /* Buttons */
 .nav-buttons {
     display: flex;
@@ -276,7 +328,7 @@ body {
     transform: scale(0.98);
 }
 
-/* --- Loading --- */
+/* --- Loading & Results, same as before --- */
 .hidden {
     display: none !important;
 }
@@ -307,7 +359,6 @@ body {
     }
 }
 
-/* --- RESULTS GRID --- */
 .results-header {
     background: white;
     padding: 1.5rem;
@@ -350,7 +401,6 @@ body {
     border-bottom: 2px solid #E2E8F0;
 }
 
-/* Exercise Cards (Thumbnail Style) */
 .exercise-card {
     background: white;
     border-radius: 16px;
@@ -359,10 +409,6 @@ body {
     box-shadow: var(--card-shadow);
     border: 1px solid #E2E8F0;
     transition: transform 0.2s;
-}
-
-.exercise-card:hover {
-    transform: translateY(-3px);
 }
 
 .exercise-thumb {
@@ -461,7 +507,6 @@ body {
     border-radius: 8px;
 }
 
-/* Guideline Cards */
 .guideline-card {
     background: white;
     padding: 1.5rem;
@@ -472,18 +517,14 @@ body {
 
 .guideline-card h3 {
     font-size: 1rem;
-    margin-bottom: 1rem;
     color: var(--primary-dark);
+    margin-bottom: 1rem;
 }
 
 .food-list {
     padding-left: 1.25rem;
     margin-bottom: 1rem;
     color: #475569;
-}
-
-.food-list li {
-    margin-bottom: 0.5rem;
 }
 
 .hydration-box {
