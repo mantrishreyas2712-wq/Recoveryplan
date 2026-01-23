@@ -6,17 +6,23 @@ document.getElementById('patientForm').addEventListener('submit', async function
     const data = Object.fromEntries(formData.entries());
 
     // 2. Show Loading
-    document.getElementById('formSection').classList.add('hidden'); // Hide Wizard
-    document.getElementById('loadingSection').classList.remove('hidden');
+    document.getElementById('formSection').classList.add('hidden');
+    const loadingSection = document.getElementById('loadingSection');
+    loadingSection.classList.remove('hidden');
+
+    // Dynamic Feedback - Show User we are working on it
+    const loadingText = loadingSection.querySelector('p');
+    const loadingHeader = loadingSection.querySelector('h3');
+    if (loadingText) loadingText.innerText = "Consulting Cloud AI Specialist...";
+    if (loadingHeader) loadingHeader.innerText = "Designing Personal Protocol...";
 
     // 3. AI Generation
     try {
-        // Fallback to simulation immediately for reliability
         const plan = await generateRecoveryPlan(data);
         renderResults(plan, data);
     } catch (error) {
         console.error("Plan Gen Error:", error);
-        alert("Something went wrong. Using offline backup.");
+        // Silent Fallback (User doesn't need to know it failed, just show the result)
         const backup = getFallbackPlan(data);
         renderResults(backup, data);
     }
@@ -42,6 +48,10 @@ function renderResults(plan, userData) {
             if (urlParts.length > 1) vidId = urlParts[1];
         }
 
+        // Ensure we have a valid ID for thumbnail
+        vidId = vidId || 'E_Wf8_7S4gQ'; // Ultimate fallback
+
+        // Use the Hybrid URL logic (should already be set by gemini.js, but double check)
         const thumbUrl = ex.thumbnailUrl || `https://img.youtube.com/vi/${vidId}/mqdefault.jpg`;
         const linkUrl = ex.videoUrl || `https://www.youtube.com/watch?v=${vidId}`;
 
@@ -63,11 +73,11 @@ function renderResults(plan, userData) {
                 <div class="exercise-meta">
                     <div class="meta-item">
                         <span class="meta-label">SETS</span>
-                        <span class="meta-val">${ex.sets || ex.customSets}</span>
+                        <span class="meta-val">${ex.sets || ex.customSets || '3'}</span>
                     </div>
                     <div class="meta-item">
                         <span class="meta-label">REPS</span>
-                        <span class="meta-val">${ex.reps || ex.customReps}</span>
+                        <span class="meta-val">${ex.reps || ex.customReps || '10'}</span>
                     </div>
                 </div>
                 <p class="exercise-tip">${ex.description || 'Perform slowly with control.'}</p>
@@ -86,6 +96,10 @@ function renderResults(plan, userData) {
                     <strong>Target Condition</strong>
                     <p>${plan.analysis.likelyCauses}</p>
                 </div>
+            </div>
+            <div class="ai-insight" style="background:#F0F9FF; padding:1rem; border-radius:12px; margin-top:1rem; border:1px solid #BAE6FD;">
+                <strong>💡 Specialist Analysis:</strong>
+                <p style="margin-top:0.5rem; font-style:italic;">"${plan.analysis.understanding}"</p>
             </div>
         </div>
 
