@@ -216,6 +216,24 @@
 
     <!-- Wizard Logic Script -->
     <script>
+        // Floating Label Logic (Consistent across inputs/selects)
+        function initFloatingLabels() {
+            document.querySelectorAll('.input-field').forEach(input => {
+                const update = () => {
+                    if (input.value && input.value.trim() !== '') {
+                        input.classList.add('has-content');
+                    } else {
+                        input.classList.remove('has-content');
+                    }
+                };
+                input.addEventListener('input', update);
+                input.addEventListener('change', update);
+                input.addEventListener('blur', update);
+                setTimeout(update, 100); // Check on load/autofill
+            });
+        }
+        document.addEventListener('DOMContentLoaded', initFloatingLabels);
+
         function nextStep(stepNumber) {
             // Hide all steps
             document.querySelectorAll('.form-step').forEach(el => el.classList.add('hidden'));

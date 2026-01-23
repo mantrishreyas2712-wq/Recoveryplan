@@ -228,9 +228,9 @@ body {
     font-size: 1rem;
 }
 
-/* Active State (Float to top) - UNIFORM LOGIC */
+/* Active State (Float to top) - JS Driven for Consistency */
 .input-field:focus~label,
-.input-field:not(:placeholder-shown)~label {
+.input-field.has-content~label {
     top: 8px;
     font-size: 0.75rem;
     color: var(--primary);
