@@ -45,14 +45,14 @@ document.getElementById('patientForm').addEventListener('submit', async function
         }
     }, 2500);
 
-    // 3. AI Generation with Safety Timeout (30s Max for Detailed Puter Analysis)
+    // 3. AI Generation with Safety Timeout (30s Max for Detailed Analysis)
     const TIMEOUT_MS = 30000;
     const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("AI_TIMEOUT")), TIMEOUT_MS)
     );
 
     try {
-        // Race: AI Generation vs 12s Timer
+        // Race: AI Generation vs 30s Timer
         // This prevents the "Stuck Loading" issue on mobile
         const plan = await Promise.race([
             generateRecoveryPlan(data),
@@ -67,9 +67,6 @@ document.getElementById('patientForm').addEventListener('submit', async function
 
         // STRICT MODE: No Fake/Offline Plans.
         // Show Error to User so they can Retry.
-        const loadingHeader = document.getElementById('loadingSection').querySelector('h3');
-        const loadingIcon = document.getElementById('loadingSection').querySelector('.pulse-icon');
-
         if (loadingHeader) {
             loadingHeader.innerText = "Connection Failed. Please Retry.";
             loadingHeader.style.color = "#dc2626"; // Red
@@ -79,11 +76,15 @@ document.getElementById('patientForm').addEventListener('submit', async function
             loadingIcon.style.animation = "none";
         }
 
-        // Auto-hide loading after 3s to let user click button again
+        // Auto-hide loading after 6s (Safe Retry Time - Increased for Mobile Readability)
         setTimeout(() => {
             document.getElementById('loadingSection').classList.add('hidden');
             document.getElementById('formSection').classList.remove('hidden');
-        }, 3000);
+
+            // Reset UI styles for next try
+            if (loadingHeader) loadingHeader.style.color = "";
+            if (loadingIcon) loadingIcon.style.animation = "";
+        }, 6000);
     }
 });
 

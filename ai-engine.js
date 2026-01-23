@@ -98,7 +98,6 @@ async function generateRecoveryPlan(patientData) {
                 : "https://api.openai.com/v1";
 
             const apiUrl = baseUrl.endsWith('/') ? `${baseUrl}chat/completions` : `${baseUrl}/chat/completions`;
-
             console.log(`Using Custom API Key via ${apiUrl}`);
 
             const response = await fetch(apiUrl, {
@@ -114,12 +113,10 @@ async function generateRecoveryPlan(patientData) {
         }
     } catch (err) { console.warn("OpenAI Key Failed:", err); }
 
-    // --- ENGINE 2: POLLINATIONS OPENAI PROXY (Primary Free, Unlimited, POST) ---
-    // Why this works: OpenAI-compatible format creates a "Chat" context, allowing LONG prompts via POST.
+    // --- ENGINE 2: POLLINATIONS OPENAI PROXY (Primary Free - Nice JSON) ---
     if (!aiResponseText) {
         try {
             console.log("Attempting Pollinations (OpenAI Proxy Mode)...");
-
             const pollUrl = 'https://text.pollinations.ai/openai/chat/completions';
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 40000); // 40s Safety
@@ -128,7 +125,7 @@ async function generateRecoveryPlan(patientData) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    model: 'gpt-4o-mini', // Requesting high quality
+                    model: 'gpt-4o-mini',
                     messages: [{ role: 'user', content: prompt }]
                 }),
                 signal: controller.signal
@@ -138,13 +135,40 @@ async function generateRecoveryPlan(patientData) {
             if (response.ok) {
                 const data = await response.json();
                 aiResponseText = data.choices[0].message.content;
+            } else {
+                throw new Error("Proxy Status: " + response.status);
             }
         } catch (err) {
             console.warn("Pollinations Proxy Failed:", err);
         }
     }
 
-    // --- ENGINE 3: PUTER (Backup Free Engine) ---
+    // --- ENGINE 3: POLLINATIONS RAW TEXT (Robust Backup) ---
+    // If the Proxy wrapper fails (500/429), the Raw endpoint often still works.
+    if (!aiResponseText) {
+        try {
+            console.log("Attempting Pollinations (Raw Text Backup)...");
+            const rawUrl = 'https://text.pollinations.ai/';
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 40000);
+
+            const response = await fetch(rawUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: prompt, // Send raw body
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                aiResponseText = await response.text();
+            }
+        } catch (err) {
+            console.warn("Pollinations Raw Failed:", err);
+        }
+    }
+
+    // --- ENGINE 4: PUTER (Backup Free Engine) ---
     if (!aiResponseText) {
         try {
             console.log("Loading Puter as Backup...");
