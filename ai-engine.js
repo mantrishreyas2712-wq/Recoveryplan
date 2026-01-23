@@ -192,12 +192,14 @@ async function generateRecoveryPlan(patientData) {
             return enrichWithSmartLinks(plan);
         } catch (e) {
             console.error("Parsing Error:", e);
+            throw new Error("AI data was corrupted. Please retry.");
         }
     }
 
-    // Default: Offline Clinical Protocol (Fallback)
-    console.warn("Using Offline Clinical Protocol (Fallback)");
-    return getFallbackPlan(patientData);
+    // Default: STRICT MODE - NO FALLBACK
+    // User requested to DELETE offline method.
+    // If we reach here, all AI engines failed.
+    throw new Error("Unable to connect to AI Expert. Please check internet and Retry.");
 }
 
 // Helper: Lazy Load Puter to avoid "Login Redirect" on page load
@@ -305,59 +307,4 @@ function processAIResponse(text) {
     return JSON.parse(cleanText);
 }
 
-function getFallbackPlan(data) {
-    const area = (data.problemArea || 'neck').toLowerCase();
-
-    // Fallback names match the Library Keys to ensure they get Real IDs
-    const DB_NAMES = {
-        'neck': ['Chin Tucks', 'Upper Trap Stretch'],
-        'shoulder': ['Pendulum Swing', 'Doorway Stretch'],
-        'back': ['Cat Cow', 'McGill Curl Up'],
-        'knee': ['Quad Set', 'Straight Leg Raise'],
-        'ankle': ['Ankle Alphabet', 'Calf Raise'],
-        'wrist': ['Wrist Flexor', 'Tendon Glide']
-    };
-
-    let selectedKey = 'neck';
-    if (area.includes('back')) selectedKey = 'back';
-    else if (area.includes('knee')) selectedKey = 'knee';
-    else if (area.includes('shoulder')) selectedKey = 'shoulder';
-    else if (area.includes('wrist')) selectedKey = 'wrist';
-    else if (area.includes('ankle')) selectedKey = 'ankle';
-
-    const exercises = DB_NAMES[selectedKey].map(name => {
-        return {
-            name: name,
-            sets: '3',
-            reps: '10-15 reps',
-            difficulty: 'Moderate',
-            description: 'Perform safely with control.'
-        };
-    });
-
-    // Run fallback through Enricher to get Links/Thumbs
-    const fallbackPlan = {
-        "analysis": {
-            "understanding": `Hello ${data.name}. Based on your report of ${area} pain, we have designed a specialized mobility and strengthening protocol.`,
-            "likelyCauses": "Mechanical stress or posture.",
-            "severity": "Moderate",
-            "prognosis": "Favorable with consistency."
-        },
-        "exercisePlan": { "overview": "Standard Protocol.", "selectedExercises": exercises },
-        "dietRecommendations": {
-            "overview": "Anti-inflammatory Focus.",
-            "keyFoods": ["Leafy Greens", "Berries", "Lean Protein"],
-            "hydration": "3L daily",
-            "foodsToAvoid": ["Processed Sugar"]
-        },
-        "consultation": {
-            "urgency": "Routine",
-            "specialists": ["Physio"],
-            "redFlags": ["Numbness"],
-            "followUp": "1 Week"
-        },
-        "recoveryTimeline": { "week1": "Pain Relief", "week2_3": "Mobility Restoration", "longTerm": "Strength Building" }
-    };
-
-    return enrichWithSmartLinks(fallbackPlan);
-}
+// NOTE: Offline Fallback has been DELETED to ensure only Real AI Analysis is provided.

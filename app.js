@@ -62,11 +62,28 @@ document.getElementById('patientForm').addEventListener('submit', async function
         clearInterval(intervalId); // Stop animation
         renderResults(plan, data);
     } catch (error) {
-        console.warn("Plan Gen Error/Timeout. Using Backup.", error);
+        console.warn("AI Generation Failed:", error);
         clearInterval(intervalId);
-        // Instant Fallback on Error or Timeout
-        const backup = getFallbackPlan(data);
-        renderResults(backup, data);
+
+        // STRICT MODE: No Fake/Offline Plans.
+        // Show Error to User so they can Retry.
+        const loadingHeader = document.getElementById('loadingSection').querySelector('h3');
+        const loadingIcon = document.getElementById('loadingSection').querySelector('.pulse-icon');
+
+        if (loadingHeader) {
+            loadingHeader.innerText = "Connection Failed. Please Retry.";
+            loadingHeader.style.color = "#dc2626"; // Red
+        }
+        if (loadingIcon) {
+            loadingIcon.innerText = "⚠️";
+            loadingIcon.style.animation = "none";
+        }
+
+        // Auto-hide loading after 3s to let user click button again
+        setTimeout(() => {
+            document.getElementById('loadingSection').classList.add('hidden');
+            document.getElementById('formSection').classList.remove('hidden');
+        }, 3000);
     }
 });
 
