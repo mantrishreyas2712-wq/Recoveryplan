@@ -5,23 +5,54 @@ document.getElementById('patientForm').addEventListener('submit', async function
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
-    // 2. Show Loading
+    // 2. Show Loading & Start Animation
     document.getElementById('formSection').classList.add('hidden');
     const loadingSection = document.getElementById('loadingSection');
     loadingSection.classList.remove('hidden');
 
-    // Dynamic Feedback
-    const loadingText = loadingSection.querySelector('p');
+    // Start "Flash Summary" Animation
+    let stepIndex = 0;
+    const steps = [
+        { text: "Analyzing Symptoms...", icon: "🩺" },
+        { text: "Consulting Specialist AI...", icon: "🤖" },
+        { text: "Building Diet Plan...", icon: "🥗" },
+        { text: "Selecting Best Exercises...", icon: "🏃" },
+        { text: "Finalizing Protocol...", icon: "✅" }
+    ];
+
     const loadingHeader = loadingSection.querySelector('h3');
-    if (loadingText) loadingText.innerText = "Consulting Cloud AI Specialist...";
-    if (loadingHeader) loadingHeader.innerText = "Designing Personal Protocol...";
+    const loadingIcon = loadingSection.querySelector('.pulse-icon');
+
+    // Initial State
+    if (loadingHeader) loadingHeader.innerText = steps[0].text;
+    if (loadingIcon) loadingIcon.innerText = steps[0].icon;
+
+    // Cycle Animation
+    const intervalId = setInterval(() => {
+        stepIndex = (stepIndex + 1) % steps.length;
+        if (loadingHeader) {
+            loadingHeader.style.opacity = '0'; // Fade out
+            if (loadingIcon) loadingIcon.style.transform = 'scale(0.5)';
+
+            setTimeout(() => {
+                loadingHeader.innerText = steps[stepIndex].text;
+                if (loadingIcon) {
+                    loadingIcon.innerText = steps[stepIndex].icon;
+                    loadingIcon.style.transform = 'scale(1)';
+                }
+                loadingHeader.style.opacity = '1'; // Fade in
+            }, 300);
+        }
+    }, 2500);
 
     // 3. AI Generation
     try {
         const plan = await generateRecoveryPlan(data);
+        clearInterval(intervalId); // Stop animation
         renderResults(plan, data);
     } catch (error) {
         console.error("Plan Gen Error:", error);
+        clearInterval(intervalId);
         const backup = getFallbackPlan(data);
         renderResults(backup, data);
     }
@@ -40,12 +71,10 @@ function renderResults(plan, userData) {
 
     // Generate Exercises (Smart Hybrid Buttons)
     const exerciseCards = plan.exercisePlan.selectedExercises.map((ex, index) => {
-        // Use AI Engine's pre-calculated links
         const linkUrl = ex.videoUrl;
         const thumbUrl = ex.thumbnailUrl;
 
-        // Button Text based on Type (set by ai-engine.js)
-        // Default to 'search' style if type is missing
+        // Button Logic
         const isDirect = ex.type === 'direct';
         const btnIcon = isDirect ? '▶' : '🔎';
         const btnText = isDirect ? 'Watch Now' : 'Find Video';

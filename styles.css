@@ -375,7 +375,7 @@ body {
     transform: scale(0.98);
 }
 
-/* --- Loading & Results, same as before --- */
+/* --- Loading Animation --- */
 .hidden {
     display: none !important;
 }
@@ -385,26 +385,42 @@ body {
     padding: 4rem 2rem;
 }
 
-.pulse-ring {
-    width: 60px;
-    height: 60px;
-    border: 4px solid var(--primary);
-    border-radius: 50%;
-    margin: 0 auto 1.5rem;
-    animation: ringPulse 1.5s infinite;
+/* The Pulse Icon (Replaces Ring) */
+.pulse-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: heartbeat 1.5s infinite;
 }
 
-@keyframes ringPulse {
+@keyframes heartbeat {
     0% {
-        transform: scale(0.8);
-        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
     }
 
     100% {
-        transform: scale(1.5);
-        opacity: 0;
+        transform: scale(1);
     }
 }
+
+/* Fading Text */
+#loadingSection h3 {
+    transition: opacity 0.3s ease;
+    color: var(--primary-dark);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+#loadingSection p {
+    color: #64748B;
+    font-size: 0.9rem;
+}
+
 
 .results-header {
     background: white;

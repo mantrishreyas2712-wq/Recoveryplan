@@ -149,7 +149,6 @@ async function generateRecoveryPlan(patientData) {
     if (aiResponseText) {
         try {
             const plan = processAIResponse(aiResponseText);
-            // APPLY SAFE HYBRID STRATEGY
             return enrichWithSmartLinks(plan);
         } catch (e) { console.error(e); }
     }
@@ -157,30 +156,44 @@ async function generateRecoveryPlan(patientData) {
     return getFallbackPlan(patientData);
 }
 
+// --- STOCK THUMBNAIL GALLERY ---
+const STOCK_IMAGES = [
+    'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80', // Gym Guy
+    'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80', // Stretching Woman
+    'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=600&q=80', // Home Workout
+    'https://images.unsplash.com/photo-1544367563-12123d8959bd?w=600&q=80', // Yoga Pose
+    'https://images.unsplash.com/photo-1594381898411-846e7d193883?w=600&q=80', // Dumbbells
+    'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80'  // Plank
+];
+
+function getStockThumbnail(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % STOCK_IMAGES.length;
+    return STOCK_IMAGES[index];
+}
+
 // --- SMART LINK STRATEGY (SAFE MODE) ---
-// 1. Thumbnails: Use VERIFIED Real Video Thumbnails if matched (Pro Look).
-// 2. Links: ALWAYS use Dynamic Search (Unbreakable Reliability).
 function enrichWithSmartLinks(aiPlan) {
     if (aiPlan.exercisePlan && aiPlan.exercisePlan.selectedExercises) {
         aiPlan.exercisePlan.selectedExercises = aiPlan.exercisePlan.selectedExercises.map((ex) => {
             const verifiedId = findVerifiedVideo(ex.name);
             const query = encodeURIComponent(`${ex.name} exercise physical therapy short`);
 
-            // DEFAULT: Search Link + Generic Thumb
-            let thumbUrl = 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80';
-            // FORCE SEARCH LINK ALWAYS (Fixes "Unavailable" issue)
+            // DEFAULT: Search Link + RANDOM Stock Thumb
+            let thumbUrl = getStockThumbnail(ex.name || 'exercise');
             let videoUrl = `https://www.youtube.com/results?search_query=${query}`;
 
             // MATCH FOUND: Upgrade Thumbnail Only
             if (verifiedId && verifiedId.length > 5 && !verifiedId.includes(' ')) {
-                // Use the REAL thumbnail from the verified video for a pro look
                 thumbUrl = `https://img.youtube.com/vi/${verifiedId}/mqdefault.jpg`;
-                // NOTE: We do NOT use the direct link. We stick to Search.
             }
 
             return {
                 ...ex,
-                type: 'search', // Ensure UI shows "Find Video"
+                type: 'search',
                 thumbnailUrl: thumbUrl,
                 videoUrl: videoUrl
             };
@@ -224,7 +237,7 @@ function getFallbackPlan(data) {
             difficulty: 'Moderate',
             description: 'Perform safely with control.',
             // Real Thumb (if ID exists) + Search Link (Safety)
-            thumbnailUrl: vidId ? `https://img.youtube.com/vi/${vidId}/mqdefault.jpg` : 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80',
+            thumbnailUrl: vidId ? `https://img.youtube.com/vi/${vidId}/mqdefault.jpg` : getStockThumbnail(name),
             videoUrl: `https://www.youtube.com/results?search_query=${query}`
         };
     });
