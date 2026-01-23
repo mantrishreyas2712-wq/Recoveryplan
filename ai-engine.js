@@ -137,17 +137,23 @@ async function generateRecoveryPlan(patientData) {
     } catch (err) { }
 
     // 2. Pollinations.ai (Free, High-Quality, No Auth, Fetch-Based)
-    // Solves the "Puter Login Redirect" issue on mobile while keeping GPT-4 level smarts.
     if (!aiResponseText) {
         try {
             console.log("Attempting Pollinations Free AI...");
             const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(prompt)}`;
-            const response = await fetch(pollUrl);
+
+            // TIMEOUT ENFORCEMENT for Mobile Networks (8s)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+            const response = await fetch(pollUrl, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
             if (response.ok) {
                 aiResponseText = await response.text();
             }
         } catch (err) {
-            console.warn("Pollinations AI Failed:", err);
+            console.warn("Pollinations AI Failed/Timed Out:", err);
         }
     }
 

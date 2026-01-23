@@ -691,3 +691,63 @@ body {
     background: #E68A00;
     transform: scale(1.05);
 }
+/* --- PRINT OPTIMIZATION (PDF Generation) --- */
+@media print {
+    /* Hide UI Elements */
+    .hero-section, 
+    .dynamic-bg, 
+    .business-bar, 
+    .input-group, 
+    .nav-buttons, 
+    .btn,
+    .secondary-actions,
+    .play-overlay,
+    .exercise-video-link {
+        display: none !important;
+    }
+
+    /* Reset Layout for A4 */
+    body {
+        background: white;
+        color: black;
+        font-size: 11pt;
+    }
+
+    .app-container {
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .glass-panel, .exercise-card, .guideline-card, .results-header {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+        margin-bottom: 1rem;
+        background: white !important;
+    }
+
+    .results-header {
+        border-left: 5px solid #0F766E;
+    }
+
+    /* Ensure Grid is Flat */
+    .plan-grid {
+        display: block;
+    }
+
+    .exercise-thumb {
+        height: 120px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .exercise-details p {
+        color: #000;
+    }
+
+    h2, h3, h4 {
+        color: #0F766E;
+    }
+}
