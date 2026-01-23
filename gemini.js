@@ -1,40 +1,9 @@
 const ApiManager = {
     getKey(provider) {
         if (typeof CONFIG === 'undefined') return '';
-        if (provider === 'gemini') return CONFIG.GEMINI_API_KEY;
         if (provider === 'openai') return CONFIG.OPENAI_API_KEY;
-        if (provider === 'huggingface') return CONFIG.HF_API_KEY;
         return '';
     }
-};
-
-// --- TRUSTED VIDEO DATABASE (Shorts & Mobile-Friendly) ---
-// Switched to Shorts IDs where available for faster loading/mobile experience
-const TRUSTED_DB = {
-    'neck': [
-        { id: '3jp3Nq5B5yA', name: 'Chin Tucks (Short Fix)' },
-        { id: '1Y1_T7y7KzI', name: 'Trapezius Relief (60s)' }
-    ],
-    'shoulder': [
-        { id: 'eMMPF_9VjGQ', name: 'Pendulum Swing (Quick)' },
-        { id: 'tWj0H7qJ1sI', name: 'Doorway Stretch (Short)' }
-    ],
-    'back': [
-        { id: 'K3p0W8xJ8uQ', name: 'Cat-Cow Mobility' },
-        { id: 'Xw7_Y_5u7vI', name: 'McGill Curl-up Intro' }
-    ],
-    'knee': [
-        { id: '6y5J5w6q5rI', name: 'Quad Sets (Quick)' },
-        { id: '9p_5q3_7r8s', name: 'Seated Extension' }
-    ],
-    'ankle': [
-        { id: '5w6_7_8q9s0', name: 'Ankle Alphabet' },
-        { id: '7r8_9_0p1q2', name: 'Calf Raises' }
-    ],
-    'wrist': [
-        { id: '8s9_0_1p2q3', name: 'Wrist Flexor Stretch' },
-        { id: '9t0_1_2u3v4', name: 'Tendon Glides' }
-    ]
 };
 
 async function generateRecoveryPlan(patientData) {
@@ -66,7 +35,7 @@ async function generateRecoveryPlan(patientData) {
       },
       "exercisePlan": { 
         "selectedExercises": [ 
-          { "name": "...", "sets": "...", "reps": "...", "videoId": "YOUTUBE_ID_HERE", "difficulty": "...", "description": "..." } 
+          { "name": "...", "sets": "...", "reps": "...", "difficulty": "...", "description": "..." } 
         ] 
       },
       "dietRecommendations": { 
@@ -86,74 +55,53 @@ async function generateRecoveryPlan(patientData) {
 
     let aiResponseText = null;
 
-    // 1. PROVIDER: OPENAI (Primary)
     try {
         const key = ApiManager.getKey('openai');
         if (key && !key.includes('YOUR_')) {
-            console.log("Attempting OpenAI...");
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    model: "gpt-4o-mini",
-                    messages: [{ role: "user", content: prompt }],
-                    temperature: 0.7
-                })
+                body: JSON.stringify({ model: "gpt-4o-mini", messages: [{ role: "user", content: prompt }], temperature: 0.7 })
             });
-            if (!response.ok) throw new Error(`OpenAI Error ${response.status}`);
-            const data = await response.json();
-            aiResponseText = data.choices[0].message.content;
+            if (response.ok) {
+                const data = await response.json();
+                aiResponseText = data.choices[0].message.content;
+            }
         }
-    } catch (err) { console.warn("OpenAI Failed:", err); }
+    } catch (err) { }
 
-    // 2. PROVIDER: PUTER.JS (Free AI)
     if (!aiResponseText) {
         try {
             if (typeof puter !== 'undefined' && puter.ai) {
-                console.log("Attempting Puter.js...");
                 const response = await puter.ai.chat(prompt);
                 aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
             }
-        } catch (err) { console.warn("Puter AI Failed:", err); }
+        } catch (err) { }
     }
 
-    // Process & Hybrid Repair
     if (aiResponseText) {
         try {
             const plan = processAIResponse(aiResponseText);
-            // CRITICAL STEP: Trusted Link Injection
-            return enrichWithTrustedLinks(plan, patientData.problemArea);
-        } catch (e) {
-            console.error("AI Parse Error, reverting to simulation", e);
-        }
+            // APPLY DYNAMIC SEARCH STRATEGY
+            return enrichWithDynamicLinks(plan);
+        } catch (e) { console.error(e); }
     }
 
-    // 3. FALLBACK: SIMULATION
     return getFallbackPlan(patientData);
 }
 
-// Ensure the Plan has VALID video links
-function enrichWithTrustedLinks(aiPlan, problemArea) {
-    const area = (problemArea || 'neck').toLowerCase();
-    let trustedKey = 'neck';
-
-    // Fuzzy match input to DB keys
-    if (area.includes('back')) trustedKey = 'back';
-    else if (area.includes('knee') || area.includes('leg')) trustedKey = 'knee';
-    else if (area.includes('shoulder')) trustedKey = 'shoulder';
-    else if (area.includes('ankle') || area.includes('foot')) trustedKey = 'ankle';
-    else if (area.includes('wrist') || area.includes('hand')) trustedKey = 'wrist';
-
-    const safeVideos = TRUSTED_DB[trustedKey] || TRUSTED_DB['neck'];
-
+// --- DYNAMIC SEARCH STRATEGY ---
+// Instead of guessing IDs, generate a YouTube Search URL for the specific exercise.
+function enrichWithDynamicLinks(aiPlan) {
     if (aiPlan.exercisePlan && aiPlan.exercisePlan.selectedExercises) {
-        aiPlan.exercisePlan.selectedExercises = aiPlan.exercisePlan.selectedExercises.map((ex, index) => {
-            const safeVid = safeVideos[index % safeVideos.length];
+        aiPlan.exercisePlan.selectedExercises = aiPlan.exercisePlan.selectedExercises.map((ex) => {
+            const query = encodeURIComponent(`${ex.name} exercise physical therapy short`);
             return {
                 ...ex,
-                videoId: safeVid.id,
-                thumbnailUrl: `https://img.youtube.com/vi/${safeVid.id}/mqdefault.jpg`,
-                videoUrl: `https://www.youtube.com/watch?v=${safeVid.id}`
+                // Generic Pro Thumbnail
+                thumbnailUrl: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80',
+                // GUARANTEED WORKING LINK: Search Results
+                videoUrl: `https://www.youtube.com/results?search_query=${query}`
             };
         });
     }
@@ -165,10 +113,18 @@ function processAIResponse(text) {
     return JSON.parse(cleanText);
 }
 
-// 4. RICH FALLBACK LOGIC
 function getFallbackPlan(data) {
-    console.log("Engaging Specialist Simulation Engine...");
     const area = (data.problemArea || 'neck').toLowerCase();
+
+    // TEXT-ONLY DATABASE (Links are dynamic)
+    const DB_TEXT = {
+        'neck': [{ name: 'Chin Tucks' }, { name: 'Upper Trapezius Stretch' }],
+        'shoulder': [{ name: 'Pendulum Swing' }, { name: 'Doorway Pec Stretch' }],
+        'back': [{ name: 'Cat-Cow Stretch' }, { name: 'McGill Curl-up' }],
+        'knee': [{ name: 'Quad Sets with Towel' }, { name: 'Seated Knee Extension' }],
+        'ankle': [{ name: 'Ankle Alphabet' }, { name: 'Standing Calf Raises' }],
+        'wrist': [{ name: 'Wrist Flexor Stretch' }, { name: 'Tendon Glides' }]
+    };
 
     let selectedKey = 'neck';
     if (area.includes('back')) selectedKey = 'back';
@@ -177,33 +133,32 @@ function getFallbackPlan(data) {
     else if (area.includes('wrist')) selectedKey = 'wrist';
     else if (area.includes('ankle')) selectedKey = 'ankle';
 
-    const exercises = TRUSTED_DB[selectedKey].map(vid => ({
-        name: vid.name,
-        sets: '3',
-        reps: '12-15 reps',
-        difficulty: 'Moderate',
-        description: 'Perform with control.',
-        videoId: vid.id,
-        thumbnailUrl: `https://img.youtube.com/vi/${vid.id}/mqdefault.jpg`,
-        videoUrl: `https://www.youtube.com/watch?v=${vid.id}`
-    }));
+    const exercises = DB_TEXT[selectedKey].map(ex => {
+        const query = encodeURIComponent(`${ex.name} physical therapy short`);
+        return {
+            name: ex.name,
+            sets: '3',
+            reps: '10-15 reps',
+            difficulty: 'Moderate',
+            description: 'Perform safely. Click "Search Video" to see demonstrations.',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80',
+            videoUrl: `https://www.youtube.com/results?search_query=${query}`
+        };
+    });
 
     return {
         "analysis": {
-            "understanding": `(Offline Mode) Hello ${data.name}. Based on your report of ${data.problemArea} pain...`,
-            "likelyCauses": "Mechanical stress and posture factors.",
+            "understanding": `(Offline Mode) Hello ${data.name}. This protocol targets your ${data.problemArea} symptoms.`,
+            "likelyCauses": "Mechanical stress/posture.",
             "severity": "Moderate",
-            "prognosis": "Good with consistent rehab."
+            "prognosis": "Favorable."
         },
-        "exercisePlan": {
-            "overview": "Specific mobility and strength protocol.",
-            "selectedExercises": exercises
-        },
+        "exercisePlan": { "overview": "Standard Protocol.", "selectedExercises": exercises },
         "dietRecommendations": {
             "overview": "Anti-inflammatory guidelines.",
-            "keyFoods": ["Omega-3s", "Leafy Greens"],
+            "keyFoods": ["Omega-3s", "Greens"],
             "hydration": "3L daily",
-            "foodsToAvoid": ["Processed sugar"]
+            "foodsToAvoid": ["Sugar"]
         },
         "consultation": {
             "urgency": "Routine",
@@ -211,10 +166,6 @@ function getFallbackPlan(data) {
             "redFlags": ["Numbness"],
             "followUp": "1 Week"
         },
-        "recoveryTimeline": {
-            "week1": "Reduce Pain",
-            "week2_3": "Restore Range",
-            "longTerm": "Strengthen"
-        }
+        "recoveryTimeline": { "week1": "Relief", "week2_3": "Mobility", "longTerm": "Strength" }
     };
 }

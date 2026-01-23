@@ -50,8 +50,8 @@ function renderResults(plan, userData) {
             <a href="${linkUrl}" target="_blank" class="exercise-video-link">
                 <div class="exercise-thumb" style="background-image: url('${thumbUrl}');">
                     <div class="play-overlay">
-                        <div class="play-btn">▶</div>
-                        <span>Watch Short 📱</span>
+                        <div class="play-btn">🔎</div>
+                        <span>Find Video</span>
                     </div>
                 </div>
             </a>
