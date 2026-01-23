@@ -45,8 +45,8 @@ document.getElementById('patientForm').addEventListener('submit', async function
         }
     }, 2500);
 
-    // 3. AI Generation with Safety Timeout (12s Max)
-    const TIMEOUT_MS = 12000;
+    // 3. AI Generation with Safety Timeout (30s Max for Detailed Puter Analysis)
+    const TIMEOUT_MS = 30000;
     const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("AI_TIMEOUT")), TIMEOUT_MS)
     );

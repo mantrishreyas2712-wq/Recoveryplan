@@ -118,71 +118,69 @@ async function generateRecoveryPlan(patientData) {
       "recoveryTimeline": { "week1": "...", "week2_3": "...", "longTerm": "..." }
     }`;
 
-    // --- HYBRID STRATEGY: MICRO-PROMPT ---
-    // We ask AI ONLY for the "Brain" parts (Analysis + Exercises) to keep URL short.
-    // We generate the "Static" parts (Diet, Timeline) via code to ensure reliability.
-
-    // 1. Prepare Base Template (The "Body")
-    const basePlan = getFallbackPlan(patientData);
-
     let aiResponseText = null;
 
-    // 2. Pollinations.ai (Micro-Request)
-    // Prompt size reduced by 80% to ensure 100% Mobile Success
+    // 1. OpenAI (Primary)
     try {
-        console.log("Attempting Pollinations Hybrid AI...");
-
-        const microPrompt = `Act as Physio. Patient: ${patientData.name}, ${patientData.age}y, ${patientData.problemArea}. Symptoms: ${patientData.problemStatement}.
-        Task: 1. Medical Analysis (1 sentence). 2. Select 3 best exercises.
-        Return JSON: { "analysis": { "understanding": "...", "likelyCauses": "..." }, "exercises": [ { "name": "...", "sets": "3", "reps": "10" } ] }`;
-
-        const pollUrl = `https://text.pollinations.ai/${encodeURIComponent(microPrompt)}`;
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s is plenty for micro-request
-
-        const response = await fetch(pollUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
-
-        if (response.ok) {
-            aiResponseText = await response.text();
+        const key = ApiManager.getKey('openai');
+        if (key && !key.includes('YOUR_')) {
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ model: "gpt-4o-mini", messages: [{ role: "user", content: prompt }], temperature: 0.7 })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                aiResponseText = data.choices[0].message.content;
+            }
         }
-    } catch (err) {
-        console.warn("Hybrid AI Failed:", err);
+    } catch (err) { }
+
+    // --- STRATEGY: DYNAMIC PUTER LOAD (High Quality, Late Init) ---
+    // User demands "Detailed Analysis" (Puter) but hates "Login Page".
+    // Solution: We load Puter *only* when needed, preventing page-load redirects.
+
+    if (!aiResponseText) {
+        try {
+            console.log("Loading Puter dynamically for High-Quality Analysis...");
+            await ensurePuterLoaded();
+
+            if (typeof puter !== 'undefined' && puter.ai) {
+                // We use the FULL PROMPT here for maximum detail
+                const response = await puter.ai.chat(prompt);
+                aiResponseText = typeof response === 'string' ? response : (response?.message?.content || response?.toString());
+            }
+        } catch (err) {
+            console.warn("Puter AI Failed (Login/Network):", err);
+        }
     }
 
-    // 3. Merge AI Brain with Body
     if (aiResponseText) {
         try {
-            const aiData = processAIResponse(aiResponseText);
-
-            // Overwrite the "Brain" parts
-            if (aiData.analysis) {
-                basePlan.analysis.understanding = aiData.analysis.understanding || basePlan.analysis.understanding;
-                basePlan.analysis.likelyCauses = aiData.analysis.likelyCauses || basePlan.analysis.likelyCauses;
-            }
-            if (aiData.exercises && Array.isArray(aiData.exercises)) {
-                // Map AI simplified exercises to full structure
-                basePlan.exercisePlan.selectedExercises = aiData.exercises.map(ex => ({
-                    name: ex.name,
-                    sets: ex.sets || '3',
-                    reps: ex.reps || '10',
-                    difficulty: 'Adaptive',
-                    description: `Targeted movement for ${patientData.problemArea}.`
-                }));
-            }
-
-            console.log("Hybrid Plan Generated Successfully");
-            return enrichWithSmartLinks(basePlan);
-
-        } catch (e) {
-            console.error("Merge Error, using Base:", e);
-        }
+            const plan = processAIResponse(aiResponseText);
+            return enrichWithSmartLinks(plan);
+        } catch (e) { console.error(e); }
     }
 
-    // Default: Return the Base Plan (Offline) if AI completely fails
-    console.warn("Using Offline Base Plan");
-    return basePlan;
+    // Default: Offline Clinical Protocol (Fallback)
+    console.warn("Using Offline Clinical Protocol (Fallback)");
+    return getFallbackPlan(patientData);
+}
+
+// Helper: Lazy Load Puter to avoid "Login Redirect" on page load
+async function ensurePuterLoaded() {
+    if (typeof puter !== 'undefined') return; // Already loaded
+
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://js.puter.com/v2/';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error("Failed to load Puter script"));
+        document.head.appendChild(script);
+
+        // Timeout if script hangs
+        setTimeout(() => reject(new Error("Puter Load Timeout")), 8000);
+    });
 }
 
 // --- STOCK THUMBNAIL GALLERY ---
