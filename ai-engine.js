@@ -21,7 +21,7 @@ const EXERCISE_LIBRARY = {
     'doorway stretch': 'lZ8qZ0y-cRk',
     'wall slide': '33P5AI27ejU',
     'shoulder roll': 'qGL_6c8dZVQ',
-    'scapular': 'Start with... (use search if no ID)',
+    'scapular': '33P5AI27ejU',
 
     // BACK
     'cat cow': 'sJq0jW4_P68',
@@ -149,7 +149,7 @@ async function generateRecoveryPlan(patientData) {
     if (aiResponseText) {
         try {
             const plan = processAIResponse(aiResponseText);
-            // APPLY SMART LIBRARY STRATEGY
+            // APPLY SAFE HYBRID STRATEGY
             return enrichWithSmartLinks(plan);
         } catch (e) { console.error(e); }
     }
@@ -157,34 +157,33 @@ async function generateRecoveryPlan(patientData) {
     return getFallbackPlan(patientData);
 }
 
-// --- SMART LINK STRATEGY ---
-// Tries to map AI Exericse Name -> Verified Video ID.
-// If Match: Uses Real Thumbnail + Direct Link.
-// If No Match: Uses Search Link + Generic Thumbnail.
+// --- SMART LINK STRATEGY (SAFE MODE) ---
+// 1. Thumbnails: Use VERIFIED Real Video Thumbnails if matched (Pro Look).
+// 2. Links: ALWAYS use Dynamic Search (Unbreakable Reliability).
 function enrichWithSmartLinks(aiPlan) {
     if (aiPlan.exercisePlan && aiPlan.exercisePlan.selectedExercises) {
         aiPlan.exercisePlan.selectedExercises = aiPlan.exercisePlan.selectedExercises.map((ex) => {
             const verifiedId = findVerifiedVideo(ex.name);
+            const query = encodeURIComponent(`${ex.name} exercise physical therapy short`);
 
-            if (verifiedId && verifiedId.length > 5 && verifiedId !== 'none') {
-                // MATCH: Real Video
-                return {
-                    ...ex,
-                    videoId: verifiedId,
-                    type: 'direct',
-                    thumbnailUrl: `https://img.youtube.com/vi/${verifiedId}/mqdefault.jpg`,
-                    videoUrl: `https://www.youtube.com/watch?v=${verifiedId}`
-                };
-            } else {
-                // NO MATCH: Search Link
-                const query = encodeURIComponent(`${ex.name} exercise physical therapy short`);
-                return {
-                    ...ex,
-                    type: 'search',
-                    thumbnailUrl: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80',
-                    videoUrl: `https://www.youtube.com/results?search_query=${query}`
-                };
+            // DEFAULT: Search Link + Generic Thumb
+            let thumbUrl = 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80';
+            // FORCE SEARCH LINK ALWAYS (Fixes "Unavailable" issue)
+            let videoUrl = `https://www.youtube.com/results?search_query=${query}`;
+
+            // MATCH FOUND: Upgrade Thumbnail Only
+            if (verifiedId && verifiedId.length > 5 && !verifiedId.includes(' ')) {
+                // Use the REAL thumbnail from the verified video for a pro look
+                thumbUrl = `https://img.youtube.com/vi/${verifiedId}/mqdefault.jpg`;
+                // NOTE: We do NOT use the direct link. We stick to Search.
             }
+
+            return {
+                ...ex,
+                type: 'search', // Ensure UI shows "Find Video"
+                thumbnailUrl: thumbUrl,
+                videoUrl: videoUrl
+            };
         });
     }
     return aiPlan;
@@ -217,15 +216,16 @@ function getFallbackPlan(data) {
 
     const exercises = DB_NAMES[selectedKey].map(name => {
         const vidId = findVerifiedVideo(name);
+        const query = encodeURIComponent(`${name} exercise physical therapy short`);
         return {
             name: name,
             sets: '3',
             reps: '10-15 reps',
             difficulty: 'Moderate',
             description: 'Perform safely with control.',
-            // Fallback always matches, so use Real ID
-            thumbnailUrl: `https://img.youtube.com/vi/${vidId}/mqdefault.jpg`,
-            videoUrl: `https://www.youtube.com/watch?v=${vidId}`
+            // Real Thumb (if ID exists) + Search Link (Safety)
+            thumbnailUrl: vidId ? `https://img.youtube.com/vi/${vidId}/mqdefault.jpg` : 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80',
+            videoUrl: `https://www.youtube.com/results?search_query=${query}`
         };
     });
 
