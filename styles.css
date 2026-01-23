@@ -194,6 +194,58 @@ body {
     margin-top: 1rem;
 }
 
+.floating-input {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.input-field {
+    width: 100%;
+    padding: 1.4rem 1rem 0.6rem;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    background: var(--input-bg);
+    height: 60px;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.2s;
+    color: #1E293B;
+    font-weight: 500;
+}
+
+.input-field:focus {
+    background: white;
+    border-color: var(--primary);
+}
+
+.floating-input label {
+    position: absolute;
+    left: 1rem;
+    top: 18px;
+    color: #64748B;
+    transition: 0.2s;
+    pointer-events: none;
+    font-size: 1rem;
+}
+
+/* Active State (Float to top) */
+.input-field:focus~label,
+.input-field:not(:placeholder-shown)~label,
+.input-field:valid~label {
+    /* Ensures Selects float */
+    top: 8px;
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.input-field.textarea {
+    height: 120px;
+    padding-top: 2rem;
+}
+
 /* NEW CHECKBOX STYLES */
 .checkbox-group {
     display: grid;
@@ -232,50 +284,6 @@ body {
     accent-color: var(--primary);
     width: 18px;
     height: 18px;
-}
-
-.floating-input {
-    position: relative;
-    margin-bottom: 1rem;
-}
-
-.input-field {
-    width: 100%;
-    padding: 1rem 1rem 0.5rem;
-    border: 2px solid #E2E8F0;
-    border-radius: 12px;
-    background: var(--input-bg);
-    height: 56px;
-    font-size: 1rem;
-    outline: none;
-    transition: 0.2s;
-}
-
-.input-field:focus {
-    background: white;
-    border-color: var(--primary);
-}
-
-.floating-input label {
-    position: absolute;
-    left: 1rem;
-    top: 18px;
-    color: #64748B;
-    transition: 0.2s;
-    pointer-events: none;
-}
-
-.input-field:focus~label,
-.input-field:not(:placeholder-shown)~label {
-    top: 6px;
-    font-size: 0.7rem;
-    color: var(--primary);
-    font-weight: 700;
-}
-
-.input-field.textarea {
-    height: 120px;
-    padding-top: 1.5rem;
 }
 
 /* --- Pain Slider Styles --- */
