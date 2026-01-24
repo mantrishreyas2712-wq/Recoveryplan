@@ -906,39 +906,47 @@ function getSurgeryInfo(recentSurgery, problemStatement, name) {
 // =============================================================================
 // MAIN REPORT GENERATOR - USES ALL INPUTS
 // =============================================================================
-function generateRecoveryPlan(patientData) {
+async function generateRecoveryPlan(patientData) {
     console.log("Generating FULLY personalized report. All inputs:", patientData);
 
-    // STEP 1 INPUTS
-    const name = patientData.name || "Patient";
-    const age = parseInt(patientData.age) || 30;
-    const gender = patientData.gender || "other";
-    const weight = parseFloat(patientData.weight) || 70;
-    const height = parseFloat(patientData.height) || 170;
+    // Destructure patientData for easier access and to include pre-calculated BMI and Surgery info
+    const {
+        name = "Patient",
+        age: rawAge = 30,
+        gender = "other",
+        weight: rawWeight = 70,
+        height: rawHeight = 170,
+        occupation = "working professional",
+        dietPreference: dietPref = "non-veg",
+        problemArea: rawProblemArea = "back",
+        problemStatement = "pain",
+        painLevel: rawPainLevel = 5,
+        recentSurgery = "",
+        bmiData, // Assumed to be pre-calculated and passed
+        surgeryInfo // Assumed to be pre-calculated and passed
+    } = patientData;
 
-    // STEP 2 INPUTS
-    const occupation = patientData.occupation || "working professional";
-    const dietPref = patientData.dietPreference || "non-veg";
+    const age = parseInt(rawAge);
+    const weight = parseFloat(rawWeight);
+    const height = parseFloat(rawHeight);
+    const problemArea = rawProblemArea.toLowerCase();
+    const painLevel = parseInt(rawPainLevel);
 
-    // STEP 3 INPUTS
+    // STEP 3 INPUTS (conditions still need to be built)
     const conditions = [];
     if (patientData.condition_diabetes) conditions.push("Diabetes");
     if (patientData.condition_bp) conditions.push("High Blood Pressure");
     if (patientData.condition_heart) conditions.push("Heart Conditions");
-    const recentSurgery = patientData.recentSurgery || "";
 
-    // STEP 4 INPUTS
-    const problemArea = (patientData.problemArea || "back").toLowerCase();
-    const problemStatement = patientData.problemStatement || "pain";
-    const painLevel = parseInt(patientData.painLevel) || 5;
-
-    // DERIVED DATA
+    // DERIVED DATA (some might be passed in, but re-calculating for safety/consistency)
     const genderTerms = getGenderTerms(gender);
     const painData = getPainInterpretation(painLevel, name);
-    const surgeryInfo = getSurgeryInfo(recentSurgery, problemStatement, name);
+    // If surgeryInfo is not passed, calculate it here. Otherwise, use the passed one.
+    const actualSurgeryInfo = surgeryInfo || getSurgeryInfo(recentSurgery, problemStatement, name);
 
-    // BMI & Nutrition Calculations
-    const bmiData = calculateBMI(weight, height);
+
+    // BMI & Nutrition Calculations (use passed bmiData if available, otherwise calculate)
+    const actualBmiData = bmiData || calculateBMI(weight, height);
     const nutritionData = calculateNutrition(weight, height, age, gender, 'light'); // Recovery = light activity
 
     // Determine condition type from symptoms
@@ -957,34 +965,39 @@ function generateRecoveryPlan(patientData) {
 
     let conditionData = CONDITION_DB[areaKey]?.[conditionKey] || CONDITION_DB[areaKey]?.["pain"] || CONDITION_DB["back"]["pain"];
 
-    // --- CONTEXT AWARENESS (Enhanced Logic) ---
+
+    // --- CONTEXT AWARENESS (Hybrid: Keywords + TensorFlow.js) ---
     const pText = (problemStatement + " " + (patientData.recentSurgery || "")).toLowerCase();
     let contextCause = "";
 
-    // 1. Acute Trauma / Slip / Fall
-    if (pText.includes('slip') || pText.includes('fall') || pText.includes('accident') || pText.includes('trauma') || pText.includes('hit') || pText.includes('twist')) {
-        contextCause = `• Acute Impact/Injury: Sudden trauma from the incident (slip/fall) has likely caused acute muscle spasm or tissue strain.\n`;
-    }
-    // 2. High Impact Sport (Running)
-    else if (pText.includes('run') || pText.includes('jog') || pText.includes('sprint') || pText.includes('marathon')) {
-        contextCause = `• High Impact Loading: Repetitive impact from running transfers significant force to the ${areaKey}, stressing the structures.\n`;
-    }
-    // 3. Sports (General)
-    else if (pText.includes('cricket') || pText.includes('tennis') || pText.includes('badminton') || pText.includes('golf')) {
-        contextCause = `• Rotational Sports Strain: Dynamic twisting movements in sports cause rapid tendon stress.\n`;
-    }
-    // 4. Gym / Lifting
-    else if (pText.includes('gym') || pText.includes('lift') || pText.includes('deadlift') || pText.includes('bench')) {
-        contextCause = `• Heavy Load Strain: High mechanical load from lifting has stressed the tissue.\n`;
-    }
-    // 5. Desk / Ergonomics
-    else if (pText.includes('comput') || pText.includes('desk') || pText.includes('mouse') || pText.includes('typ')) {
-        contextCause = `• Ergonomic Strain: Repetitive static posture is causing micro-trauma.\n`;
+    // 1. Semantic Analysis (Universal Sentence Encoder)
+    if (window.SemanticCore && window.SemanticCore.isReady) {
+        try {
+            const semanticCategory = await window.SemanticCore.classify(pText);
+            console.log("AI Semantic Category:", semanticCategory);
+
+            if (semanticCategory === 'trauma') contextCause += `• Acute Impact/Injury (AI Verified): Analysis detects trauma context ("${problemStatement}").\n`;
+            if (semanticCategory === 'running') contextCause += `• High Impact Loading (AI Verified): Running-related strain detected.\n`;
+            if (semanticCategory === 'lifting') contextCause += `• Mechanical Overload (AI Verified): Heavy lifting context detected.\n`;
+            if (semanticCategory === 'desk') contextCause += `• Postural Static Strain (AI Verified): Sedentary work context detected.\n`;
+            if (semanticCategory === 'intimate') contextCause += `• Functional Strain (Intimate Activity): Dynamic positioning or muscle strain during activity detected.\n`;
+            if (semanticCategory === 'household') contextCause += `• Repetitive Strain (Household): Cumulative stress from daily repetitive tasks.\n`;
+            if (semanticCategory === 'sleep') contextCause += `• Sleep Posture Strain: Likely caused by awkward neck/spine alignment during sleep.\n`;
+        } catch (e) { console.warn("Semantic Core Inference Failed:", e); }
     }
 
-    // Detect THUMB thumb specific issues in wrist
+    // 2. Keyword Fallback (if Semantic didn't trigger or strictly for specific sports)
+    if (!contextCause) {
+        if (pText.includes('slip') || pText.includes('fall') || pText.includes('accident')) {
+            contextCause = `• Acute Impact/Injury: Sudden trauma detected via keywords.\n`;
+        } else if (pText.includes('cricket') || pText.includes('tennis')) {
+            contextCause = `• Rotational Sports Strain: Dynamic twisting movements.\n`;
+        }
+    }
+
+    // Thumb Check
     if (areaKey === 'wrist' && pText.includes('thumb')) {
-        contextCause += `• De Quervain's Tenosynovitis: Likely inflammation of thumb tendons common in this activity.\n`;
+        contextCause += `• De Quervain's Tenosynovitis: Likely inflammation of thumb tendons.\n`;
     }
 
     if (contextCause) {
