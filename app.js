@@ -5,6 +5,9 @@ document.getElementById('patientForm').addEventListener('submit', async function
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
+    // 1.5 Save to Google Sheets (async, non-blocking)
+    saveToGoogleSheets(data);
+
     // 2. Show Loading & Start Animation
     document.getElementById('formSection').classList.add('hidden');
     const loadingSection = document.getElementById('loadingSection');
@@ -437,4 +440,47 @@ function renderResults(plan, userData) {
     `;
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =============================================================================
+// GOOGLE SHEETS DATA COLLECTION
+// =============================================================================
+// Sends patient data to Google Sheets (non-blocking, fails silently)
+async function saveToGoogleSheets(data) {
+    // Check if webhook URL is configured
+    if (!CONFIG.SHEETS_WEBHOOK_URL || CONFIG.SHEETS_WEBHOOK_URL === "") {
+        console.log("[Sheets] Webhook URL not configured. Skipping data save.");
+        return;
+    }
+
+    try {
+        // Send data to Google Apps Script webhook
+        const response = await fetch(CONFIG.SHEETS_WEBHOOK_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Required for Google Apps Script
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: data.name || '',
+                mobile: data.mobile || '',
+                age: data.age || '',
+                gender: data.gender || '',
+                occupation: data.occupation || '',
+                dietPreference: data.dietPreference || '',
+                condition_diabetes: data.condition_diabetes ? 'Yes' : 'No',
+                condition_bp: data.condition_bp ? 'Yes' : 'No',
+                condition_heart: data.condition_heart ? 'Yes' : 'No',
+                recentSurgery: data.recentSurgery || 'none',
+                problemArea: data.problemArea || '',
+                problemStatement: data.problemStatement || '',
+                painLevel: data.painLevel || ''
+            })
+        });
+
+        console.log("[Sheets] Patient data sent successfully");
+    } catch (error) {
+        // Fail silently - don't block user experience
+        console.warn("[Sheets] Failed to save data:", error);
+    }
 }

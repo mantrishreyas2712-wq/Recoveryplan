@@ -11,6 +11,16 @@ const CONFIG = {
     WORKER_URL: "https://physio-ai-proxy.mantrishreyas2712.workers.dev",
 
     // ==========================================================================
+    // GOOGLE SHEETS DATA COLLECTION
+    // ==========================================================================
+    // Patient form submissions are saved to Google Sheets
+    // Set up: Create Google Apps Script with doPost function (see instructions below)
+    // STEP 1: Create new Google Sheet
+    // STEP 2: Extensions > Apps Script > Paste code from sheets-webhook.js
+    // STEP 3: Deploy as Web App > Copy URL here
+    SHEETS_WEBHOOK_URL: "", // Paste your Google Apps Script Web App URL here
+
+    // ==========================================================================
     // LEGACY (Not recommended for production - keys exposed in browser)
     // ==========================================================================
     // OPENAI_API_KEY: "",
