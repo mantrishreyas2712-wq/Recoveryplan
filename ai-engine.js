@@ -607,12 +607,53 @@ function generateRecoveryPlan(patientData) {
     const symptoms = (patientData.problemStatement || "pain").toLowerCase();
     const occupation = patientData.occupation || "working professional";
     const dietPref = patientData.dietPreference || "non-vegetarian";
+    const recentSurgery = patientData.recentSurgery || "no";
 
     // Build medical conditions array
     const conditions = [];
     if (patientData.condition_diabetes) conditions.push("Diabetes");
     if (patientData.condition_bp) conditions.push("High Blood Pressure");
     if (patientData.condition_heart) conditions.push("Heart Conditions");
+
+    // Surgery status handling
+    let surgeryInfo = {
+        hasSurgery: false,
+        isMajor: false,
+        warning: "",
+        restrictions: [],
+        exerciseNote: "",
+        consultNote: ""
+    };
+
+    if (recentSurgery === "yes_minor") {
+        surgeryInfo = {
+            hasSurgery: true,
+            isMajor: false,
+            warning: `⚠️ **Important:** You mentioned having a recent minor surgery. This has been factored into your plan.`,
+            restrictions: [
+                "Avoid any exercises that cause pulling or strain at the surgery site",
+                "Start with 50% intensity and progress very slowly",
+                "Stop immediately if you feel any pain near the surgical area"
+            ],
+            exerciseNote: "Given your recent surgery, start these exercises at HALF the recommended intensity.",
+            consultNote: "With your recent surgery, I strongly recommend getting clearance from your surgeon before starting any exercise program."
+        };
+    } else if (recentSurgery === "yes_major") {
+        surgeryInfo = {
+            hasSurgery: true,
+            isMajor: true,
+            warning: `🚨 **CRITICAL:** You mentioned having a recent MAJOR operation. This significantly impacts your recovery approach.`,
+            restrictions: [
+                "DO NOT start any exercises without explicit clearance from your surgeon",
+                "Your body is still healing internally - avoid all strenuous activity",
+                "Risk of complications is much higher during post-surgical recovery",
+                "Wait at least 6-8 weeks post-surgery before any physical rehabilitation",
+                "Your surgical site needs priority healing before addressing other issues"
+            ],
+            exerciseNote: `⚠️ **POST-SURGICAL NOTICE:** ${name}, before attempting ANY exercises below, you MUST consult your surgeon. Major surgery requires internal healing that takes precedence over this condition.`,
+            consultNote: `${name}, with your recent major operation, please FIRST consult your operating surgeon. Once they clear you, Dr. Vanshika can create a post-surgical rehabilitation program specifically designed for your recovery.`
+        };
+    }
 
     // Determine condition type
     let conditionKey = "pain";
@@ -645,13 +686,19 @@ I can see you're experiencing "${patientData.problemStatement}" - and I want you
 
 ${conditions.length > 0 ? `I've noted your medical history (${conditions.join(", ")}) and this has been carefully considered in your personalized plan below.` : ""}
 
+${surgeryInfo.hasSurgery ? `
+${surgeryInfo.warning}
+
+${surgeryInfo.consultNote}
+` : ""}
+
 📋 **Below is your evidence-based recovery plan** with exercises, diet guidance, and a clear timeline. This plan is designed to be highly effective when followed consistently.
 
 💡 **However, for the best possible outcome**, I strongly recommend booking a one-on-one consultation with **Dr. Vanshika** - a certified physiotherapy specialist who can:
 • Physically assess your condition and identify the exact problem
 • Customize these exercises to your specific body mechanics  
 • Monitor your progress and adjust the plan as you heal
-• Address any complications early before they become serious
+${surgeryInfo.isMajor ? "• Coordinate with your surgeon for safe post-operative rehabilitation" : "• Address any complications early before they become serious"}
 
 👉 **Click "Book Dr. Vanshika" below to schedule your consultation** and get expert guidance that can accelerate your recovery by 40-60%.`,
 
@@ -662,44 +709,51 @@ ${conditionData.causes}.
 
 **Contributing factors in your case:**
 • Age (${age} years): ${parseInt(age) < 30 ? "Your tissues are resilient, but overuse can still cause strain" : parseInt(age) < 50 ? "Some natural wear may be contributing" : "Age-related changes may be a factor"}
-• Occupation (${occupation}): ${occData.workImpact}`,
+• Occupation (${occupation}): ${occData.workImpact}
+${surgeryInfo.hasSurgery ? `• Recent Surgery: ${surgeryInfo.isMajor ? "Your major operation is currently the PRIMARY consideration. Your body is using resources for surgical healing." : "Your recent minor surgery may be affecting your overall recovery capacity."}` : ""}`,
 
-            // SECTION 3: Severity assessment
+            // SECTION 3: Severity assessment  
             severity: conditionData.severity,
 
             // SECTION 4: Recovery outlook (purely prognostic)
             prognosis: `**Your Recovery Outlook:**
 
-${conditionData.prognosis}
+${surgeryInfo.isMajor ? `🚨 **POST-SURGICAL PRIORITY:** ${name}, your recent major surgery takes precedence. Your body needs 6-8 weeks minimum to heal from the operation before focusing on other issues. Consult your surgeon first.
+
+` : ""}${conditionData.prognosis}
 
 **Based on your age (${age}):** ${ageData.recovery}
 
 **Important:** ${ageData.caution}
+${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? `
+⚠️ **Surgery Note:** Your recent surgery may slow recovery slightly. Be extra gentle and patient.` : ""}
 
 ⚡ **With expert guidance from Dr. Vanshika**, many patients see results 2-3 weeks faster than self-treatment alone.`
         },
 
         exercisePlan: {
-            overview: `${name}, here is your personalized exercise program designed specifically for your ${areaKey} ${conditionKey}.
+            overview: `${surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\n\n" : ""}${name}, here is your personalized exercise program designed specifically for your ${areaKey} ${conditionKey}.
 
 ${ageData.exerciseIntensity}
+${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? "\n" + surgeryInfo.exerciseNote : ""}
 
 Perform these exercises ${parseInt(age) > 50 ? "once daily, gently" : "2-3 times daily for best results"}.
 
-⚠️ **Note:** These are general exercises. Dr. Vanshika can demonstrate proper form and modify them based on your exact condition.`,
+⚠️ **Note:** These are general exercises. Dr. Vanshika can demonstrate proper form and modify them based on your exact condition.${surgeryInfo.hasSurgery ? " This is especially important given your recent surgery." : ""}`,
 
             selectedExercises: conditionData.exercises.map(ex => ({
                 ...ex,
-                personalNote: parseInt(age) > 60 ? "Go very gently - stop if any sharp pain" : "Progress at your own pace"
+                personalNote: surgeryInfo.isMajor ? "⚠️ GET SURGEON CLEARANCE FIRST" : (parseInt(age) > 60 ? "Go very gently - stop if any sharp pain" : "Progress at your own pace")
             }))
         },
 
         workAdvice: {
             impact: occData.workImpact,
-            restrictions: occData.restrictions,
+            restrictions: surgeryInfo.hasSurgery ? [...occData.restrictions, ...surgeryInfo.restrictions] : occData.restrictions,
             modifications: occData.workplaceChanges,
-            leaveRecommendation: occData.leaveAdvice,
-            returnToWork: occData.returnToWork
+            leaveRecommendation: surgeryInfo.isMajor ? `🚨 ${name}, with your recent major surgery, you should NOT be working until cleared by your surgeon. Recovery from surgery is your #1 priority right now. ${occData.leaveAdvice}` : occData.leaveAdvice,
+            returnToWork: surgeryInfo.isMajor ? "Return to work ONLY after your surgeon clears you. Then follow a gradual return plan." : occData.returnToWork,
+            surgeryNote: surgeryInfo.hasSurgery ? surgeryInfo.warning : null
         },
 
         dietRecommendations: {
