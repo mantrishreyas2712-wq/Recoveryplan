@@ -967,19 +967,56 @@ ${painData.description}
 
 👉 <strong>Book Dr. Vanshika now</strong> for expert-guided recovery.`,
 
-            // CAUSES (uses age, occupation, surgery, conditions, BMI)
-            likelyCauses: `<strong>Root causes of your ${areaKey} ${conditionKey}:</strong>
+            // CAUSES - Now shows DEEPER WHY, not what user already told us
+            likelyCauses: `<strong>Why Your ${areaKey.charAt(0).toUpperCase() + areaKey.slice(1)} Is Hurting:</strong>
 
-Based on your profile:
-• ${pick(conditionData.causes)}
-• ${pick(conditionData.causes.filter(c => c !== conditionData.causes[0])) || conditionData.causes[1]}
+<strong>The Anatomy Behind Your Pain:</strong>
+${areaKey === 'neck' ? `• <strong>Forward Head Posture:</strong> Every inch your head moves forward adds 10 lbs of strain on neck muscles
+• <strong>Upper Trap Overload:</strong> Your trapezius muscles are doing overtime to hold your head up
+• <strong>Deep Flexor Weakness:</strong> The small stabilizing muscles have become weak, forcing larger muscles to compensate` : ''}
+${areaKey === 'back' ? `• <strong>Disc Compression:</strong> Sitting compresses spinal discs to 40% more pressure than standing
+• <strong>Hip Flexor Tightness:</strong> Tight hip flexors pull your pelvis forward, stressing the lower back
+• <strong>Core Deactivation:</strong> Hours of sitting causes core muscles to "switch off", leaving spine unsupported` : ''}
+${areaKey === 'knee' ? `• <strong>Quad-Hamstring Imbalance:</strong> Uneven muscle strength creates abnormal joint forces
+• <strong>Patella Tracking:</strong> Weak VMO muscle causes kneecap to track incorrectly
+• <strong>Hip Weakness:</strong> Weak glutes cause knee to collapse inward during movement` : ''}
+${areaKey === 'shoulder' ? `• <strong>Rotator Cuff Fatigue:</strong> Small stabilizer muscles can't keep up with demands
+• <strong>Scapular Dysfunction:</strong> Poor shoulder blade movement causes impingement
+• <strong>Postural Rounding:</strong> Hunched posture reduces shoulder space, pinching tendons` : ''}
+${areaKey === 'wrist' ? `• <strong>Tendon Overuse:</strong> Repetitive motions cause micro-tears that accumulate
+• <strong>Carpal Tunnel Pressure:</strong> Wrist position during typing increases nerve compression
+• <strong>Flexor/Extensor Imbalance:</strong> One-sided repetitive work creates muscle asymmetry` : ''}
+${areaKey === 'ankle' ? `• <strong>Ligament Laxity:</strong> Previous injuries may have left ligaments loose
+• <strong>Calf Tightness:</strong> Tight calves limit ankle mobility and stress the joint
+• <strong>Proprioception Loss:</strong> Reduced balance awareness from modern footwear` : ''}
+${!['neck', 'back', 'knee', 'shoulder', 'wrist', 'ankle'].includes(areaKey) ? `• <strong>Tissue Overload:</strong> Demand exceeding tissue capacity
+• <strong>Movement Pattern Issues:</strong> Compensatory movements stressing the area
+• <strong>Recovery Deficit:</strong> Insufficient rest between activities` : ''}
 
-<strong>Your specific contributing factors:</strong>
-• <strong>Age ${age}:</strong> ${age < 30 ? "Young tissues are resilient but not immune to strain" : age < 50 ? "Some normal wear patterns may be developing" : "Natural age-related changes are a factor"}
-• <strong>Work (${occupation}):</strong> ${occData.workImpact}
-${bmiData.warning && ['knee', 'ankle', 'foot', 'back'].includes(areaKey) ? `• <strong>BMI ${bmiData.bmi} (${bmiData.category}):</strong> ${bmiData.jointImpact || bmiData.warning}` : ""}
-${surgeryInfo.hasSurgery ? `• <strong>Recent Surgery:</strong> Your body is allocating healing resources to your surgical recovery, which impacts overall healing capacity.` : ""}
-${conditions.includes("Heart Conditions") ? `• <strong>Heart Condition:</strong> Circulation affects tissue healing - important to keep moving gently.` : ""}`,
+<strong>Quick Fixes You Can Do Now:</strong>
+${areaKey === 'neck' ? `✅ Set phone/laptop at eye level to reduce forward head
+✅ Chin tucks every 30 minutes (5 reps)
+✅ Avoid holding phone between ear and shoulder` : ''}
+${areaKey === 'back' ? `✅ Stand up every 30 minutes for 60 seconds
+✅ Sit with lumbar support (rolled towel works)
+✅ Keep knees at 90° when sitting` : ''}
+${areaKey === 'knee' ? `✅ Avoid prolonged bent-knee positions
+✅ Ice for 15 min after activity
+✅ Strengthen quads with wall sits` : ''}
+${areaKey === 'shoulder' ? `✅ Avoid sleeping on affected side
+✅ Pull shoulders back before lifting anything
+✅ Keep elbows below shoulder height when working` : ''}
+${areaKey === 'wrist' ? `✅ Keep wrists neutral (not bent) while typing
+✅ Take 2-minute breaks every 30 minutes
+✅ Shake out hands frequently` : ''}
+${areaKey === 'ankle' ? `✅ Avoid walking barefoot on hard floors
+✅ Stretch calves before walking long distances
+✅ Consider supportive footwear` : ''}
+${!['neck', 'back', 'knee', 'shoulder', 'wrist', 'ankle'].includes(areaKey) ? `✅ Apply ice/heat as appropriate
+✅ Avoid positions that trigger pain
+✅ Gentle movement better than complete rest` : ''}
+
+${bmiData.warning && ['knee', 'ankle', 'foot', 'back'].includes(areaKey) ? `<strong>⚠️ Weight Factor:</strong> BMI ${bmiData.bmi} (${bmiData.category}) - ${bmiData.jointImpact || bmiData.warning}` : ""}`,
 
             severity: `${painData.severity} - Pain ${painLevel}/10`,
 
