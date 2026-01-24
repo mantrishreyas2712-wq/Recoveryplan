@@ -265,6 +265,60 @@ function renderResults(plan, userData) {
                 <div class="exercises-list">
                     ${exerciseCards}
                 </div>
+                
+                ${parseInt(userData.painLevel) >= 7 ? (() => {
+            // Area-specific therapy recommendations
+            const areaTherapies = {
+                'neck': [
+                    { icon: '🔄', name: 'Cervical Traction', desc: 'Spine decompression for nerve relief' },
+                    { icon: '⚡', name: 'TENS Therapy', desc: 'Electrical stimulation for pain relief' }
+                ],
+                'back': [
+                    { icon: '💫', name: 'IFT Therapy', desc: 'Deep muscle relaxation and pain relief' },
+                    { icon: '🔄', name: 'Lumbar Traction', desc: 'Spine decompression for disc issues' }
+                ],
+                'knee': [
+                    { icon: '🔊', name: 'Ultrasound Therapy', desc: 'Deep tissue healing for joint pain' },
+                    { icon: '✨', name: 'Laser Therapy', desc: 'Reduces inflammation and promotes healing' }
+                ],
+                'shoulder': [
+                    { icon: '🔊', name: 'Ultrasound Therapy', desc: 'Rotator cuff and tendon healing' },
+                    { icon: '🌊', name: 'Shockwave Therapy', desc: 'Breaks down scar tissue and calcification' }
+                ],
+                'wrist': [
+                    { icon: '⚡', name: 'TENS Therapy', desc: 'Nerve pain relief for carpal tunnel' },
+                    { icon: '🔊', name: 'Ultrasound Therapy', desc: 'Tendon inflammation reduction' }
+                ],
+                'ankle': [
+                    { icon: '🔊', name: 'Ultrasound Therapy', desc: 'Ligament and tendon healing' },
+                    { icon: '⚡', name: 'TENS Therapy', desc: 'Pain management and swelling reduction' }
+                ]
+            };
+
+            const therapies = areaTherapies[userData.problemArea] || areaTherapies['back'];
+
+            return `
+                    <!-- PROFESSIONAL THERAPY RECOMMENDATIONS (Pain >= 7) -->
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 12px; border: 1px solid #A5B4FC;">
+                        <h4 style="color: #4338CA; margin: 0 0 0.75rem 0; font-size: 1rem;">🏥 Recommended for ${userData.problemArea.charAt(0).toUpperCase() + userData.problemArea.slice(1)} Pain</h4>
+                        <p style="color: #6366F1; font-size: 0.85rem; margin-bottom: 0.75rem;">At pain level ${userData.painLevel}/10, these therapies can accelerate your recovery:</p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            ${therapies.map(t => `
+                            <a href="https://wa.me/${DR_VANSHIKA_NUMBER}?text=${encodeURIComponent(`Hi Dr. Vanshika, I have ${userData.problemArea} pain (${userData.painLevel}/10). I'd like to book a ${t.name} session. Can you help?`)}" target="_blank" style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.6rem; border-radius: 8px; text-decoration: none; border: 1px solid #C7D2FE;">
+                                <span style="font-size: 1.2rem;">${t.icon}</span>
+                                <div>
+                                    <strong style="color: #4338CA; font-size: 0.85rem;">${t.name}</strong>
+                                    <p style="color: #6B7280; font-size: 0.75rem; margin: 0;">${t.desc}</p>
+                                </div>
+                            </a>
+                            `).join('')}
+                        </div>
+                        
+                        <p style="color: #6B7280; font-size: 0.75rem; margin: 0.75rem 0 0 0; font-style: italic; text-align: center;">Professional therapy + home exercises = fastest recovery</p>
+                    </div>
+                    `;
+        })() : ''}
             </div>
 
             <!-- Guidelines Column -->
