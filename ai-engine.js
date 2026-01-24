@@ -106,6 +106,83 @@ function getGenderTerms(gender) {
     return { pronoun: "they", possessive: "their", title: "", reflexive: "themselves" };
 }
 
+// --- BMI CALCULATION & NUTRITION ---
+function calculateBMI(weight, height) {
+    // weight in kg, height in cm
+    const heightM = height / 100;
+    const bmi = weight / (heightM * heightM);
+
+    let category, warning, jointImpact, color;
+
+    if (bmi < 18.5) {
+        category = "Underweight";
+        warning = "Being underweight may affect your body's healing capacity. Ensure adequate nutrition.";
+        jointImpact = null;
+        color = "#3B82F6"; // Blue
+    } else if (bmi < 25) {
+        category = "Normal";
+        warning = null;
+        jointImpact = null;
+        color = "#10B981"; // Green
+    } else if (bmi < 30) {
+        category = "Overweight";
+        warning = "Extra weight increases stress on your joints, especially knees, ankles, and lower back.";
+        jointImpact = "Each extra kg adds approximately 4 kg of pressure on your knee joints during walking.";
+        color = "#F59E0B"; // Yellow
+    } else {
+        category = "Obese";
+        warning = "Your weight is significantly impacting joint health. Weight management should be part of your recovery plan.";
+        jointImpact = "Obesity increases joint pain by 4-5x and slows healing. Consider Dr. Vanshika's weight management guidance.";
+        color = "#EF4444"; // Red
+    }
+
+    return { bmi: bmi.toFixed(1), category, warning, jointImpact, color };
+}
+
+function calculateNutrition(weight, height, age, gender, activityLevel = 'moderate') {
+    // Calculate BMR using Mifflin-St Jeor Equation
+    let bmr;
+    if (gender === 'male') {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+    } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+    }
+
+    // Activity multiplier (for recovery patients, mostly sedentary to light)
+    const activityMultipliers = {
+        sedentary: 1.2,
+        light: 1.375,
+        moderate: 1.55,
+        active: 1.725
+    };
+
+    const tdee = Math.round(bmr * activityMultipliers[activityLevel] || 1.375);
+
+    // Calculate macros
+    const protein = Math.round(weight * 1.6); // 1.6g/kg for recovery
+    const fats = Math.round((tdee * 0.25) / 9); // 25% of calories from fats
+    const carbs = Math.round((tdee - (protein * 4) - (fats * 9)) / 4);
+
+    // Water intake (30-35ml per kg)
+    const waterLiters = ((weight * 33) / 1000).toFixed(1);
+
+    // Ideal weight range (BMI 20-24)
+    const heightM = height / 100;
+    const idealWeightMin = Math.round(20 * heightM * heightM);
+    const idealWeightMax = Math.round(24 * heightM * heightM);
+
+    return {
+        calories: tdee,
+        protein: protein,
+        carbs: carbs,
+        fats: fats,
+        water: waterLiters,
+        idealWeightMin: idealWeightMin,
+        idealWeightMax: idealWeightMax,
+        weightToLose: weight > idealWeightMax ? Math.round(weight - idealWeightMax) : 0
+    };
+}
+
 // --- PAIN LEVEL INTERPRETATION ---
 function getPainInterpretation(painLevel, name) {
     const level = parseInt(painLevel) || 5;
@@ -641,6 +718,8 @@ function generateRecoveryPlan(patientData) {
     const name = patientData.name || "Patient";
     const age = parseInt(patientData.age) || 30;
     const gender = patientData.gender || "other";
+    const weight = parseFloat(patientData.weight) || 70;
+    const height = parseFloat(patientData.height) || 170;
 
     // STEP 2 INPUTS
     const occupation = patientData.occupation || "working professional";
@@ -662,6 +741,10 @@ function generateRecoveryPlan(patientData) {
     const genderTerms = getGenderTerms(gender);
     const painData = getPainInterpretation(painLevel, name);
     const surgeryInfo = getSurgeryInfo(recentSurgery, problemStatement, name);
+
+    // BMI & Nutrition Calculations
+    const bmiData = calculateBMI(weight, height);
+    const nutritionData = calculateNutrition(weight, height, age, gender, 'light'); // Recovery = light activity
 
     // Determine condition type from symptoms
     let conditionKey = "pain";
@@ -719,7 +802,7 @@ ${painData.description}
 
 👉 <strong>Book Dr. Vanshika now</strong> for expert-guided recovery.`,
 
-            // CAUSES (uses age, occupation, surgery, conditions)
+            // CAUSES (uses age, occupation, surgery, conditions, BMI)
             likelyCauses: `<strong>Root causes of your ${areaKey} ${conditionKey}:</strong>
 
 Based on your profile:
@@ -729,6 +812,7 @@ Based on your profile:
 <strong>Your specific contributing factors:</strong>
 • <strong>Age ${age}:</strong> ${age < 30 ? "Young tissues are resilient but not immune to strain" : age < 50 ? "Some normal wear patterns may be developing" : "Natural age-related changes are a factor"}
 • <strong>Work (${occupation}):</strong> ${occData.workImpact}
+${bmiData.warning && ['knee', 'ankle', 'foot', 'back'].includes(areaKey) ? `• <strong>BMI ${bmiData.bmi} (${bmiData.category}):</strong> ${bmiData.jointImpact || bmiData.warning}` : ""}
 ${surgeryInfo.hasSurgery ? `• <strong>Recent Surgery:</strong> Your body is allocating healing resources to your surgical recovery, which impacts overall healing capacity.` : ""}
 ${conditions.includes("Heart Conditions") ? `• <strong>Heart Condition:</strong> Circulation affects tissue healing - important to keep moving gently.` : ""}`,
 
@@ -785,7 +869,18 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
             foodsToAvoid: dietData.foodsToAvoid,
             hydration: dietData.hydration,
             supplements: dietData.supplements,
-            conditionNotes: dietData.conditionNotes
+            conditionNotes: dietData.conditionNotes,
+            // Personalized Nutrition from BMI
+            bmi: bmiData,
+            nutrition: nutritionData,
+            personalizedMacros: `<strong>Your Daily Nutrition Targets (Based on ${weight}kg, ${height}cm):</strong>
+• <strong>Calories:</strong> ${nutritionData.calories} kcal/day
+• <strong>Protein:</strong> ${nutritionData.protein}g (essential for tissue repair)
+• <strong>Carbs:</strong> ${nutritionData.carbs}g (energy for healing)
+• <strong>Fats:</strong> ${nutritionData.fats}g (healthy fats for inflammation control)
+• <strong>Water:</strong> ${nutritionData.water}L/day minimum
+
+${nutritionData.weightToLose > 0 ? `<strong>Weight Goal:</strong> Your ideal weight range is ${nutritionData.idealWeightMin}-${nutritionData.idealWeightMax}kg. Losing ${nutritionData.weightToLose}kg would significantly reduce ${areaKey} strain.` : `<strong>Weight Status:</strong> You're within a healthy weight range - maintain this for optimal joint health.`}`
         },
 
         consultation: {

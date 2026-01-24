@@ -5,9 +5,9 @@
 // 1. Go to Google Drive and create a new Google Sheet
 // 2. Name it "PhysioAssist Patient Data"
 // 3. In the sheet, add these headers in Row 1:
-//    A1: Timestamp, B1: Name, C1: Mobile, D1: Age, E1: Gender, F1: Occupation,
-//    G1: Diet, H1: Diabetes, I1: BP, J1: Heart, K1: Recent Surgery,
-//    L1: Problem Area, M1: Problem Statement, N1: Pain Level
+//    A1: Timestamp, B1: Name, C1: Mobile, D1: Age, E1: Gender, F1: Weight, G1: Height,
+//    H1: Occupation, I1: Diet, J1: Diabetes, K1: BP, L1: Heart, M1: Recent Surgery,
+//    N1: Problem Area, O1: Problem Statement, P1: Pain Level
 // 4. Go to Extensions > Apps Script
 // 5. Replace the default code with this entire file
 // 6. Click Deploy > New Deployment
@@ -35,6 +35,8 @@ function doPost(e) {
             data.mobile || '',
             data.age || '',
             data.gender || '',
+            data.weight || '',
+            data.height || '',
             data.occupation || '',
             data.dietPreference || '',
             data.condition_diabetes || 'No',

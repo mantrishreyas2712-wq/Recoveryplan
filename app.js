@@ -355,6 +355,27 @@ function renderResults(plan, userData) {
                 <!-- DIET SECTION (ENHANCED) -->
                 <div class="guideline-card">
                     <h3>🥗 Personalized Diet Plan</h3>
+                    
+                    ${plan.dietRecommendations.bmi ? `
+                    <!-- BMI INDICATOR -->
+                    <div style="background: linear-gradient(135deg, ${plan.dietRecommendations.bmi.color}15, ${plan.dietRecommendations.bmi.color}05); border: 2px solid ${plan.dietRecommendations.bmi.color}; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="color: ${plan.dietRecommendations.bmi.color}; font-size: 1.1rem;">📊 Your BMI: ${plan.dietRecommendations.bmi.bmi}</strong>
+                                <span style="background: ${plan.dietRecommendations.bmi.color}; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem;">${plan.dietRecommendations.bmi.category}</span>
+                            </div>
+                        </div>
+                        ${plan.dietRecommendations.bmi.warning ? `<p style="color: ${plan.dietRecommendations.bmi.color}; margin: 0.5rem 0 0 0; font-size: 0.9rem;">${plan.dietRecommendations.bmi.warning}</p>` : ''}
+                    </div>
+                    ` : ''}
+                    
+                    ${plan.dietRecommendations.personalizedMacros ? `
+                    <!-- PERSONALIZED NUTRITION TARGETS -->
+                    <div style="background: linear-gradient(135deg, #F0FDF4, #DCFCE7); border: 1px solid #86EFAC; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                        <p style="white-space: pre-line; color: #166534; margin: 0; line-height: 1.8;">${plan.dietRecommendations.personalizedMacros}</p>
+                    </div>
+                    ` : ''}
+                    
                     <p class="guideline-intro" style="white-space: pre-line;">${plan.dietRecommendations.overview}</p>
                     
                     ${plan.dietRecommendations.proteinGuidance ? `
@@ -466,6 +487,8 @@ async function saveToGoogleSheets(data) {
                 mobile: data.mobile || '',
                 age: data.age || '',
                 gender: data.gender || '',
+                weight: data.weight || '',
+                height: data.height || '',
                 occupation: data.occupation || '',
                 dietPreference: data.dietPreference || '',
                 condition_diabetes: data.condition_diabetes ? 'Yes' : 'No',
