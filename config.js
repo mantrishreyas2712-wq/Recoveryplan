@@ -18,7 +18,7 @@ const CONFIG = {
     // STEP 1: Create new Google Sheet
     // STEP 2: Extensions > Apps Script > Paste code from sheets-webhook.js
     // STEP 3: Deploy as Web App > Copy URL here
-    SHEETS_WEBHOOK_URL: "", // Paste your Google Apps Script Web App URL here
+    SHEETS_WEBHOOK_URL: "https://script.google.com/macros/s/AKfycbyuJhvmD-4oN0CwCfGz8BYCCgxKIZSjl_p4UYaJk24i0PmtCBzEOWh8glIr78kEgSesjw/exec",
 
     // ==========================================================================
     // LEGACY (Not recommended for production - keys exposed in browser)
