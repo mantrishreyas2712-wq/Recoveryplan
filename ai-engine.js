@@ -957,16 +957,28 @@ function generateRecoveryPlan(patientData) {
 
     let conditionData = CONDITION_DB[areaKey]?.[conditionKey] || CONDITION_DB[areaKey]?.["pain"] || CONDITION_DB["back"]["pain"];
 
-    // --- CONTEXT AWARENESS (New Logic) ---
-    // Detect activity context (Sports vs Office vs General)
+    // --- CONTEXT AWARENESS (Enhanced Logic) ---
     const pText = (problemStatement + " " + (patientData.recentSurgery || "")).toLowerCase();
     let contextCause = "";
 
-    if (pText.includes('cricket') || pText.includes('tennis') || pText.includes('badminton') || pText.includes('golf')) {
-        contextCause = `• Sports Strain: Dynamic movements in sports like cricket/tennis cause rapid tendon stress.\n`;
-    } else if (pText.includes('gym') || pText.includes('lift') || pText.includes('deadlift') || pText.includes('bench')) {
+    // 1. Acute Trauma / Slip / Fall
+    if (pText.includes('slip') || pText.includes('fall') || pText.includes('accident') || pText.includes('trauma') || pText.includes('hit') || pText.includes('twist')) {
+        contextCause = `• Acute Impact/Injury: Sudden trauma from the incident (slip/fall) has likely caused acute muscle spasm or tissue strain.\n`;
+    }
+    // 2. High Impact Sport (Running)
+    else if (pText.includes('run') || pText.includes('jog') || pText.includes('sprint') || pText.includes('marathon')) {
+        contextCause = `• High Impact Loading: Repetitive impact from running transfers significant force to the ${areaKey}, stressing the structures.\n`;
+    }
+    // 3. Sports (General)
+    else if (pText.includes('cricket') || pText.includes('tennis') || pText.includes('badminton') || pText.includes('golf')) {
+        contextCause = `• Rotational Sports Strain: Dynamic twisting movements in sports cause rapid tendon stress.\n`;
+    }
+    // 4. Gym / Lifting
+    else if (pText.includes('gym') || pText.includes('lift') || pText.includes('deadlift') || pText.includes('bench')) {
         contextCause = `• Heavy Load Strain: High mechanical load from lifting has stressed the tissue.\n`;
-    } else if (pText.includes('comput') || pText.includes('desk') || pText.includes('mouse') || pText.includes('typ')) {
+    }
+    // 5. Desk / Ergonomics
+    else if (pText.includes('comput') || pText.includes('desk') || pText.includes('mouse') || pText.includes('typ')) {
         contextCause = `• Ergonomic Strain: Repetitive static posture is causing micro-trauma.\n`;
     }
 
@@ -975,7 +987,9 @@ function generateRecoveryPlan(patientData) {
         contextCause += `• De Quervain's Tenosynovitis: Likely inflammation of thumb tendons common in this activity.\n`;
     }
 
-    conditionData.causes = contextCause + conditionData.causes;
+    if (contextCause) {
+        conditionData.causes = contextCause + conditionData.causes;
+    }
 
     // Get occupation and diet personalization
     const occData = getOccupationPersonalization(occupation, problemArea, name, painLevel);

@@ -214,8 +214,8 @@ function renderResults(plan, userData) {
             <h2>Recovery Plan for ${userData.name}</h2>
             
             <!-- 1. PERSONALIZED ANALYSIS + DR VANSHIKA CTA -->
-            <div class="ai-insight" style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid #7DD3FC;">
-                <strong style="color:#0284C7; display:block; margin-bottom:0.5rem; font-size: 1.1rem;"><span class='icon-bulb'></span> Your Personalized Assessment</strong>
+            <div class="ai-insight anim-entry" style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid #7DD3FC;">
+                <strong style="color:#0284C7; display:block; margin-bottom:0.5rem; font-size: 1.1rem;"><span class="icon-bulb"></span> Your Personalized Assessment</strong>
                 <p style="font-size:1.05rem; line-height:1.8; color:#0C4A6E; white-space: pre-line;">${plan.analysis.understanding}</p>
                 
                 <!-- PROMINENT DR VANSHIKA CTA -->
@@ -228,9 +228,9 @@ function renderResults(plan, userData) {
             </div>
 
             <!-- 2. LIKELY CAUSES (Separate Section) -->
-            <div style="background: #FEF3C7; border: 1px solid #FCD34D; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: flex-start; gap: 1rem;">
-                    <span style="font-size: 1.5rem;"><span class='icon-search'></span></span>
+            <div class="anim-entry" style="background: #FEF3C7; border: 1px solid #FCD34D; padding: 1rem; border-radius: 10px; margin-bottom: 0.75rem; animation-delay: 0.1s;">
+                <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
+                    <span style="font-size: 1.5rem;"><span class="icon-search"></span></span>
                     <div>
                         <strong style="color: #92400E; font-size: 1rem;">What's Causing This?</strong>
                         <p style="white-space: pre-line; color: #78350F; margin-top: 0.5rem; line-height: 1.6;">${plan.analysis.likelyCauses}</p>
@@ -239,9 +239,9 @@ function renderResults(plan, userData) {
             </div>
 
             <!-- 3. PROGNOSIS / RECOVERY OUTLOOK (Separate Section) -->
-            <div style="background: #ECFDF5; border: 1px solid #6EE7B7; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
-                <div style="display: flex; align-items: flex-start; gap: 1rem;">
-                    <span style="font-size: 1.5rem;"><span class='icon-graph'></span></span>
+            <div class="anim-entry" style="background: #ECFDF5; border: 1px solid #6EE7B7; padding: 1rem; border-radius: 10px; margin-bottom: 0.75rem; animation-delay: 0.2s;">
+                <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
+                    <span style="font-size: 1.5rem;"><span class="icon-graph"></span></span>
                     <div>
                         <strong style="color: #065F46; font-size: 1rem;">Your Recovery Outlook</strong>
                         <p style="white-space: pre-line; color: #047857; margin-top: 0.5rem; line-height: 1.6;">${plan.analysis.prognosis}</p>
@@ -328,8 +328,8 @@ function renderResults(plan, userData) {
             <div class="plan-column">
                 <!-- WORK ADVICE (NEW) -->
                 ${plan.workAdvice ? `
-                <div class="guideline-card" style="background: #FFF7ED; border: 1px solid #FDBA74;">
-                    <h3><span class='icon-bag'></span> Work & Activity Advice</h3>
+                <div class="guideline-card anim-entry" style="background: #FFF7ED; border: 1px solid #FDBA74; padding: 1rem; margin-bottom: 0.75rem; animation-delay: 0.3s;">
+                    <h3><span class="icon-bag"></span> Work & Activity Advice</h3>
                     <p style="font-weight: 500; color: #C2410C;">${plan.workAdvice.leaveRecommendation || ''}</p>
                     
                     ${plan.workAdvice.restrictions && plan.workAdvice.restrictions.length > 0 ? `
@@ -391,8 +391,8 @@ function renderResults(plan, userData) {
                     </ul>
                     
                     ${plan.dietRecommendations.foodsToAvoid && plan.dietRecommendations.foodsToAvoid.length > 0 ? `
-                    <div style="margin-top: 1rem; padding: 0.75rem; background: #FEF2F2; border-radius: 8px;">
-                        <strong style="color: #DC2626;"><span class='icon-ban'></span> Foods to Avoid:</strong>
+                    <div class="anim-entry" style="margin-top: 1rem; padding: 0.75rem; background: #FEF2F2; border-radius: 8px; animation-delay: 0.4s;">
+                        <strong style="color: #DC2626;"><span class="icon-ban"></span> Foods to Avoid:</strong>
                         <ul style="margin: 0.3rem 0 0 1.2rem; color: #991B1B;">
                             ${plan.dietRecommendations.foodsToAvoid.map(f => `<li>${f}</li>`).join('')}
                         </ul>
