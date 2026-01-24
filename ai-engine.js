@@ -50,7 +50,8 @@ const PHRASES = {
 // --- DYNAMIC SENTENCE BUILDERS (not preset phrases) ---
 // These build unique sentences using actual patient data
 
-function buildValidationPhrase(symptom, occupation, name, age, bodyArea, painLevel) {
+
+function buildValidationPhrase(symptom, occupation, name, age, bodyArea, painLevel, aiCause) {
     // Dynamic word choices
     const empathyWords = ['understand', 'recognize', 'acknowledge', 'see', 'note'];
     const concernWords = ['dealing with', 'experiencing', 'going through', 'facing', 'managing'];

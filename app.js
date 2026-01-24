@@ -86,7 +86,7 @@ document.getElementById('patientForm').addEventListener('submit', async function
 
             // Reset UI styles for next try
             if (loadingHeader) loadingHeader.style.color = "";
-            if (loadingIcon) loadingIcon.style.animation = "";
+            if (loadingIconWrapper) loadingIconWrapper.style.animation = "";
         }, 6000);
     }
 });
