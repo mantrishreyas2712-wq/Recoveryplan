@@ -99,10 +99,10 @@ function renderResults(plan, userData) {
     // Generate Diet List
     const dietList = plan.dietRecommendations.keyFoods.map(food => `<li>${food}</li>`).join('');
 
-    // Generate WhatsApp Business Message
-    const expertMsg = encodeURIComponent(`Hi, I just generated a PhysioAssist Plan for ${userData.problemArea}. I'd like to book a professional consultation to review it.`);
-    // Optimized Shortlink for faster redirection
-    const waLink = `https://wa.me/?text=${expertMsg}`;
+    // Dr. Vanshika's WhatsApp - Direct number
+    const DR_VANSHIKA_NUMBER = '919993521601';
+    const expertMsg = encodeURIComponent(`Hi Dr. Vanshika, I just generated a PhysioAssist Recovery Plan for my ${userData.problemArea} problem. I'd like to book a consultation with you.\n\nPatient: ${userData.name}\nAge: ${userData.age}\nProblem: ${userData.problemStatement || userData.problemArea}`);
+    const waLink = `https://wa.me/${DR_VANSHIKA_NUMBER}?text=${expertMsg}`;
 
     // Generate Exercises (Smart Hybrid Buttons + Affiliate Links)
     const exerciseCards = plan.exercisePlan.selectedExercises.map((ex, index) => {
@@ -154,9 +154,9 @@ function renderResults(plan, userData) {
         `;
     }).join('');
 
-    // Dr. Vanshika WhatsApp link
-    const drVanshikaMsg = encodeURIComponent(`Hi Dr. Vanshika, I just generated a PhysioAssist Recovery Plan for my ${userData.problemArea} problem. I'd like to book a consultation to get your expert guidance.`);
-    const drVanshikaLink = `https://wa.me/?text=${drVanshikaMsg}`;
+    // Dr. Vanshika WhatsApp link - Direct number
+    const drVanshikaMsg = encodeURIComponent(`Hi Dr. Vanshika, I just generated a PhysioAssist Recovery Plan for my ${userData.problemArea} problem. I'd like to book a consultation with you.\n\nPatient: ${userData.name}\nAge: ${userData.age}\nCondition: ${userData.problemStatement || userData.problemArea}`);
+    const drVanshikaLink = `https://wa.me/${DR_VANSHIKA_NUMBER}?text=${drVanshikaMsg}`;
 
     // Inject HTML
     resultsSection.innerHTML = `
