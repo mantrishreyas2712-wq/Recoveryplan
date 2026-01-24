@@ -922,8 +922,8 @@ async function generateRecoveryPlan(patientData) {
         problemStatement = "pain",
         painLevel: rawPainLevel = 5,
         recentSurgery = "",
-        bmiData, // Assumed to be pre-calculated and passed
-        surgeryInfo // Assumed to be pre-calculated and passed
+        bmiData: passedBmiData, // Renamed to avoid shadowing
+        surgeryInfo: passedSurgeryInfo // Renamed to avoid shadowing
     } = patientData;
 
     const age = parseInt(rawAge);
@@ -942,11 +942,11 @@ async function generateRecoveryPlan(patientData) {
     const genderTerms = getGenderTerms(gender);
     const painData = getPainInterpretation(painLevel, name);
     // If surgeryInfo is not passed, calculate it here. Otherwise, use the passed one.
-    const actualSurgeryInfo = surgeryInfo || getSurgeryInfo(recentSurgery, problemStatement, name);
+    const surgeryInfo = passedSurgeryInfo || getSurgeryInfo(recentSurgery, problemStatement, name);
 
 
     // BMI & Nutrition Calculations (use passed bmiData if available, otherwise calculate)
-    const actualBmiData = bmiData || calculateBMI(weight, height);
+    const bmiData = passedBmiData || calculateBMI(weight, height);
     const nutritionData = calculateNutrition(weight, height, age, gender, 'light'); // Recovery = light activity
 
     // Determine condition type from symptoms
