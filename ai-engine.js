@@ -977,6 +977,7 @@ async function generateRecoveryPlan(patientData) {
     // --- CONTEXT AWARENESS (Hybrid: Online LLM > Offline Semantic > Keywords) ---
     const pText = (problemStatement + " " + (patientData.recentSurgery || "")).toLowerCase();
     let contextCause = "";
+    let onlineData = null; // Store entire object (New JSON Mode)
 
     // 0. ONLINE BRAIN (OpenRouter Proxy) - Highest Accuracy
     // FIX: Include BODY AREA in the context to prevent hallucinations (e.g. diagnosing ankle sprain for shoulder injury)
@@ -986,25 +987,42 @@ async function generateRecoveryPlan(patientData) {
         try {
             console.log("🌐 Attempting Online AI Analysis (via Proxy)...");
             // Rich Context Prompt (v2.2 Comprehensive)
+            const systemPrompt = `You are Dr. Vanshika, a specialist Physiotherapist.
+            Output STRICTLY Valid JSON with this structure:
+            {
+               "diagnosis": "Short medical name (e.g. Rotator Cuff Tendinitis)",
+               "assessment": "2-3 sentences talking directly to the patient (use name ${name}). specific to their age, job, and mechanism of injury. Empathetic but clinical.",
+               "causes": "Bullet points explaining the anatomy and specific reasons (e.g. 'Your desk job causes x'). Use HTML <strong> tags for key terms."
+            }
+            Do not use markdown blocks. JSON ONLY.`;
+
             const promptContext = `
-            Patient: ${age}yo ${gender}, Occupation: ${occupation}
+            Patient: ${name}, ${age}yo ${gender}, Occupation: ${occupation}
             BMI: ${bmiData.bmi} (${bmiData.category})
             Body Part: ${areaKey}
             Conditions: ${conditions.length > 0 ? conditions.join(', ') : 'None'}
             Surgery: ${surgeryInfo.hasSurgery ? surgeryInfo.description : 'None'}
             Pain: ${painLevel}/10
             Story: ${problemStatement}
-            Task: Diagnose injury & explain WHY considering profile. concise.
+            Task: Provide diagnosis, personalized assessment, and deeply specific causes.
             `;
-            const onlineCause = await window.OpenRouter.analyze(promptContext);
 
-            if (onlineCause) {
-                onlineDiagnosis = onlineCause; // Store for UI injection
-                contextCause += `• AI Expert Diagnosis: ${onlineCause}\n`;
-                console.log("✅ Online AI Success:", onlineCause);
-            } else {
-                console.warn("⚠️ Online AI returned empty response.");
+            const rawResponse = await window.OpenRouter.analyze(promptContext, systemPrompt);
+
+            // Handle JSON Response
+            if (rawResponse) {
+                try {
+                    const cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+                    onlineData = JSON.parse(cleanJson);
+                    if (onlineData.diagnosis) contextCause += `• AI Diagnosis: ${onlineData.diagnosis}\n`;
+                } catch (e) {
+                    // Fallback
+                    onlineData = { diagnosis: rawResponse, assessment: null, causes: null };
+                    contextCause += `• AI Diagnosis: ${rawResponse}\n`;
+                }
             }
+
+
         } catch (e) {
             console.warn("🌐 Online Brain Failed:", e);
         }
@@ -1070,9 +1088,12 @@ async function generateRecoveryPlan(patientData) {
     const report = {
         analysis: {
             // PERSONALIZED GREETING (uses name, age, gender, occupation, symptoms)
-            understanding: `${getPersonalizedGreeting(name, age, gender)}
+            // AI ASSESSMENT OVERRIDE (v2.4)
+            understanding: onlineData?.assessment ?
+                `<strong>Dr. Vanshika's Assessment:</strong><br>${onlineData.assessment}` :
+                `${getPersonalizedGreeting(name, age, gender)}
 
-${surgeryInfo.hasSurgery ? buildSurgeryValidationPhrase(problemStatement, name, age, areaKey, painLevel, surgeryInfo.isMajor ? 'major' : 'minor', onlineDiagnosis) : buildValidationPhrase(problemStatement, occupation, name, age, areaKey, painLevel, onlineDiagnosis)}
+${surgeryInfo.hasSurgery ? buildSurgeryValidationPhrase(problemStatement, name, age, areaKey, painLevel, surgeryInfo.isMajor ? 'major' : 'minor', onlineData?.diagnosis) : buildValidationPhrase(problemStatement, occupation, name, age, areaKey, painLevel, onlineData?.diagnosis)}
 
 ${conditions.length > 0 ? `<strong>Medical Profile Noted:</strong> Your conditions (${conditions.join(", ")}) have been carefully factored into every recommendation below.` : ""}
 
@@ -1094,7 +1115,9 @@ ${painData.description}
 👉 <strong>Book Dr. Vanshika now</strong> for expert-guided recovery.`,
 
             // CAUSES - Now shows DEEPER WHY (AI + Static)
-            likelyCauses: `${conditionData.causes ? `<strong>🔎 AI Analysis:</strong>\n${conditionData.causes}\n\n` : ''}<strong>Why Your ${areaKey.charAt(0).toUpperCase() + areaKey.slice(1)} Is Hurting:</strong>
+            likelyCauses: onlineData?.causes ?
+                `<strong>🔎 AI Analysis:</strong>\n${onlineData.causes}` :
+                `${conditionData.causes ? `<strong>🔎 AI Analysis:</strong>\n${conditionData.causes}\n\n` : ''}<strong>Why Your ${areaKey.charAt(0).toUpperCase() + areaKey.slice(1)} Is Hurting:</strong>
 
 <strong>The Anatomy Behind Your Pain:</strong>
 ${areaKey === 'neck' ? `• <strong>Forward Head Posture:</strong> Every inch your head moves forward adds 10 lbs of strain on neck muscles

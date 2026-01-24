@@ -8,11 +8,14 @@ const OpenRouter = {
     },
 
     // 2. AI Inference (Proxy Call)
-    async analyze(text) {
+    async analyze(text, systemInstruction = null) {
         if (!this.isConfigured()) {
             console.log("🌐 OpenRouter: Proxy URL missing. Using Offline Brain.");
             return null;
         }
+
+        const defaultSystem = "You are an expert Physiotherapist AI. Analyze the patient's problem statement. Output strictly the 'Likely Medical Cause' (e.g. 'Acute Lumbar Strain'). Keep it concise (under 15 words). Do not give advice yet. Output ONLY the cause.";
+        const finalSystem = systemInstruction || defaultSystem;
 
         console.log("🌐 OpenRouter: Calling Secure Proxy...");
         try {
@@ -25,7 +28,7 @@ const OpenRouter = {
                     "messages": [
                         {
                             "role": "system",
-                            "content": "You are an expert Physiotherapist AI. Analyze the patient's problem statement. Output strictly the 'Likely Medical Cause' (e.g. 'Acute Lumbar Strain'). Keep it concise (under 15 words). Do not give advice yet. Output ONLY the cause."
+                            "content": finalSystem
                         },
                         {
                             "role": "user",
