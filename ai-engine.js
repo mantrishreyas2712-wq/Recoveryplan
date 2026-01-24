@@ -107,14 +107,68 @@ function getPainInterpretation(painLevel, name) {
     }
 }
 
-// --- DETECT SURGERY FROM PROBLEM STATEMENT ---
+// --- DETECT SURGERY FROM PROBLEM STATEMENT (Multilingual + Fuzzy) ---
 function detectSurgeryFromText(text) {
     const surgeryKeywords = [
+        // ENGLISH - Standard
         'surgery', 'operation', 'operated', 'surgical', 'post-op', 'postop',
         'after surgery', 'had surgery', 'got operated', 'procedure', 'implant',
         'replacement', 'arthroscopy', 'laparoscopy', 'c-section', 'cesarean',
-        'bypass', 'angioplasty', 'appendix', 'hernia repair', 'spine surgery',
-        'knee replacement', 'hip replacement', 'stitches', 'operated on'
+        'bypass', 'angioplasty', 'appendix', 'hernia', 'spine surgery',
+        'knee replacement', 'hip replacement', 'stitches', 'operated on',
+        'post operative', 'post-operative', 'postoperative',
+
+        // ENGLISH - Common misspellings
+        'surgry', 'surgury', 'surjery', 'surjury', 'sergery', 'sergury',
+        'opration', 'operasion', 'operashun', 'opretion', 'operetion',
+        'opperation', 'operrated', 'oprated', 'opreation',
+
+        // HINDI - Devanagari script
+        'ऑपरेशन', 'आपरेशन', 'सर्जरी', 'शल्य', 'शल्यक्रिया', 'शल्य चिकित्सा',
+        'टांके', 'टाँके', 'घाव', 'चीरा', 'कटाई',
+
+        // HINGLISH - Transliterated
+        'operation hua', 'operation hui', 'operation tha', 'operation thi',
+        'surgery hua', 'surgery hui', 'surgery tha', 'surgery thi',
+        'surgery karwai', 'surgery karwayi', 'surgery karvai', 'surgery karaya',
+        'operate hua', 'operate hui', 'operate kiya', 'operate karvaya',
+        'opration hua', 'opration hui', 'opration karwai',
+        'tanke lage', 'tanke the', 'tanke hain', 'tanke lagaye',
+        'operation ke baad', 'surgery ke baad', 'opration ke baad',
+        'post surgery',
+
+        // REGIONAL VARIATIONS
+        'op hua', 'op hui', 'op karwaya', 'op se', 'op ke baad',
+
+        // SPECIFIC SURGERIES (English + Hinglish)
+        'appendix ka operation', 'appendix nikala', 'appendix nikali',
+        'hernia ka operation', 'hernia operation',
+        'cesarean', 'c section', 'csection', 'c-sec', 'csec',
+        'normal delivery nahi', 'ceserean', 'ceasarean', 'cesarian',
+        'angioplasty', 'anjiyoplasty', 'anjeoplasty', 'stent',
+        'bypass', 'by pass', 'baypas', 'heart surgery', 'dil ka operation',
+        'knee ka operation', 'ghutne ka operation', 'knee op',
+        'hip ka operation', 'hip replacement', 'joint replacement',
+        'spine ka operation', 'back surgery', 'kamar ka operation',
+        'brain surgery', 'dimag ka operation',
+        'eye surgery', 'ankh ka operation', 'lasik', 'cataract', 'motiyabind',
+        'kidney surgery', 'kidney stone operation', 'pathri ka operation',
+        'gall bladder', 'pittha', 'pitha', 'gallstone',
+
+        // RECOVERY CONTEXT
+        'recovering from operation', 'abhi operation hua',
+        'hospital se discharge', 'haal hi mein operation',
+        'recently operated', 'just had surgery', 'surgery abhi hui',
+        'operation abhi hua', 'stitches abhi', 'stitches hain',
+        'incision', 'cut', 'wound from surgery', 'surgical wound',
+
+        // BODY PART + SURGERY COMBOS
+        'shoulder operation', 'kandhe ka operation',
+        'neck surgery', 'gardan ka operation',
+        'wrist surgery', 'kalai ka operation',
+        'ankle surgery', 'takhne ka operation',
+        'fracture operation', 'haddi ka operation', 'bone surgery',
+        'tumor', 'tumour', 'rasauli', 'gaanth', 'ganth'
     ];
 
     const lowerText = text.toLowerCase();
