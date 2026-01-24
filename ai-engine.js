@@ -203,7 +203,13 @@ function generateMealPlan(nutritionData, dietPref, bmiCategory, age) {
         snacks: { calPct: 0.15, proteinPct: 0.10 }
     };
 
-    const isVeg = /veg/i.test(dietPref) || dietPref === 'vegetarian' || dietPref === 'vegan'; // Robust check
+    // Ensure stricter vegetarian check - defaults to non-veg ONLY if explicitly not veg
+    const normalizedDiet = String(dietPref).toLowerCase();
+    const isVeg = normalizedDiet.includes('veg') || normalizedDiet === 'vegetarian' || normalizedDiet === 'vegan';
+    const isEggetarian = normalizedDiet.includes('egg');
+
+    // If IS Vegetarian but NOT Eggetarian, ensure strict veg
+    const strictVeg = isVeg && !isEggetarian;
     const needsWeightLoss = bmiCategory === 'Overweight' || bmiCategory === 'Obese';
 
     // VEG/NON-VEG FOOD DATABASE with macros per 100g
@@ -291,8 +297,8 @@ function generateMealPlan(nutritionData, dietPref, bmiCategory, age) {
     // GENERATE MEAL PLAN
     function buildMeal(mealType, targetCals, targetProtein) {
         const vegOptions = foods[mealType].veg;
-        const nonvegOptions = isVeg ? [] : foods[mealType].nonveg;
-        const allOptions = [...vegOptions, ...(isVeg ? [] : nonvegOptions)];
+        const nonvegOptions = strictVeg ? [] : foods[mealType].nonveg;
+        const allOptions = [...vegOptions, ...(strictVeg ? [] : nonvegOptions)];
 
         // Select items to hit targets
         const selected = [];
@@ -1243,16 +1249,12 @@ function findVerifiedVideo(exerciseName) {
 }
 
 // --- ENRICHMENT LOGIC ---
-// Use AI-Generated Images for thumbnails (Reliable, Context-Aware)
 function getExerciseThumbnail(name) {
-    if (!name) return "https://source.unsplash.com/320x180/?physiotherapy";
-    // Generate a photorealistic image prompt
-    const cleanName = String(name).replace(/[^a-zA-Z ]/g, '').trim();
-    const prompt = encodeURIComponent(`${cleanName} exercise physiotherapy photorealistic bright lighting`);
-
-    // Use Pollinations.ai (Free, High quality AI generation)
-    // Add seed to keep it consistent for the same exercise
-    return `https://image.pollinations.ai/prompt/${prompt}?width=320&height=180&nologo=true&seed=${cleanName.length}`;
+    // Use LoremFlickr (Reliable, free, no rate limits for this usage)
+    const cleanName = String(name || 'exercise').replace(/[^a-zA-Z ]/g, '').trim();
+    // Use diverse keywords to get varied images
+    const keywords = `physiotherapy,exercise,fitness,${cleanName.split(' ')[0]}`;
+    return `https://loremflickr.com/320/180/${keywords}/all?lock=${cleanName.length}`;
 }
 
 // --- AMAZON AFFILIATE EQUIPMENT LINKS ---
