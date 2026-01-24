@@ -32,7 +32,13 @@ const PHRASES = {
         (symptom, occ) => `I understand you're dealing with "${symptom}" - this is something we can absolutely address, especially given your work in ${occ}.`,
         (symptom, occ) => `Your concern about "${symptom}" is completely valid. As someone working in ${occ}, this needs proper attention.`,
         (symptom, occ) => `"${symptom}" can indeed be challenging, particularly with your ${occ} responsibilities. Let's tackle this together.`,
-        (symptom, occ) => `What you're experiencing - "${symptom}" - makes sense given your ${occ} role. Here's how we'll address it.`
+        (symptom, occ) => `What you're experiencing - "${symptom}" - we understand this can be frustrating. Given your ${occ} responsibilities, let's create a plan that works for you.`
+    ],
+    // Surgery-specific validation (used when surgery detected)
+    validationSurgery: [
+        (symptom, name) => `${name}, post-operative pain like "${symptom}" is something we take very seriously. Your body is healing, and we're here to support that recovery.`,
+        (symptom, name) => `${name}, recovering from surgery with "${symptom}" requires careful attention. This plan is designed with your post-surgical needs in mind.`,
+        (symptom, name) => `We understand "${symptom}" after surgery can be concerning, ${name}. Rest assured, this is part of the healing process and we'll guide you through it safely.`
     ],
     recovery: {
         fast: [
@@ -660,7 +666,7 @@ function generateRecoveryPlan(patientData) {
             // PERSONALIZED GREETING (uses name, age, gender, occupation, symptoms)
             understanding: `${getPersonalizedGreeting(name, age, gender)}
 
-${pick(PHRASES.validation)(problemStatement, occupation)}
+${surgeryInfo.hasSurgery ? pick(PHRASES.validationSurgery)(problemStatement, name) : pick(PHRASES.validation)(problemStatement, occupation)}
 
 ${conditions.length > 0 ? `**Medical Profile Noted:** Your conditions (${conditions.join(", ")}) have been carefully factored into every recommendation below.` : ""}
 
