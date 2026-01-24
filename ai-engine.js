@@ -190,6 +190,9 @@ function calculateNutrition(weight, height, age, gender, activityLevel = 'modera
 
 // --- DETAILED MEAL PLAN GENERATOR ---
 function generateMealPlan(nutritionData, dietPref, bmiCategory, age) {
+    // Safety check
+    if (!nutritionData) return null;
+    const safeAge = age || 50;
     const { calories, protein, carbs, fats, water } = nutritionData;
 
     // Calculate per-meal targets (Breakfast 25%, Lunch 35%, Dinner 25%, Snacks 15%)
@@ -1101,7 +1104,7 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
             bmi: bmiData,
             nutrition: nutritionData,
             // Detailed Meal Plan (uses dietPref for veg/non-veg)
-            mealPlan: generateMealPlan(nutritionData, dietPref, bmiData.category),
+            mealPlan: generateMealPlan(nutritionData, dietPref, bmiData.category, age),
             personalizedMacros: `<strong>Your Daily Nutrition Targets (Based on ${weight}kg, ${height}cm):</strong>
 • <strong>Calories:</strong> ${nutritionData.calories} kcal/day
 • <strong>Protein:</strong> ${nutritionData.protein}g (essential for tissue repair)
@@ -1242,8 +1245,9 @@ function findVerifiedVideo(exerciseName) {
 // --- ENRICHMENT LOGIC ---
 // Use AI-Generated Images for thumbnails (Reliable, Context-Aware)
 function getExerciseThumbnail(name) {
+    if (!name) return "https://source.unsplash.com/320x180/?physiotherapy";
     // Generate a photorealistic image prompt
-    const cleanName = name.replace(/[^a-zA-Z ]/g, '').trim();
+    const cleanName = String(name).replace(/[^a-zA-Z ]/g, '').trim();
     const prompt = encodeURIComponent(`${cleanName} exercise physiotherapy photorealistic bright lighting`);
 
     // Use Pollinations.ai (Free, High quality AI generation)
