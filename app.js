@@ -284,6 +284,15 @@ function renderResults(plan, userData) {
                         <strong>💊 Supplements:</strong> ${plan.dietRecommendations.supplements}
                     </p>
                     ` : ''}
+                    
+                    ${plan.dietRecommendations.conditionNotes && plan.dietRecommendations.conditionNotes.length > 0 ? `
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 8px;">
+                        <strong style="color: #92400E;">⚠️ Diet Notes for Your Medical Conditions:</strong>
+                        <ul style="margin: 0.3rem 0 0 1.2rem; color: #78350F;">
+                            ${plan.dietRecommendations.conditionNotes.map(n => `<li style="margin-bottom: 0.3rem;">${n}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
                 </div>
 
                 <!-- TIMELINE SECTION (ENHANCED) -->
