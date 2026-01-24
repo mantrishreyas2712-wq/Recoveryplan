@@ -74,10 +74,17 @@ function buildValidationPhrase(symptom, occupation, name, age, bodyArea, painLev
 
     // Fix: Redundant body area check
     const symptomText = symptom.toLowerCase().includes(bodyArea.toLowerCase()) ? symptom : `"${symptom}" in your ${bodyArea}`;
-    return `${name}, I ${empathy} you're ${concern} ${symptomText}. ${ageContext}, and ${painContext}. Let's ${action} this ${support}.`;
+
+    // AI ENRICHMENT:
+    let aiText = "";
+    if (aiCause) {
+        aiText = `Our AI analysis suggests <strong>${aiCause}</strong>.`;
+    }
+
+    return `${name}, I ${empathy} you're ${concern} ${symptomText}. ${aiText} ${ageContext}. Let's ${action} this ${support}.`;
 }
 
-function buildSurgeryValidationPhrase(symptom, name, age, bodyArea, painLevel, surgeryType) {
+function buildSurgeryValidationPhrase(symptom, name, age, bodyArea, painLevel, surgeryType, aiCause) {
     const severityWords = surgeryType === 'major' ?
         ['serious', 'significant', 'major', 'important'] :
         ['healing', 'recovering', 'post-operative', 'recent'];
@@ -971,12 +978,19 @@ async function generateRecoveryPlan(patientData) {
     let contextCause = "";
 
     // 0. ONLINE BRAIN (OpenRouter Proxy) - Highest Accuracy
+    // FIX: Include BODY AREA in the context to prevent hallucinations (e.g. diagnosing ankle sprain for shoulder injury)
+    let onlineDiagnosis = "";
+
     if (window.OpenRouter && window.OpenRouter.isConfigured()) {
         try {
             console.log("🌐 Attempting Online AI Analysis (via Proxy)...");
-            const onlineCause = await window.OpenRouter.analyze(problemStatement);
+            // Rich Context Prompt
+            const promptContext = `Body Part: ${areaKey}. Patient Profile: ${age}yo ${gender}. Symptoms: ${problemStatement}.`;
+            const onlineCause = await window.OpenRouter.analyze(promptContext);
+
             if (onlineCause) {
-                contextCause += `• AI Expert Analysis (Online): ${onlineCause}\n`;
+                onlineDiagnosis = onlineCause; // Store for UI injection
+                contextCause += `• AI Expert Diagnosis: ${onlineCause}\n`;
                 console.log("✅ Online AI Success:", onlineCause);
             } else {
                 console.warn("⚠️ Online AI returned empty response.");
@@ -1048,7 +1062,7 @@ async function generateRecoveryPlan(patientData) {
             // PERSONALIZED GREETING (uses name, age, gender, occupation, symptoms)
             understanding: `${getPersonalizedGreeting(name, age, gender)}
 
-${surgeryInfo.hasSurgery ? buildSurgeryValidationPhrase(problemStatement, name, age, areaKey, painLevel, surgeryInfo.isMajor ? 'major' : 'minor') : buildValidationPhrase(problemStatement, occupation, name, age, areaKey, painLevel)}
+${surgeryInfo.hasSurgery ? buildSurgeryValidationPhrase(problemStatement, name, age, areaKey, painLevel, surgeryInfo.isMajor ? 'major' : 'minor', onlineDiagnosis) : buildValidationPhrase(problemStatement, occupation, name, age, areaKey, painLevel, onlineDiagnosis)}
 
 ${conditions.length > 0 ? `<strong>Medical Profile Noted:</strong> Your conditions (${conditions.join(", ")}) have been carefully factored into every recommendation below.` : ""}
 
