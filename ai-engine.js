@@ -1069,8 +1069,8 @@ ${painData.description}
 
 👉 <strong>Book Dr. Vanshika now</strong> for expert-guided recovery.`,
 
-            // CAUSES - Now shows DEEPER WHY, not what user already told us
-            likelyCauses: `<strong>Why Your ${areaKey.charAt(0).toUpperCase() + areaKey.slice(1)} Is Hurting:</strong>
+            // CAUSES - Now shows DEEPER WHY (AI + Static)
+            likelyCauses: `${conditionData.causes ? `<strong>🔎 AI Analysis:</strong>\n${conditionData.causes}\n\n` : ''}<strong>Why Your ${areaKey.charAt(0).toUpperCase() + areaKey.slice(1)} Is Hurting:</strong>
 
 <strong>The Anatomy Behind Your Pain:</strong>
 ${areaKey === 'neck' ? `• <strong>Forward Head Posture:</strong> Every inch your head moves forward adds 10 lbs of strain on neck muscles
