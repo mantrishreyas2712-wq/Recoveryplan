@@ -638,27 +638,45 @@ function generateRecoveryPlan(patientData) {
     // Build deeply personalized report
     const report = {
         analysis: {
+            // SECTION 1: Empathetic greeting + validation + CTA to Dr. Vanshika
             understanding: `${ageData.greeting}
-            
-I understand you're dealing with ${conditionKey} in your ${areaKey}, specifically: "${patientData.problemStatement}". 
 
-${occData.workImpact}
+I can see you're experiencing "${patientData.problemStatement}" - and I want you to know that this is a very common concern, especially for someone in your profession (${occupation}). You've taken the right step by seeking help.
 
-${conditions.length > 0 ? `Your medical history (${conditions.join(", ")}) has been factored into these recommendations.` : ""}`,
+${conditions.length > 0 ? `I've noted your medical history (${conditions.join(", ")}) and this has been carefully considered in your personalized plan below.` : ""}
 
-            likelyCauses: `Based on your specific situation - ${age} years old, working as ${occupation}, with ${areaKey} ${conditionKey} - the most likely causes are:
+📋 **Below is your evidence-based recovery plan** with exercises, diet guidance, and a clear timeline. This plan is designed to be highly effective when followed consistently.
+
+💡 **However, for the best possible outcome**, I strongly recommend booking a one-on-one consultation with **Dr. Vanshika** - a certified physiotherapy specialist who can:
+• Physically assess your condition and identify the exact problem
+• Customize these exercises to your specific body mechanics  
+• Monitor your progress and adjust the plan as you heal
+• Address any complications early before they become serious
+
+👉 **Click "Book Dr. Vanshika" below to schedule your consultation** and get expert guidance that can accelerate your recovery by 40-60%.`,
+
+            // SECTION 2: Clinical causes (purely diagnostic)
+            likelyCauses: `**What's likely causing your ${areaKey} ${conditionKey}:**
 
 ${conditionData.causes}.
 
-${ageData.metabolismNote}`,
+**Contributing factors in your case:**
+• Age (${age} years): ${parseInt(age) < 30 ? "Your tissues are resilient, but overuse can still cause strain" : parseInt(age) < 50 ? "Some natural wear may be contributing" : "Age-related changes may be a factor"}
+• Occupation (${occupation}): ${occData.workImpact}`,
 
+            // SECTION 3: Severity assessment
             severity: conditionData.severity,
 
-            prognosis: `${conditionData.prognosis}
+            // SECTION 4: Recovery outlook (purely prognostic)
+            prognosis: `**Your Recovery Outlook:**
 
-${ageData.recovery}
+${conditionData.prognosis}
 
-${ageData.caution}`
+**Based on your age (${age}):** ${ageData.recovery}
+
+**Important:** ${ageData.caution}
+
+⚡ **With expert guidance from Dr. Vanshika**, many patients see results 2-3 weeks faster than self-treatment alone.`
         },
 
         exercisePlan: {
@@ -666,7 +684,9 @@ ${ageData.caution}`
 
 ${ageData.exerciseIntensity}
 
-Perform these exercises ${parseInt(age) > 50 ? "once daily, gently" : "2-3 times daily for best results"}.`,
+Perform these exercises ${parseInt(age) > 50 ? "once daily, gently" : "2-3 times daily for best results"}.
+
+⚠️ **Note:** These are general exercises. Dr. Vanshika can demonstrate proper form and modify them based on your exact condition.`,
 
             selectedExercises: conditionData.exercises.map(ex => ({
                 ...ex,
@@ -694,20 +714,45 @@ Perform these exercises ${parseInt(age) > 50 ? "once daily, gently" : "2-3 times
         },
 
         consultation: {
-            urgency: `Based on your age (${age}) and condition, ${parseInt(age) > 50 ? "I recommend consulting a physiotherapist within the first week" : "start with home exercises and consult if no improvement in 2 weeks"}.`,
+            urgency: `${name}, while this plan is comprehensive, ${parseInt(age) > 50 ? "I strongly recommend" : "I recommend"} booking a session with **Dr. Vanshika** for:
+• Professional hands-on assessment
+• Personalized exercise modifications
+• Faster recovery with expert guidance
+
+${parseInt(age) > 50 ? "At your age, professional supervision ensures safety and optimal results." : "Expert guidance can prevent this from becoming a recurring issue."}`,
             specialists: conditionData.specialists,
             redFlags: conditionData.redFlags,
-            followUp: `${name}, if any of these warning signs appear, seek immediate medical attention. Otherwise, monitor your progress weekly.`
+            followUp: `${name}, if any of these warning signs appear, seek immediate medical attention. Otherwise, book with Dr. Vanshika for your follow-up assessment.`,
+            drVanshikaCTA: true // Flag for special button
         },
 
         recoveryTimeline: {
-            week1: `Week 1: ${ageData.timeline.replace("${age}", age)} Focus on pain reduction and gentle mobility. Apply ice (15-20 min) if there's inflammation. ${parseInt(age) > 50 ? "Rest more, exercise gently." : "You can exercise 2-3 times daily."}`,
+            week1: `**Week 1 - Foundation Phase**
+${ageData.timeline.replace("${age}", age)} 
 
-            week2_3: `Week 2-3: ${name}, you should start noticing improvement. Gradually increase exercise duration. ${parseInt(age) < 30 ? "Your body heals fast - you may feel much better already!" : "Patience is key - every day brings small improvements."}`,
+Focus on: Pain reduction and gentle mobility
+Ice therapy: 15-20 min if inflammation present
+Exercise frequency: ${parseInt(age) > 50 ? "Once daily, very gently" : "2-3 times daily"}
 
-            longTerm: `Long-term: ${occData.returnToWork} Continue maintenance exercises ${parseInt(age) < 40 ? "3-4 times per week" : "daily"} to prevent recurrence. 
+💡 *Booking Dr. Vanshika this week ensures you start with correct form.*`,
 
-${name}, remember: prevention is better than cure. The habits you build now will protect you for years to come.`
+            week2_3: `**Week 2-3 - Progress Phase**
+${name}, you should start noticing improvement now.
+
+${parseInt(age) < 30 ? "Your body heals fast - you may feel significantly better already!" : "Patience is key - celebrate small daily improvements."}
+
+Gradually increase exercise duration and intensity.
+
+💡 *A mid-recovery check-in with Dr. Vanshika can fine-tune your program.*`,
+
+            longTerm: `**Long-term - Maintenance & Prevention**
+${occData.returnToWork}
+
+Continue maintenance exercises ${parseInt(age) < 40 ? "3-4 times per week" : "daily"} to prevent recurrence.
+
+${name}, the habits you build now will protect you for years. Prevention is always better than cure.
+
+👉 **Consider a monthly check-in with Dr. Vanshika** to maintain your gains and catch any issues early.`
         }
     };
 

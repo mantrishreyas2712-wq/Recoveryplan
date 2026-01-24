@@ -154,24 +154,48 @@ function renderResults(plan, userData) {
         `;
     }).join('');
 
+    // Dr. Vanshika WhatsApp link
+    const drVanshikaMsg = encodeURIComponent(`Hi Dr. Vanshika, I just generated a PhysioAssist Recovery Plan for my ${userData.problemArea} problem. I'd like to book a consultation to get your expert guidance.`);
+    const drVanshikaLink = `https://wa.me/?text=${drVanshikaMsg}`;
+
     // Inject HTML
     resultsSection.innerHTML = `
         <div class="results-header">
             <h2>Recovery Plan for ${userData.name}</h2>
             
-            <!-- 1. AI SPECIALIST ANALYSIS -->
-            <div class="ai-insight" style="background:#F0F9FF; padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid #BAE6FD;">
-                <strong style="color:#0284C7; display:block; margin-bottom:0.5rem;">💡 Personalized Analysis</strong>
+            <!-- 1. PERSONALIZED ANALYSIS + DR VANSHIKA CTA -->
+            <div class="ai-insight" style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid #7DD3FC;">
+                <strong style="color:#0284C7; display:block; margin-bottom:0.5rem; font-size: 1.1rem;">💡 Your Personalized Assessment</strong>
                 <p style="font-size:1.05rem; line-height:1.8; color:#0C4A6E; white-space: pre-line;">${plan.analysis.understanding}</p>
+                
+                <!-- PROMINENT DR VANSHIKA CTA -->
+                <div style="margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, #059669 0%, #10B981 100%); border-radius: 10px; text-align: center;">
+                    <a href="${drVanshikaLink}" target="_blank" style="display: inline-block; color: white; text-decoration: none; font-weight: 600; font-size: 1.1rem;">
+                        👩‍⚕️ Book Dr. Vanshika Now - Get Expert Guidance
+                    </a>
+                    <p style="color: rgba(255,255,255,0.9); margin: 0.5rem 0 0 0; font-size: 0.85rem;">Certified Physiotherapist • 40-60% Faster Recovery • Personalized Care</p>
+                </div>
             </div>
 
-            <!-- 2. CONDITION DETAILS -->
-            <div class="condition-badge" style="margin-top:0; background: #FEF3C7; border: 1px solid #FCD34D;">
-                <span class="icon">🩺</span>
-                <div>
-                    <strong>Likely Causes & Prognosis</strong>
-                    <p style="white-space: pre-line;">${plan.analysis.likelyCauses}</p>
-                    <p style="margin-top: 0.5rem; font-style: italic; color: #059669;">${plan.analysis.prognosis}</p>
+            <!-- 2. LIKELY CAUSES (Separate Section) -->
+            <div style="background: #FEF3C7; border: 1px solid #FCD34D; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                    <span style="font-size: 1.5rem;">🔍</span>
+                    <div>
+                        <strong style="color: #92400E; font-size: 1rem;">What's Causing This?</strong>
+                        <p style="white-space: pre-line; color: #78350F; margin-top: 0.5rem; line-height: 1.6;">${plan.analysis.likelyCauses}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. PROGNOSIS / RECOVERY OUTLOOK (Separate Section) -->
+            <div style="background: #ECFDF5; border: 1px solid #6EE7B7; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                    <span style="font-size: 1.5rem;">📈</span>
+                    <div>
+                        <strong style="color: #065F46; font-size: 1rem;">Your Recovery Outlook</strong>
+                        <p style="white-space: pre-line; color: #047857; margin-top: 0.5rem; line-height: 1.6;">${plan.analysis.prognosis}</p>
+                    </div>
                 </div>
             </div>
 
