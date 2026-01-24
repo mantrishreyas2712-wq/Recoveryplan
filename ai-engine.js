@@ -1215,25 +1215,46 @@ function findVerifiedVideo(exerciseName) {
 }
 
 // --- ENRICHMENT LOGIC ---
-// Use inline SVG data URL as reliable placeholder (never grey)
-function getPlaceholderThumbnail(name) {
-    // Generate a color based on exercise name for variety
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) { hash = name.charCodeAt(i) + ((hash << 5) - hash); }
-    const colors = ['10B981', '3B82F6', '8B5CF6', 'EC4899', 'F59E0B', '06B6D4'];
-    const color = colors[Math.abs(hash) % colors.length];
+// Use Unsplash Source API for real exercise images (free, no API key needed)
+function getExerciseThumbnail(name) {
+    // Map exercise keywords to better search terms
+    const searchTerms = {
+        'neck': 'neck+stretch+exercise',
+        'chin': 'neck+posture+exercise',
+        'shoulder': 'shoulder+stretch+exercise',
+        'pendulum': 'shoulder+mobility+exercise',
+        'back': 'back+stretch+yoga',
+        'cat': 'cat+cow+yoga+stretch',
+        'cow': 'cat+cow+yoga+stretch',
+        'child': 'child+pose+yoga',
+        'bridge': 'glute+bridge+exercise',
+        'knee': 'knee+exercise+physiotherapy',
+        'quad': 'quad+exercise+leg',
+        'leg': 'leg+raise+exercise',
+        'ankle': 'ankle+exercise+stretch',
+        'calf': 'calf+raise+exercise',
+        'wrist': 'wrist+stretch+exercise',
+        'hip': 'hip+flexor+stretch',
+        'hamstring': 'hamstring+stretch',
+        'glute': 'glute+bridge+exercise',
+        'core': 'core+exercise+plank',
+        'stretch': 'stretching+exercise+fitness'
+    };
 
-    // SVG placeholder with play button and exercise emoji
-    const svg = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180">
-            <rect fill="%23${color}" width="320" height="180"/>
-            <circle cx="160" cy="90" r="35" fill="white" opacity="0.9"/>
-            <polygon points="150,75 150,105 175,90" fill="%23${color}"/>
-            <text x="160" y="150" text-anchor="middle" fill="white" font-size="12" font-family="Arial">🏃 ${encodeURIComponent(name.substring(0, 20))}</text>
-        </svg>
-    `.replace(/\n/g, '').replace(/\s+/g, ' ');
+    // Find matching search term or use default
+    const lowerName = name.toLowerCase();
+    let searchQuery = 'physiotherapy+exercise+stretch';
 
-    return `data:image/svg+xml,${svg}`;
+    for (const [keyword, query] of Object.entries(searchTerms)) {
+        if (lowerName.includes(keyword)) {
+            searchQuery = query;
+            break;
+        }
+    }
+
+    // Use Unsplash Source API (free, no key needed, reliable CDN)
+    // Returns a random image matching the query at 320x180 size
+    return `https://source.unsplash.com/320x180/?${searchQuery}`;
 }
 
 // --- AMAZON AFFILIATE EQUIPMENT LINKS ---
@@ -1324,8 +1345,8 @@ function enrichWithSmartLinks(plan) {
     if (plan.exercisePlan?.selectedExercises) {
         plan.exercisePlan.selectedExercises = plan.exercisePlan.selectedExercises.map((ex) => {
             const query = encodeURIComponent(`${ex.name} exercise physical therapy`);
-            // Always use colorful placeholder (YouTube IDs can become invalid)
-            let thumbUrl = getPlaceholderThumbnail(ex.name || 'exercise');
+            // Use Unsplash for real exercise photos
+            let thumbUrl = getExerciseThumbnail(ex.name || 'exercise');
             let videoUrl = `https://www.youtube.com/results?search_query=${query}`;
 
             // Check for equipment - prioritize clinic detection first
