@@ -183,6 +183,171 @@ function calculateNutrition(weight, height, age, gender, activityLevel = 'modera
     };
 }
 
+// --- DETAILED MEAL PLAN GENERATOR ---
+function generateMealPlan(nutritionData, dietPref, bmiCategory) {
+    const { calories, protein, carbs, fats, water } = nutritionData;
+
+    // Calculate per-meal targets (Breakfast 25%, Lunch 35%, Dinner 25%, Snacks 15%)
+    const mealSplit = {
+        breakfast: { calPct: 0.25, proteinPct: 0.25 },
+        lunch: { calPct: 0.35, proteinPct: 0.35 },
+        dinner: { calPct: 0.25, proteinPct: 0.30 },
+        snacks: { calPct: 0.15, proteinPct: 0.10 }
+    };
+
+    const isVeg = dietPref === 'vegetarian' || dietPref === 'vegan';
+    const needsWeightLoss = bmiCategory === 'Overweight' || bmiCategory === 'Obese';
+
+    // VEG/NON-VEG FOOD DATABASE with macros per 100g
+    const foods = {
+        // BREAKFAST OPTIONS
+        breakfast: {
+            veg: [
+                { name: 'Oats (cooked)', protein: 5, carbs: 27, fats: 3, cal: 150 },
+                { name: 'Poha', protein: 3, carbs: 25, fats: 4, cal: 130 },
+                { name: 'Idli (2 pcs)', protein: 4, carbs: 20, fats: 1, cal: 100 },
+                { name: 'Besan Chilla', protein: 8, carbs: 18, fats: 5, cal: 140 },
+                { name: 'Moong Dal Dosa', protein: 7, carbs: 20, fats: 3, cal: 130 },
+                { name: 'Upma', protein: 4, carbs: 22, fats: 4, cal: 130 }
+            ],
+            nonveg: [
+                { name: 'Egg Whites Omelette (3)', protein: 11, carbs: 1, fats: 0, cal: 50 },
+                { name: 'Boiled Eggs (2)', protein: 13, carbs: 1, fats: 10, cal: 155 },
+                { name: 'Egg Bhurji', protein: 12, carbs: 3, fats: 11, cal: 160 }
+            ]
+        },
+        // LUNCH OPTIONS
+        lunch: {
+            veg: [
+                { name: 'Brown Rice', protein: 3, carbs: 25, fats: 1, cal: 110 },
+                { name: 'Roti (2 pcs)', protein: 6, carbs: 30, fats: 2, cal: 160 },
+                { name: 'Dal (1 bowl)', protein: 9, carbs: 20, fats: 2, cal: 120 },
+                { name: 'Paneer Sabzi', protein: 18, carbs: 4, fats: 20, cal: 265 },
+                { name: 'Rajma', protein: 9, carbs: 23, fats: 1, cal: 127 },
+                { name: 'Chole', protein: 8, carbs: 27, fats: 5, cal: 164 },
+                { name: 'Mixed Veg Sabzi', protein: 3, carbs: 10, fats: 3, cal: 70 }
+            ],
+            nonveg: [
+                { name: 'Grilled Chicken Breast', protein: 31, carbs: 0, fats: 4, cal: 165 },
+                { name: 'Fish Curry', protein: 22, carbs: 5, fats: 8, cal: 180 },
+                { name: 'Egg Curry (2 eggs)', protein: 14, carbs: 6, fats: 12, cal: 190 }
+            ]
+        },
+        // DINNER OPTIONS
+        dinner: {
+            veg: [
+                { name: 'Roti (1 pc)', protein: 3, carbs: 15, fats: 1, cal: 80 },
+                { name: 'Khichdi', protein: 6, carbs: 25, fats: 3, cal: 140 },
+                { name: 'Vegetable Soup', protein: 2, carbs: 10, fats: 1, cal: 50 },
+                { name: 'Palak Paneer', protein: 14, carbs: 8, fats: 18, cal: 240 },
+                { name: 'Tofu Stir Fry', protein: 12, carbs: 5, fats: 8, cal: 140 },
+                { name: 'Moong Dal', protein: 7, carbs: 15, fats: 1, cal: 100 }
+            ],
+            nonveg: [
+                { name: 'Grilled Fish', protein: 26, carbs: 0, fats: 5, cal: 150 },
+                { name: 'Chicken Tikka', protein: 25, carbs: 3, fats: 8, cal: 180 },
+                { name: 'Egg Salad', protein: 10, carbs: 5, fats: 8, cal: 130 }
+            ]
+        },
+        // SNACK OPTIONS
+        snacks: {
+            veg: [
+                { name: 'Greek Yogurt', protein: 10, carbs: 4, fats: 0, cal: 60 },
+                { name: 'Roasted Chana', protein: 8, carbs: 18, fats: 3, cal: 120 },
+                { name: 'Mixed Nuts (small)', protein: 5, carbs: 6, fats: 14, cal: 160 },
+                { name: 'Fruit (Apple/Banana)', protein: 1, carbs: 25, fats: 0, cal: 95 },
+                { name: 'Sprouts Salad', protein: 7, carbs: 15, fats: 1, cal: 90 }
+            ],
+            nonveg: [
+                { name: 'Boiled Egg', protein: 6, carbs: 0, fats: 5, cal: 78 }
+            ]
+        }
+    };
+
+    // GENERATE MEAL PLAN
+    function buildMeal(mealType, targetCals, targetProtein) {
+        const vegOptions = foods[mealType].veg;
+        const nonvegOptions = isVeg ? [] : foods[mealType].nonveg;
+        const allOptions = [...vegOptions, ...(isVeg ? [] : nonvegOptions)];
+
+        // Select items to hit targets
+        const selected = [];
+        let totalProtein = 0, totalCals = 0, totalCarbs = 0, totalFats = 0;
+
+        // Shuffle and pick
+        const shuffled = allOptions.sort(() => Math.random() - 0.5);
+
+        for (const food of shuffled) {
+            if (totalCals < targetCals * 0.9) {
+                // Calculate portion to fit remaining calories
+                const remainingCals = targetCals - totalCals;
+                const portion = Math.min(Math.round((remainingCals / food.cal) * 100), 200); // Max 200g per item
+
+                if (portion >= 50) { // Minimum 50g portion
+                    selected.push({
+                        item: food.name,
+                        quantity: `${portion}g`,
+                        protein: Math.round(food.protein * portion / 100),
+                        carbs: Math.round(food.carbs * portion / 100),
+                        fats: Math.round(food.fats * portion / 100),
+                        cal: Math.round(food.cal * portion / 100)
+                    });
+                    totalProtein += food.protein * portion / 100;
+                    totalCals += food.cal * portion / 100;
+                    totalCarbs += food.carbs * portion / 100;
+                    totalFats += food.fats * portion / 100;
+                }
+            }
+            if (selected.length >= 3) break; // Max 3 items per meal
+        }
+
+        return {
+            items: selected,
+            totals: {
+                protein: Math.round(totalProtein),
+                carbs: Math.round(totalCarbs),
+                fats: Math.round(totalFats),
+                cal: Math.round(totalCals)
+            }
+        };
+    }
+
+    // Build complete meal plan
+    const mealPlan = {
+        breakfast: buildMeal('breakfast', calories * mealSplit.breakfast.calPct, protein * mealSplit.breakfast.proteinPct),
+        lunch: buildMeal('lunch', calories * mealSplit.lunch.calPct, protein * mealSplit.lunch.proteinPct),
+        dinner: buildMeal('dinner', calories * mealSplit.dinner.calPct, protein * mealSplit.dinner.proteinPct),
+        snacks: buildMeal('snacks', calories * mealSplit.snacks.calPct, protein * mealSplit.snacks.proteinPct)
+    };
+
+    // Calculate daily totals
+    const dailyTotals = {
+        protein: mealPlan.breakfast.totals.protein + mealPlan.lunch.totals.protein + mealPlan.dinner.totals.protein + mealPlan.snacks.totals.protein,
+        carbs: mealPlan.breakfast.totals.carbs + mealPlan.lunch.totals.carbs + mealPlan.dinner.totals.carbs + mealPlan.snacks.totals.carbs,
+        fats: mealPlan.breakfast.totals.fats + mealPlan.lunch.totals.fats + mealPlan.dinner.totals.fats + mealPlan.snacks.totals.fats,
+        cal: mealPlan.breakfast.totals.cal + mealPlan.lunch.totals.cal + mealPlan.dinner.totals.cal + mealPlan.snacks.totals.cal
+    };
+
+    // Weight loss note
+    const weightNote = needsWeightLoss
+        ? `This plan creates a mild calorie deficit for healthy weight loss (0.3-0.5kg/week). Stick to portion sizes for best results.`
+        : `This plan maintains your current healthy weight while supporting tissue repair.`;
+
+    return {
+        ...mealPlan,
+        dailyTotals,
+        waterIntake: water,
+        weightNote,
+        timing: {
+            breakfast: '7:00 - 8:30 AM',
+            midMorningSnack: '10:30 - 11:00 AM',
+            lunch: '12:30 - 1:30 PM',
+            eveningSnack: '4:00 - 5:00 PM',
+            dinner: '7:00 - 8:00 PM'
+        }
+    };
+}
+
 // --- PAIN LEVEL INTERPRETATION ---
 function getPainInterpretation(painLevel, name) {
     const level = parseInt(painLevel) || 5;
@@ -873,6 +1038,8 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
             // Personalized Nutrition from BMI
             bmi: bmiData,
             nutrition: nutritionData,
+            // Detailed Meal Plan (uses dietPref for veg/non-veg)
+            mealPlan: generateMealPlan(nutritionData, dietPref, bmiData.category),
             personalizedMacros: `<strong>Your Daily Nutrition Targets (Based on ${weight}kg, ${height}cm):</strong>
 • <strong>Calories:</strong> ${nutritionData.calories} kcal/day
 • <strong>Protein:</strong> ${nutritionData.protein}g (essential for tissue repair)

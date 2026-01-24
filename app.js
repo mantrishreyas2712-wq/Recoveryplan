@@ -418,6 +418,161 @@ function renderResults(plan, userData) {
                         </ul>
                     </div>
                     ` : ''}
+                    
+                    ${plan.dietRecommendations.mealPlan ? `
+                    <!-- DETAILED MEAL PLAN -->
+                    <div style="margin-top: 1.5rem; border-top: 2px solid #E5E7EB; padding-top: 1.5rem;">
+                        <h4 style="color: #059669; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                            🍽️ Your Daily Meal Chart
+                            <span style="font-size: 0.75rem; background: #D1FAE5; color: #065F46; padding: 0.2rem 0.5rem; border-radius: 4px;">${plan.dietRecommendations.mealPlan.weightNote ? 'Weight-aware' : ''}</span>
+                        </h4>
+                        
+                        <!-- BREAKFAST -->
+                        <div style="background: #FEF3C7; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong style="color: #92400E;">🌅 Breakfast</strong>
+                                <span style="font-size: 0.75rem; color: #78350F;">${plan.dietRecommendations.mealPlan.timing.breakfast}</span>
+                            </div>
+                            <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
+                                <tr style="background: #FDE68A;">
+                                    <th style="text-align: left; padding: 0.4rem;">Food</th>
+                                    <th style="text-align: center; padding: 0.4rem;">Qty</th>
+                                    <th style="text-align: center; padding: 0.4rem;">P</th>
+                                    <th style="text-align: center; padding: 0.4rem;">C</th>
+                                    <th style="text-align: center; padding: 0.4rem;">F</th>
+                                </tr>
+                                ${plan.dietRecommendations.mealPlan.breakfast.items.map(item => `
+                                <tr style="border-bottom: 1px solid #FCD34D;">
+                                    <td style="padding: 0.4rem;">${item.item}</td>
+                                    <td style="text-align: center; padding: 0.4rem; font-weight: 600;">${item.quantity}</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.protein}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.carbs}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.fats}g</td>
+                                </tr>
+                                `).join('')}
+                                <tr style="background: #FDE68A; font-weight: 600;">
+                                    <td style="padding: 0.4rem;">Total</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.breakfast.totals.cal} cal</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.breakfast.totals.protein}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.breakfast.totals.carbs}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.breakfast.totals.fats}g</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- LUNCH -->
+                        <div style="background: #DBEAFE; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong style="color: #1E40AF;">☀️ Lunch</strong>
+                                <span style="font-size: 0.75rem; color: #1E3A8A;">${plan.dietRecommendations.mealPlan.timing.lunch}</span>
+                            </div>
+                            <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
+                                <tr style="background: #93C5FD;">
+                                    <th style="text-align: left; padding: 0.4rem;">Food</th>
+                                    <th style="text-align: center; padding: 0.4rem;">Qty</th>
+                                    <th style="text-align: center; padding: 0.4rem;">P</th>
+                                    <th style="text-align: center; padding: 0.4rem;">C</th>
+                                    <th style="text-align: center; padding: 0.4rem;">F</th>
+                                </tr>
+                                ${plan.dietRecommendations.mealPlan.lunch.items.map(item => `
+                                <tr style="border-bottom: 1px solid #93C5FD;">
+                                    <td style="padding: 0.4rem;">${item.item}</td>
+                                    <td style="text-align: center; padding: 0.4rem; font-weight: 600;">${item.quantity}</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.protein}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.carbs}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.fats}g</td>
+                                </tr>
+                                `).join('')}
+                                <tr style="background: #93C5FD; font-weight: 600;">
+                                    <td style="padding: 0.4rem;">Total</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.lunch.totals.cal} cal</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.lunch.totals.protein}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.lunch.totals.carbs}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.lunch.totals.fats}g</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- DINNER -->
+                        <div style="background: #E0E7FF; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong style="color: #4338CA;">🌙 Dinner</strong>
+                                <span style="font-size: 0.75rem; color: #3730A3;">${plan.dietRecommendations.mealPlan.timing.dinner}</span>
+                            </div>
+                            <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
+                                <tr style="background: #A5B4FC;">
+                                    <th style="text-align: left; padding: 0.4rem;">Food</th>
+                                    <th style="text-align: center; padding: 0.4rem;">Qty</th>
+                                    <th style="text-align: center; padding: 0.4rem;">P</th>
+                                    <th style="text-align: center; padding: 0.4rem;">C</th>
+                                    <th style="text-align: center; padding: 0.4rem;">F</th>
+                                </tr>
+                                ${plan.dietRecommendations.mealPlan.dinner.items.map(item => `
+                                <tr style="border-bottom: 1px solid #A5B4FC;">
+                                    <td style="padding: 0.4rem;">${item.item}</td>
+                                    <td style="text-align: center; padding: 0.4rem; font-weight: 600;">${item.quantity}</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.protein}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.carbs}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.fats}g</td>
+                                </tr>
+                                `).join('')}
+                                <tr style="background: #A5B4FC; font-weight: 600;">
+                                    <td style="padding: 0.4rem;">Total</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.dinner.totals.cal} cal</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.dinner.totals.protein}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.dinner.totals.carbs}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.dinner.totals.fats}g</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- SNACKS -->
+                        <div style="background: #D1FAE5; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong style="color: #065F46;">🥜 Snacks</strong>
+                                <span style="font-size: 0.75rem; color: #047857;">${plan.dietRecommendations.mealPlan.timing.midMorningSnack} / ${plan.dietRecommendations.mealPlan.timing.eveningSnack}</span>
+                            </div>
+                            <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
+                                <tr style="background: #6EE7B7;">
+                                    <th style="text-align: left; padding: 0.4rem;">Food</th>
+                                    <th style="text-align: center; padding: 0.4rem;">Qty</th>
+                                    <th style="text-align: center; padding: 0.4rem;">P</th>
+                                    <th style="text-align: center; padding: 0.4rem;">C</th>
+                                    <th style="text-align: center; padding: 0.4rem;">F</th>
+                                </tr>
+                                ${plan.dietRecommendations.mealPlan.snacks.items.map(item => `
+                                <tr style="border-bottom: 1px solid #6EE7B7;">
+                                    <td style="padding: 0.4rem;">${item.item}</td>
+                                    <td style="text-align: center; padding: 0.4rem; font-weight: 600;">${item.quantity}</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.protein}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.carbs}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${item.fats}g</td>
+                                </tr>
+                                `).join('')}
+                                <tr style="background: #6EE7B7; font-weight: 600;">
+                                    <td style="padding: 0.4rem;">Total</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.snacks.totals.cal} cal</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.snacks.totals.protein}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.snacks.totals.carbs}g</td>
+                                    <td style="text-align: center; padding: 0.4rem;">${plan.dietRecommendations.mealPlan.snacks.totals.fats}g</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- DAILY TOTALS -->
+                        <div style="background: linear-gradient(135deg, #059669, #10B981); border-radius: 10px; padding: 1rem; color: white;">
+                            <strong>📊 Daily Totals:</strong>
+                            <div style="display: flex; justify-content: space-around; margin-top: 0.5rem; text-align: center;">
+                                <div><div style="font-size: 1.2rem; font-weight: 700;">${plan.dietRecommendations.mealPlan.dailyTotals.cal}</div><div style="font-size: 0.7rem; opacity: 0.9;">Calories</div></div>
+                                <div><div style="font-size: 1.2rem; font-weight: 700;">${plan.dietRecommendations.mealPlan.dailyTotals.protein}g</div><div style="font-size: 0.7rem; opacity: 0.9;">Protein</div></div>
+                                <div><div style="font-size: 1.2rem; font-weight: 700;">${plan.dietRecommendations.mealPlan.dailyTotals.carbs}g</div><div style="font-size: 0.7rem; opacity: 0.9;">Carbs</div></div>
+                                <div><div style="font-size: 1.2rem; font-weight: 700;">${plan.dietRecommendations.mealPlan.dailyTotals.fats}g</div><div style="font-size: 0.7rem; opacity: 0.9;">Fats</div></div>
+                                <div><div style="font-size: 1.2rem; font-weight: 700;">${plan.dietRecommendations.mealPlan.waterIntake}L</div><div style="font-size: 0.7rem; opacity: 0.9;">Water</div></div>
+                            </div>
+                            <p style="margin: 0.75rem 0 0 0; font-size: 0.8rem; opacity: 0.9; text-align: center;">${plan.dietRecommendations.mealPlan.weightNote}</p>
+                        </div>
+                    </div>
+                    ` : ''}
                 </div>
 
                 <!-- TIMELINE SECTION (ENHANCED) -->
