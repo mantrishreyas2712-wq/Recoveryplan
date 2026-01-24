@@ -837,19 +837,19 @@ function getDietPersonalization(dietPreference, problemArea, name, age, conditio
         ? `${name}, hydration is critical for healing - aim for 3+ liters minimum. Dehydration worsens pain perception.`
         : `Aim for 2.5-3 liters of water daily. Well-hydrated tissues heal faster.`;
 
-    // MEDICAL CONDITION NOTES
+    // MEDICAL CONDITION NOTES (Clean text, icons handled in UI)
     if (hasDiabetes) {
-        result.conditionNotes.push("⚠️ DIABETES: Avoid sugars, choose low-glycemic foods, monitor blood sugar.");
+        result.conditionNotes.push("DIABETES: Avoid sugars, choose low-glycemic foods, monitor blood sugar.");
         result.foodsToAvoid.push("White rice and maida in excess");
         result.foodsToAvoid.push("Fruit juices and sugary drinks");
     }
     if (hasBP) {
-        result.conditionNotes.push("⚠️ HIGH BP: Limit salt strictly. Avoid pickles, papad, processed foods.");
+        result.conditionNotes.push("HIGH BP: Limit salt strictly. Avoid pickles, papad, processed foods.");
         result.foodsToAvoid.push("High-sodium foods");
         result.foodsToAvoid.push("Canned/packaged items");
     }
     if (hasHeart) {
-        result.conditionNotes.push("⚠️ HEART CONDITION: Focus on heart-healthy fats. Limit saturated fats, avoid trans fats.");
+        result.conditionNotes.push("HEART CONDITION: Focus on heart-healthy fats. Limit saturated fats, avoid trans fats.");
         result.foodsToAvoid.push("Fried foods");
         result.foodsToAvoid.push("Butter and cream in excess");
         result.keyFoods.push("Walnuts and flaxseeds (omega-3)");
@@ -1253,7 +1253,8 @@ function getExerciseThumbnail(name) {
     // Use LoremFlickr (Reliable, free, no rate limits for this usage)
     const cleanName = String(name || 'exercise').replace(/[^a-zA-Z ]/g, '').trim();
     // Use diverse keywords to get varied images
-    const keywords = `physiotherapy,exercise,fitness,${cleanName.split(' ')[0]}`;
+    const keywords = `physiotherapy,stretching,fitness,${cleanName.split(' ')[0]}`;
+    // Lock to ensure consistency for the same exercise name
     return `https://loremflickr.com/320/180/${keywords}/all?lock=${cleanName.length}`;
 }
 

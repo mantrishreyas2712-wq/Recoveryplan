@@ -485,16 +485,19 @@ body {
 .play-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    transition: 0.2s;
+    justify-content: flex-end;
+    padding-bottom: 0.5rem;
+    transition: 0.3s;
+    opacity: 0.9;
 }
 
 .play-overlay:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 100%);
+    opacity: 1;
 }
 
 .play-btn {
@@ -691,14 +694,16 @@ body {
     background: #E68A00;
     transform: scale(1.05);
 }
+
 /* --- PRINT OPTIMIZATION (PDF Generation) --- */
 @media print {
+
     /* Hide UI Elements */
-    .hero-section, 
-    .dynamic-bg, 
-    .business-bar, 
-    .input-group, 
-    .nav-buttons, 
+    .hero-section,
+    .dynamic-bg,
+    .business-bar,
+    .input-group,
+    .nav-buttons,
     .btn,
     .secondary-actions,
     .play-overlay,
@@ -720,7 +725,10 @@ body {
         width: 100%;
     }
 
-    .glass-panel, .exercise-card, .guideline-card, .results-header {
+    .glass-panel,
+    .exercise-card,
+    .guideline-card,
+    .results-header {
         box-shadow: none;
         border: 1px solid #ccc;
         page-break-inside: avoid;
@@ -747,7 +755,9 @@ body {
         color: #000;
     }
 
-    h2, h3, h4 {
+    h2,
+    h3,
+    h4 {
         color: #0F766E;
     }
 }
