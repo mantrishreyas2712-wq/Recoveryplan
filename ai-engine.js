@@ -72,7 +72,9 @@ function buildValidationPhrase(symptom, occupation, name, age, bodyArea, painLev
         painLevel <= 7 ? "this level of discomfort needs proper attention" :
             "this significant pain requires immediate, focused care";
 
-    return `${name}, I ${empathy} you're ${concern} "${symptom}" in your ${bodyArea}. ${ageContext}, and ${painContext}. Let's ${action} this ${support}.`;
+    // Fix: Redundant body area check
+    const symptomText = symptom.toLowerCase().includes(bodyArea.toLowerCase()) ? symptom : `"${symptom}" in your ${bodyArea}`;
+    return `${name}, I ${empathy} you're ${concern} ${symptomText}. ${ageContext}, and ${painContext}. Let's ${action} this ${support}.`;
 }
 
 function buildSurgeryValidationPhrase(symptom, name, age, bodyArea, painLevel, surgeryType) {
@@ -159,7 +161,10 @@ function calculateNutrition(weight, height, age, gender, activityLevel = 'modera
     const tdee = Math.round(bmr * activityMultipliers[activityLevel] || 1.375);
 
     // Calculate macros
-    const protein = Math.round(weight * 1.6); // 1.6g/kg for recovery
+    // Calculate macros
+    // Gender-specific protein targets (Men: 1.6g/kg, Women: 1.4g/kg for recovery)
+    const proteinMultiplier = gender === 'female' ? 1.4 : 1.6;
+    const protein = Math.round(weight * proteinMultiplier);
     const fats = Math.round((tdee * 0.25) / 9); // 25% of calories from fats
     const carbs = Math.round((tdee - (protein * 4) - (fats * 9)) / 4);
 
@@ -184,7 +189,7 @@ function calculateNutrition(weight, height, age, gender, activityLevel = 'modera
 }
 
 // --- DETAILED MEAL PLAN GENERATOR ---
-function generateMealPlan(nutritionData, dietPref, bmiCategory) {
+function generateMealPlan(nutritionData, dietPref, bmiCategory, age) {
     const { calories, protein, carbs, fats, water } = nutritionData;
 
     // Calculate per-meal targets (Breakfast 25%, Lunch 35%, Dinner 25%, Snacks 15%)
@@ -195,7 +200,7 @@ function generateMealPlan(nutritionData, dietPref, bmiCategory) {
         snacks: { calPct: 0.15, proteinPct: 0.10 }
     };
 
-    const isVeg = dietPref === 'vegetarian' || dietPref === 'vegan';
+    const isVeg = /veg/i.test(dietPref) || dietPref === 'vegetarian' || dietPref === 'vegan'; // Robust check
     const needsWeightLoss = bmiCategory === 'Overweight' || bmiCategory === 'Obese';
 
     // VEG/NON-VEG FOOD DATABASE with macros per 100g
@@ -263,6 +268,22 @@ function generateMealPlan(nutritionData, dietPref, bmiCategory) {
             ]
         }
     };
+
+    // SOFT FOOD ADJUSTMENTS FOR SENIORS (Age > 60)
+    if (age > 60) {
+        // Breakfast
+        foods.breakfast.veg.find(f => f.name.includes('Oats')).name = 'Soft Cooked Oats';
+
+        // Snacks - Replace hard items
+        const nuts = foods.snacks.veg.find(f => f.name.includes('Nuts'));
+        if (nuts) nuts.name = 'Powdered Nuts/Seeds mix';
+
+        const chana = foods.snacks.veg.find(f => f.name.includes('Chana'));
+        if (chana) chana.name = 'Roasted Chana Powder (Sattu) Drink';
+
+        const fruit = foods.snacks.veg.find(f => f.name.includes('Fruit'));
+        if (fruit) fruit.name = 'Soft Fruit (Papaya/Banana/Stewed Apple)';
+    }
 
     // GENERATE MEAL PLAN
     function buildMeal(mealType, targetCals, targetProtein) {
@@ -929,7 +950,11 @@ function generateRecoveryPlan(patientData) {
 
     // Get occupation and diet personalization
     const occData = getOccupationPersonalization(occupation, problemArea, name, painLevel);
+    // Pass age to meal plan generator
     const dietData = getDietPersonalization(dietPref, problemArea, name, age, conditions, painLevel);
+    // Re-generate detailed meal plan with age
+    const detailedMealPlan = generateMealPlan(dietData.nutrition, dietPref, bmiData.category, age);
+    dietData.mealPlan = detailedMealPlan;
 
     // Dynamic recovery speed based on age
     let recoverySpeed = "moderate";
@@ -1016,7 +1041,7 @@ ${!['neck', 'back', 'knee', 'shoulder', 'wrist', 'ankle'].includes(areaKey) ? `�
 ✅ Avoid positions that trigger pain
 ✅ Gentle movement better than complete rest` : ''}
 
-${bmiData.warning && ['knee', 'ankle', 'foot', 'back'].includes(areaKey) ? `<strong>⚠️ Weight Factor:</strong> BMI ${bmiData.bmi} (${bmiData.category}) - ${bmiData.jointImpact || bmiData.warning}` : ""}`,
+${bmiData.warning && ['knee', 'ankle', 'foot', 'back'].includes(areaKey) ? `<strong>Weight Factor:</strong> BMI ${bmiData.bmi} (${bmiData.category}) - ${bmiData.jointImpact || bmiData.warning}` : ""}`,
 
             severity: `${painData.severity} - Pain ${painLevel}/10`,
 
@@ -1215,46 +1240,15 @@ function findVerifiedVideo(exerciseName) {
 }
 
 // --- ENRICHMENT LOGIC ---
-// Use Unsplash Source API for real exercise images (free, no API key needed)
+// Use AI-Generated Images for thumbnails (Reliable, Context-Aware)
 function getExerciseThumbnail(name) {
-    // Map exercise keywords to better search terms
-    const searchTerms = {
-        'neck': 'neck+stretch+exercise',
-        'chin': 'neck+posture+exercise',
-        'shoulder': 'shoulder+stretch+exercise',
-        'pendulum': 'shoulder+mobility+exercise',
-        'back': 'back+stretch+yoga',
-        'cat': 'cat+cow+yoga+stretch',
-        'cow': 'cat+cow+yoga+stretch',
-        'child': 'child+pose+yoga',
-        'bridge': 'glute+bridge+exercise',
-        'knee': 'knee+exercise+physiotherapy',
-        'quad': 'quad+exercise+leg',
-        'leg': 'leg+raise+exercise',
-        'ankle': 'ankle+exercise+stretch',
-        'calf': 'calf+raise+exercise',
-        'wrist': 'wrist+stretch+exercise',
-        'hip': 'hip+flexor+stretch',
-        'hamstring': 'hamstring+stretch',
-        'glute': 'glute+bridge+exercise',
-        'core': 'core+exercise+plank',
-        'stretch': 'stretching+exercise+fitness'
-    };
+    // Generate a photorealistic image prompt
+    const cleanName = name.replace(/[^a-zA-Z ]/g, '').trim();
+    const prompt = encodeURIComponent(`${cleanName} exercise physiotherapy photorealistic bright lighting`);
 
-    // Find matching search term or use default
-    const lowerName = name.toLowerCase();
-    let searchQuery = 'physiotherapy+exercise+stretch';
-
-    for (const [keyword, query] of Object.entries(searchTerms)) {
-        if (lowerName.includes(keyword)) {
-            searchQuery = query;
-            break;
-        }
-    }
-
-    // Use Unsplash Source API (free, no key needed, reliable CDN)
-    // Returns a random image matching the query at 320x180 size
-    return `https://source.unsplash.com/320x180/?${searchQuery}`;
+    // Use Pollinations.ai (Free, High quality AI generation)
+    // Add seed to keep it consistent for the same exercise
+    return `https://image.pollinations.ai/prompt/${prompt}?width=320&height=180&nologo=true&seed=${cleanName.length}`;
 }
 
 // --- AMAZON AFFILIATE EQUIPMENT LINKS ---
