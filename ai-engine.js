@@ -988,7 +988,8 @@ async function generateRecoveryPlan(patientData) {
 
     // 2. Keyword Fallback (if Semantic didn't trigger or strictly for specific sports)
     if (!contextCause) {
-        if (pText.includes('slip') || pText.includes('fall') || pText.includes('accident')) {
+        // Expanded keywords to handle tense (fall/fell, slip/slipped, twist/twisted, hit/struck)
+        if (pText.includes('slip') || pText.includes('fall') || pText.includes('fell') || pText.includes('accident') || pText.includes('trauma') || pText.includes('hit') || pText.includes('struck') || pText.includes('crush')) {
             contextCause = `• Acute Impact/Injury: Sudden trauma detected via keywords.\n`;
         } else if (pText.includes('cricket') || pText.includes('tennis')) {
             contextCause = `• Rotational Sports Strain: Dynamic twisting movements.\n`;

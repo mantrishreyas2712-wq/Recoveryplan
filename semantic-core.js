@@ -14,7 +14,8 @@ const SemanticCore = {
             "I got into a fight", "someone hit me", "violent impact",
             "motorcycle crash", "twisted my ankle badly", "tumbled down",
             "fell off bike", "attacked by animal", "hit by shark", "punched in face",
-            "car accident", "lightning strike", "fell from height", "collision"
+            "car accident", "lightning strike", "fell from height", "collision",
+            "someone fell on me", "crushed by heavy object", "impact from person"
         ],
         // 2. HIGH IMPACT / SPORT (Active)
         'running': [
