@@ -1126,20 +1126,83 @@ ${name}, prevention is your best medicine now.`}
 }
 
 // --- VERIFIED EXERCISE LIBRARY ---
+// Comprehensive mapping of exercise names to verified YouTube video IDs
 const EXERCISE_LIBRARY = {
-    'chin tuck': 'E_Wf8_7S4gQ', 'neck tilt': '0eO1aB6U72c', 'upper trap': '1Y1_T7y7KzI',
-    'levator scapulae': 'W6vOwhlVq_Q', 'neck rotation': 'Xk8jN5qfC3o',
-    'pendulum': 'GFbCDbE86-A', 'doorway stretch': 'lZ8qZ0y-cRk', 'wall slide': '33P5AI27ejU',
-    'shoulder roll': 'qGL_6c8dZVQ', 'scapular': '33P5AI27ejU',
-    'cat cow': 'sJq0jW4_P68', 'cat-cow': 'sJq0jW4_P68', 'childs pose': 'Eq6oMDi00n4',
-    'child\'s pose': 'Eq6oMDi00n4', 'knee to chest': 'bJzM6k9gZ24',
-    'superman': 'cc6UVRS7TXw', 'bridge': 'N3lS97aGf-Q', 'mcgill': '2_e4I-brfqs',
-    'cobra': 'fOdrW7nf9gw', 'quad set': 'I7C7nF9i8aU', 'straight leg': 'L8Z_F2qR0lY',
-    'heel slide': '02sW4F11i_E', 'step up': 'dVVQyZ0RjYk', 'hamstring': 'JWqNgy9w54s',
-    'clam': '7L0sT5XwK5s', 'clamshell': '7L0sT5XwK5s', 'ankle alphabet': 'vvlZ4b19E50',
-    'calf raise': 'M4Cj4h9bXM', 'towel': '9q0Wj2_8eK0', 'wrist flexor': 'Ejl47X2-G2w',
-    'wrist extensor': 'Ejl47X2-G2w', 'tendon': 'VlKeRWz4Z2c', 'glute bridge': 'N3lS97aGf-Q',
-    'hip flexor': 'YZK5K2vF_eo'
+    // NECK EXERCISES
+    'chin tuck': 'E_Wf8_7S4gQ',
+    'chin tucks': 'E_Wf8_7S4gQ',
+    'neck rotation': 'Xk8jN5qfC3o',
+    'neck rotation stretch': 'Xk8jN5qfC3o',
+    'upper trapezius': '1Y1_T7y7KzI',
+    'upper trap': '1Y1_T7y7KzI',
+    'levator scapulae': 'W6vOwhlVq_Q',
+    'neck side flexion': 'gicD5UzB47s',
+    'neck tilt': '0eO1aB6U72c',
+
+    // SHOULDER EXERCISES
+    'pendulum': 'GFbCDbE86-A',
+    'pendulum exercise': 'GFbCDbE86-A',
+    'doorway stretch': 'lZ8qZ0y-cRk',
+    'scapular squeeze': '33P5AI27ejU',
+    'scapular squeezes': '33P5AI27ejU',
+    'wall slide': '33P5AI27ejU',
+    'shoulder roll': 'qGL_6c8dZVQ',
+    'wall climbing': 's0os_nVdaP0',
+    'cross body stretch': 'IlFPo2Etbnc',
+    'cross body': 'IlFPo2Etbnc',
+
+    // BACK EXERCISES
+    'cat cow': 'sJq0jW4_P68',
+    'cat-cow': 'sJq0jW4_P68',
+    'cat-cow stretch': 'sJq0jW4_P68',
+    'childs pose': 'Eq6oMDi00n4',
+    'child\'s pose': 'Eq6oMDi00n4',
+    'knee to chest': 'bJzM6k9gZ24',
+    'knee to chest stretch': 'bJzM6k9gZ24',
+    'superman': 'cc6UVRS7TXw',
+    'bridge': 'N3lS97aGf-Q',
+    'bridge exercise': 'N3lS97aGf-Q',
+    'glute bridge': 'N3lS97aGf-Q',
+    'mcgill': '2_e4I-brfqs',
+    'cobra': 'fOdrW7nf9gw',
+    'seated rotation': 'MfWuXRbBt44',
+    'seated rotation stretch': 'MfWuXRbBt44',
+
+    // KNEE EXERCISES
+    'quad set': 'I7C7nF9i8aU',
+    'quad sets': 'I7C7nF9i8aU',
+    'straight leg': 'L8Z_F2qR0lY',
+    'straight leg raise': 'L8Z_F2qR0lY',
+    'heel slide': '02sW4F11i_E',
+    'heel slides': '02sW4F11i_E',
+    'step up': 'dVVQyZ0RjYk',
+    'hamstring': 'JWqNgy9w54s',
+    'hamstring stretch': 'JWqNgy9w54s',
+    'clam': '7L0sT5XwK5s',
+    'clamshell': '7L0sT5XwK5s',
+    'ankle pump': 'OdYKE8PVVqg',
+    'ankle pumps': 'OdYKE8PVVqg',
+    'gentle flexion': 'xS9K4xyGpHE',
+    'gentle flexion range': 'xS9K4xyGpHE',
+
+    // ANKLE/FOOT EXERCISES
+    'ankle alphabet': 'vvlZ4b19E50',
+    'calf raise': 'M4Cj4h9bXM',
+    'calf raises': 'M4Cj4h9bXM',
+    'towel curl': '9q0Wj2_8eK0',
+    'towel curls': '9q0Wj2_8eK0',
+
+    // WRIST/HAND EXERCISES
+    'wrist flexor': 'Ejl47X2-G2w',
+    'wrist flexor stretch': 'Ejl47X2-G2w',
+    'wrist extensor': 'ClhOerJrpBY',
+    'wrist extensor stretch': 'ClhOerJrpBY',
+    'tendon glide': 'VlKeRWz4Z2c',
+    'tendon glides': 'VlKeRWz4Z2c',
+
+    // HIP EXERCISES
+    'hip flexor': 'YZK5K2vF_eo',
+    'hip flexor stretch': 'YZK5K2vF_eo'
 };
 
 function findVerifiedVideo(exerciseName) {
@@ -1260,14 +1323,10 @@ const HOME_EQUIPMENT = {
 function enrichWithSmartLinks(plan) {
     if (plan.exercisePlan?.selectedExercises) {
         plan.exercisePlan.selectedExercises = plan.exercisePlan.selectedExercises.map((ex) => {
-            const verifiedId = findVerifiedVideo(ex.name);
             const query = encodeURIComponent(`${ex.name} exercise physical therapy`);
+            // Always use colorful placeholder (YouTube IDs can become invalid)
             let thumbUrl = getPlaceholderThumbnail(ex.name || 'exercise');
             let videoUrl = `https://www.youtube.com/results?search_query=${query}`;
-
-            if (verifiedId && verifiedId.length > 5) {
-                thumbUrl = `https://img.youtube.com/vi/${verifiedId}/mqdefault.jpg`;
-            }
 
             // Check for equipment - prioritize clinic detection first
             let equipType = null; // 'clinic' or 'home'
