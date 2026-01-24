@@ -992,9 +992,22 @@ async function generateRecoveryPlan(patientData) {
             {
                "diagnosis": "Short medical name (e.g. Rotator Cuff Tendinitis)",
                "assessment": "2-3 sentences talking directly to the patient (use name ${name}). specific to their age, job, and mechanism of injury. Empathetic but clinical.",
-               "causes": "Bullet points explaining the anatomy and specific reasons (e.g. 'Your desk job causes x'). Use HTML <strong> tags for key terms."
+               "causes": "Bullet points explaining the anatomy and specific reasons (e.g. 'Your desk job causes x'). Use HTML <strong> tags for key terms.",
+               "recovery": {
+                  "timeline": "e.g. 6-8 weeks",
+                  "age_factor": "Specific comment on how their age ${age} affects healing.",
+                  "urgency": "High/Moderate/Low - Explain why briefly"
+               },
+               "nutrition": {
+                  "timing": { "breakfast": "8:00 AM", "lunch": "1:00 PM", "dinner": "8:00 PM", "midMorningSnack": "11:00 AM", "eveningSnack": "5:00 PM" },
+                  "breakfast": { "items": [{ "item": "e.g. Oats", "quantity": "1 bowl", "protein": 5, "carbs": 20, "fats": 3 }], "totals": { "cal": 150, "protein": 5, "carbs": 20, "fats": 3 } },
+                  "lunch": { "items": [{ "item": "e.g. Roti", "quantity": "2 pcs", "protein": 6, "carbs": 30, "fats": 2 }], "totals": { "cal": 200, "protein": 6, "carbs": 30, "fats": 2 } },
+                  "dinner": { "items": [{ "item": "e.g. Dal", "quantity": "1 bowl", "protein": 8, "carbs": 15, "fats": 2 }], "totals": { "cal": 150, "protein": 8, "carbs": 15, "fats": 2 } },
+                  "snacks": { "items": [{ "item": "e.g. Almonds", "quantity": "10 pcs", "protein": 3, "carbs": 2, "fats": 5 }], "totals": { "cal": 80, "protein": 3, "carbs": 2, "fats": 5 } }
+               }
             }
-            Do not use markdown blocks. JSON ONLY.`;
+            CRITICAL: Nutrition must be culturally appropriate (${dietPref}) and specific to conditions (${conditions.join(',')}). Estimate macros.
+            JSON ONLY. No markdown.`;
 
             const promptContext = `
             Patient: ${name}, ${age}yo ${gender}, Occupation: ${occupation}
@@ -1072,7 +1085,14 @@ async function generateRecoveryPlan(patientData) {
     // Pass age to meal plan generator
     const dietData = getDietPersonalization(dietPref, problemArea, name, age, conditions, painLevel);
     // Re-generate detailed meal plan with age
-    const detailedMealPlan = generateMealPlan(nutritionData, dietPref, bmiData.category, age);
+    let detailedMealPlan = generateMealPlan(nutritionData, dietPref, bmiData.category, age);
+
+    // AI NUTRITION OVERRIDE (v2.5)
+    if (onlineData?.nutrition) {
+        // Validation could go here, but we trust the prompt structure
+        detailedMealPlan = onlineData.nutrition;
+        console.log("✅ AI Nutrition Plan Applied");
+    }
     dietData.mealPlan = detailedMealPlan;
 
     // Dynamic recovery speed based on age
@@ -1169,9 +1189,16 @@ ${bmiData.warning && ['knee', 'ankle', 'foot', 'back'].includes(areaKey) ? `<str
 
             severity: `${painData.severity} - Pain ${painLevel}/10`,
 
-            // PROGNOSIS (uses age, pain level, surgery)
-            prognosis: `<strong>Your Recovery Outlook:</strong>
-
+            // PROGNOSIS (AI-Driven v2.5)
+            prognosis: onlineData?.recovery ?
+                `<strong>Expected Timeline:</strong> ${onlineData.recovery.timeline}
+                <br><br>
+                <strong>Your Age Factor (${age}):</strong> ${onlineData.recovery.age_factor}
+                <br><br>
+                <strong>Urgency Level:</strong> ${onlineData.recovery.urgency}
+                ${surgeryInfo.isMajor ? `<br><br>🚨 <strong>SURGICAL NOTE:</strong> Consult surgeon before accelerating.` : ""}`
+                :
+                `<strong>Your Recovery Outlook:</strong>
 ${surgeryInfo.isMajor ? `🚨 <strong>SURGICAL RECOVERY FIRST:</strong> Your major operation requires 6-8 weeks minimum healing before focusing on ${areaKey} rehabilitation. Consult your surgeon.
 
 ` : ""}<strong>Expected Timeline:</strong> ${expectedTimeline} (at current pain level ${painLevel}/10)
