@@ -4,10 +4,10 @@
 // =============================================================================
 
 // ALL FORM FIELDS CHECKLIST:
-// ✅ Step 1: name, age, gender
-// ✅ Step 2: occupation, dietPreference
-// ✅ Step 3: condition_diabetes, condition_bp, condition_heart, recentSurgery
-// ✅ Step 4: problemArea, problemStatement, painLevel
+// <span class='icon-check'></span> Step 1: name, age, gender
+// <span class='icon-check'></span> Step 2: occupation, dietPreference
+// <span class='icon-check'></span> Step 3: condition_diabetes, condition_bp, condition_heart, recentSurgery
+// <span class='icon-check'></span> Step 4: problemArea, problemStatement, painLevel
 
 // --- DYNAMIC PHRASE VARIATIONS ---
 const PHRASES = {
@@ -884,14 +884,14 @@ function getSurgeryInfo(recentSurgery, problemStatement, name) {
                 "Wait minimum 6-8 weeks post-surgery before active rehabilitation",
                 "Your surgical site healing comes FIRST before addressing other pain"
             ],
-            exerciseNote: `⚠️ <strong>STOP - SURGEON CLEARANCE REQUIRED:</strong> ${name}, the exercises below are NOT to be started until your operating surgeon clears you. Major surgery recovery takes precedence.`,
+            exerciseNote: `<span class='icon-warning'></span> <strong>STOP - SURGEON CLEARANCE REQUIRED:</strong> ${name}, the exercises below are NOT to be started until your operating surgeon clears you. Major surgery recovery takes precedence.`,
             consultNote: `${name}, with your recent surgery, please FIRST see your surgeon for clearance. Dr. Vanshika can then design a post-surgical rehabilitation program coordinated with your surgeon's guidelines.`
         };
     } else {
         return {
             hasSurgery: true,
             isMajor: false,
-            warning: `⚠️ <strong>POST-SURGICAL NOTE:</strong> ${name}, your recent surgery has been factored into these recommendations.`,
+            warning: `<span class='icon-warning'></span> <strong>POST-SURGICAL NOTE:</strong> ${name}, your recent surgery has been factored into these recommendations.`,
             restrictions: [
                 "Avoid exercises that strain or pull near the surgery site",
                 "Start at 50% of recommended intensity",
@@ -955,7 +955,27 @@ function generateRecoveryPlan(patientData) {
         }
     }
 
-    const conditionData = CONDITION_DB[areaKey]?.[conditionKey] || CONDITION_DB[areaKey]?.["pain"] || CONDITION_DB["back"]["pain"];
+    let conditionData = CONDITION_DB[areaKey]?.[conditionKey] || CONDITION_DB[areaKey]?.["pain"] || CONDITION_DB["back"]["pain"];
+
+    // --- CONTEXT AWARENESS (New Logic) ---
+    // Detect activity context (Sports vs Office vs General)
+    const pText = (problemStatement + " " + (patientData.recentSurgery || "")).toLowerCase();
+    let contextCause = "";
+
+    if (pText.includes('cricket') || pText.includes('tennis') || pText.includes('badminton') || pText.includes('golf')) {
+        contextCause = `• Sports Strain: Dynamic movements in sports like cricket/tennis cause rapid tendon stress.\n`;
+    } else if (pText.includes('gym') || pText.includes('lift') || pText.includes('deadlift') || pText.includes('bench')) {
+        contextCause = `• Heavy Load Strain: High mechanical load from lifting has stressed the tissue.\n`;
+    } else if (pText.includes('comput') || pText.includes('desk') || pText.includes('mouse') || pText.includes('typ')) {
+        contextCause = `• Ergonomic Strain: Repetitive static posture is causing micro-trauma.\n`;
+    }
+
+    // Detect THUMB thumb specific issues in wrist
+    if (areaKey === 'wrist' && pText.includes('thumb')) {
+        contextCause += `• De Quervain's Tenosynovitis: Likely inflammation of thumb tendons common in this activity.\n`;
+    }
+
+    conditionData.causes = contextCause + conditionData.causes;
 
     // Get occupation and diet personalization
     const occData = getOccupationPersonalization(occupation, problemArea, name, painLevel);
@@ -1028,27 +1048,27 @@ ${!['neck', 'back', 'knee', 'shoulder', 'wrist', 'ankle'].includes(areaKey) ? `�
 • <strong>Recovery Deficit:</strong> Insufficient rest between activities` : ''}
 
 <strong>Quick Fixes You Can Do Now:</strong>
-${areaKey === 'neck' ? `✅ Set phone/laptop at eye level to reduce forward head
-✅ Chin tucks every 30 minutes (5 reps)
-✅ Avoid holding phone between ear and shoulder` : ''}
-${areaKey === 'back' ? `✅ Stand up every 30 minutes for 60 seconds
-✅ Sit with lumbar support (rolled towel works)
-✅ Keep knees at 90° when sitting` : ''}
-${areaKey === 'knee' ? `✅ Avoid prolonged bent-knee positions
-✅ Ice for 15 min after activity
-✅ Strengthen quads with wall sits` : ''}
-${areaKey === 'shoulder' ? `✅ Avoid sleeping on affected side
-✅ Pull shoulders back before lifting anything
-✅ Keep elbows below shoulder height when working` : ''}
-${areaKey === 'wrist' ? `✅ Keep wrists neutral (not bent) while typing
-✅ Take 2-minute breaks every 30 minutes
-✅ Shake out hands frequently` : ''}
-${areaKey === 'ankle' ? `✅ Avoid walking barefoot on hard floors
-✅ Stretch calves before walking long distances
-✅ Consider supportive footwear` : ''}
-${!['neck', 'back', 'knee', 'shoulder', 'wrist', 'ankle'].includes(areaKey) ? `✅ Apply ice/heat as appropriate
-✅ Avoid positions that trigger pain
-✅ Gentle movement better than complete rest` : ''}
+${areaKey === 'neck' ? `<span class='icon-check'></span> Set phone/laptop at eye level to reduce forward head
+<span class='icon-check'></span> Chin tucks every 30 minutes (5 reps)
+<span class='icon-check'></span> Avoid holding phone between ear and shoulder` : ''}
+${areaKey === 'back' ? `<span class='icon-check'></span> Stand up every 30 minutes for 60 seconds
+<span class='icon-check'></span> Sit with lumbar support (rolled towel works)
+<span class='icon-check'></span> Keep knees at 90° when sitting` : ''}
+${areaKey === 'knee' ? `<span class='icon-check'></span> Avoid prolonged bent-knee positions
+<span class='icon-check'></span> Ice for 15 min after activity
+<span class='icon-check'></span> Strengthen quads with wall sits` : ''}
+${areaKey === 'shoulder' ? `<span class='icon-check'></span> Avoid sleeping on affected side
+<span class='icon-check'></span> Pull shoulders back before lifting anything
+<span class='icon-check'></span> Keep elbows below shoulder height when working` : ''}
+${areaKey === 'wrist' ? `<span class='icon-check'></span> Keep wrists neutral (not bent) while typing
+<span class='icon-check'></span> Take 2-minute breaks every 30 minutes
+<span class='icon-check'></span> Shake out hands frequently` : ''}
+${areaKey === 'ankle' ? `<span class='icon-check'></span> Avoid walking barefoot on hard floors
+<span class='icon-check'></span> Stretch calves before walking long distances
+<span class='icon-check'></span> Consider supportive footwear` : ''}
+${!['neck', 'back', 'knee', 'shoulder', 'wrist', 'ankle'].includes(areaKey) ? `<span class='icon-check'></span> Apply ice/heat as appropriate
+<span class='icon-check'></span> Avoid positions that trigger pain
+<span class='icon-check'></span> Gentle movement better than complete rest` : ''}
 
 ${bmiData.warning && ['knee', 'ankle', 'foot', 'back'].includes(areaKey) ? `<strong>Weight Factor:</strong> BMI ${bmiData.bmi} (${bmiData.category}) - ${bmiData.jointImpact || bmiData.warning}` : ""}`,
 
@@ -1065,9 +1085,9 @@ ${surgeryInfo.isMajor ? `🚨 <strong>SURGICAL RECOVERY FIRST:</strong> Your maj
 
 <strong>Urgency Level:</strong> ${painData.urgency}
 
-${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? `⚠️ <strong>Surgery Note:</strong> Your recent procedure may extend recovery by 1-2 weeks. Be patient with ${genderTerms.possessive.toLowerCase()} body.` : ""}
+${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? `<span class='icon-warning'></span> <strong>Surgery Note:</strong> Your recent procedure may extend recovery by 1-2 weeks. Be patient with ${genderTerms.possessive.toLowerCase()} body.` : ""}
 
-💡 <strong>With Dr. Vanshika's guidance</strong>, recovery typically accelerates significantly.`
+<span class='icon-bulb'></span> <strong>With Dr. Vanshika's guidance</strong>, recovery typically accelerates significantly.`
         },
 
         exercisePlan: {
@@ -1080,7 +1100,7 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
             selectedExercises: conditionData.exercises.map(ex => ({
                 ...ex,
                 personalNote: surgeryInfo.isMajor
-                    ? "⚠️ GET SURGEON CLEARANCE BEFORE STARTING"
+                    ? "<span class='icon-warning'></span> GET SURGEON CLEARANCE BEFORE STARTING"
                     : (painLevel > 7 ? "Start very gently - stop if pain increases" : (age > 60 ? "Go slowly and gently" : "Progress at your comfort"))
             }))
         },

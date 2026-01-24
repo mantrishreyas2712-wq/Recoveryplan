@@ -20,7 +20,7 @@ document.getElementById('patientForm').addEventListener('submit', async function
         { text: "Consulting Specialist AI...", html: '<div class="scanner-container"><div class="scanner-line" style="animation-duration: 1s;"></div><div class="scanner-icon">🤖</div></div>' },
         { text: "Building Diet Plan...", html: '<div class="scanner-container"><div class="scanner-line" style="background: linear-gradient(to bottom, transparent, #10B981);"></div><div class="scanner-icon">🥗</div></div>' },
         { text: "Optimizing Exercises...", html: '<div class="scanner-container"><div class="scanner-line" style="background: linear-gradient(to bottom, transparent, #F59E0B);"></div><div class="scanner-icon">🏃</div></div>' },
-        { text: "Finalizing Protocol...", html: '<div class="anim-pulse" style="font-size: 3rem;">✅</div>' }
+        { text: "Finalizing Protocol...", html: '<div class="anim-pulse" style="font-size: 3rem;"><span class="icon-check"></span></div>' }
     ];
 
     const loadingHeader = loadingSection.querySelector('h3');
@@ -146,7 +146,7 @@ function renderResults(plan, userData) {
 
                 equipBtn = `
                 <div style="margin-top: 0.75rem; padding: 0.6rem; background: #FEF3C7; border-radius: 8px; border: 1px solid #FCD34D;">
-                    <p style="font-size: 0.8rem; color: #92400E; margin: 0 0 0.4rem 0;">💡 This exercise works best with a <strong>${ex.equipmentName}</strong></p>
+                    <p style="font-size: 0.8rem; color: #92400E; margin: 0 0 0.4rem 0;"><span class='icon-bulb'></span> This exercise works best with a <strong>${ex.equipmentName}</strong></p>
                     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                         <a href="${sessionLink}" target="_blank" style="display: inline-block; background: #D97706; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
                             📅 Book Professional Session
@@ -161,7 +161,7 @@ function renderResults(plan, userData) {
                 // NORMAL PAIN - Just show equipment link
                 equipBtn = `
                 <div style="margin-top: 0.75rem; padding: 0.6rem; background: #F0FDF4; border-radius: 8px; border: 1px solid #BBF7D0;">
-                    <p style="font-size: 0.8rem; color: #166534; margin: 0 0 0.4rem 0;">💡 This exercise works best with a <strong>${ex.equipmentName}</strong></p>
+                    <p style="font-size: 0.8rem; color: #166534; margin: 0 0 0.4rem 0;"><span class='icon-bulb'></span> This exercise works best with a <strong>${ex.equipmentName}</strong></p>
                     <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; background: #059669; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
                         View ${ex.equipmentName} Options →
                     </a>
@@ -215,7 +215,7 @@ function renderResults(plan, userData) {
             
             <!-- 1. PERSONALIZED ANALYSIS + DR VANSHIKA CTA -->
             <div class="ai-insight" style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid #7DD3FC;">
-                <strong style="color:#0284C7; display:block; margin-bottom:0.5rem; font-size: 1.1rem;">💡 Your Personalized Assessment</strong>
+                <strong style="color:#0284C7; display:block; margin-bottom:0.5rem; font-size: 1.1rem;"><span class='icon-bulb'></span> Your Personalized Assessment</strong>
                 <p style="font-size:1.05rem; line-height:1.8; color:#0C4A6E; white-space: pre-line;">${plan.analysis.understanding}</p>
                 
                 <!-- PROMINENT DR VANSHIKA CTA -->
@@ -230,7 +230,7 @@ function renderResults(plan, userData) {
             <!-- 2. LIKELY CAUSES (Separate Section) -->
             <div style="background: #FEF3C7; border: 1px solid #FCD34D; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
                 <div style="display: flex; align-items: flex-start; gap: 1rem;">
-                    <span style="font-size: 1.5rem;">🔍</span>
+                    <span style="font-size: 1.5rem;"><span class='icon-search'></span></span>
                     <div>
                         <strong style="color: #92400E; font-size: 1rem;">What's Causing This?</strong>
                         <p style="white-space: pre-line; color: #78350F; margin-top: 0.5rem; line-height: 1.6;">${plan.analysis.likelyCauses}</p>
@@ -241,7 +241,7 @@ function renderResults(plan, userData) {
             <!-- 3. PROGNOSIS / RECOVERY OUTLOOK (Separate Section) -->
             <div style="background: #ECFDF5; border: 1px solid #6EE7B7; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
                 <div style="display: flex; align-items: flex-start; gap: 1rem;">
-                    <span style="font-size: 1.5rem;">📈</span>
+                    <span style="font-size: 1.5rem;"><span class='icon-graph'></span></span>
                     <div>
                         <strong style="color: #065F46; font-size: 1rem;">Your Recovery Outlook</strong>
                         <p style="white-space: pre-line; color: #047857; margin-top: 0.5rem; line-height: 1.6;">${plan.analysis.prognosis}</p>
@@ -329,12 +329,12 @@ function renderResults(plan, userData) {
                 <!-- WORK ADVICE (NEW) -->
                 ${plan.workAdvice ? `
                 <div class="guideline-card" style="background: #FFF7ED; border: 1px solid #FDBA74;">
-                    <h3>💼 Work & Activity Advice</h3>
+                    <h3><span class='icon-bag'></span> Work & Activity Advice</h3>
                     <p style="font-weight: 500; color: #C2410C;">${plan.workAdvice.leaveRecommendation || ''}</p>
                     
                     ${plan.workAdvice.restrictions && plan.workAdvice.restrictions.length > 0 ? `
                     <div style="margin-top: 1rem;">
-                        <strong style="color: #EA580C;">🚫 Restrictions During Recovery:</strong>
+                        <strong style="color: #EA580C;"><span class='icon-ban'></span> Restrictions During Recovery:</strong>
                         <ul style="margin: 0.5rem 0 0 1.2rem; color: #9A3412;">
                             ${plan.workAdvice.restrictions.map(r => `<li style="margin-bottom: 0.3rem;">${r}</li>`).join('')}
                         </ul>
@@ -343,7 +343,7 @@ function renderResults(plan, userData) {
                     
                     ${plan.workAdvice.modifications && plan.workAdvice.modifications.length > 0 ? `
                     <div style="margin-top: 1rem;">
-                        <strong style="color: #16A34A;">✅ Workplace Modifications:</strong>
+                        <strong style="color: #16A34A;"><span class="icon-check"></span> Workplace Modifications:</strong>
                         <ul style="margin: 0.5rem 0 0 1.2rem; color: #166534;">
                             ${plan.workAdvice.modifications.map(m => `<li style="margin-bottom: 0.3rem;">${m}</li>`).join('')}
                         </ul>
@@ -392,7 +392,7 @@ function renderResults(plan, userData) {
                     
                     ${plan.dietRecommendations.foodsToAvoid && plan.dietRecommendations.foodsToAvoid.length > 0 ? `
                     <div style="margin-top: 1rem; padding: 0.75rem; background: #FEF2F2; border-radius: 8px;">
-                        <strong style="color: #DC2626;">🚫 Foods to Avoid:</strong>
+                        <strong style="color: #DC2626;"><span class='icon-ban'></span> Foods to Avoid:</strong>
                         <ul style="margin: 0.3rem 0 0 1.2rem; color: #991B1B;">
                             ${plan.dietRecommendations.foodsToAvoid.map(f => `<li>${f}</li>`).join('')}
                         </ul>
