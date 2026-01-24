@@ -114,10 +114,17 @@ function renderResults(plan, userData) {
         const btnIcon = isDirect ? '▶' : '🔎';
         const btnText = isDirect ? 'Watch Now' : 'Find Video';
 
-        // Affiliate Button Logic
+        // Equipment recommendation (caring, not salesy)
         let equipBtn = '';
         if (ex.equipmentUrl) {
-            equipBtn = `<a href="${ex.equipmentUrl}" target="_blank" class="btn-micro-shop">🛒 Buy ${ex.equipmentName}</a>`;
+            equipBtn = `
+            <div style="margin-top: 0.75rem; padding: 0.6rem; background: #F0FDF4; border-radius: 8px; border: 1px solid #BBF7D0;">
+                <p style="font-size: 0.8rem; color: #166534; margin: 0 0 0.4rem 0;">💡 This exercise works best with a <strong>${ex.equipmentName}</strong></p>
+                <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; background: #059669; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                    View ${ex.equipmentName} Options →
+                </a>
+                <p style="font-size: 0.7rem; color: #6B7280; margin: 0.4rem 0 0 0; font-style: italic;">Optional - only if you don't have one at home</p>
+            </div>`;
         }
 
         return `

@@ -830,15 +830,68 @@ function getStockThumbnail(name) {
     return STOCK_IMAGES[Math.abs(hash) % STOCK_IMAGES.length];
 }
 
+// --- AMAZON AFFILIATE EQUIPMENT LINKS ---
+// Associate ID: drvanshika0d-21
+const AFFILIATE_TAG = 'drvanshika0d-21';
+
 const EQUIPMENT_MAP = {
-    'band': 'https://www.amazon.in/s?k=resistance+bands+physio',
-    'ball': 'https://www.amazon.in/s?k=exercise+ball+physio',
-    'roller': 'https://www.amazon.in/s?k=foam+roller',
-    'dumbbell': 'https://www.amazon.in/s?k=dumbbells+1kg',
-    'weight': 'https://www.amazon.in/s?k=ankle+weights+physio',
-    'towel': 'https://www.amazon.in/s?k=microfiber+gym+towel',
-    'mat': 'https://www.amazon.in/s?k=yoga+mat+thick',
-    'bottle': 'https://www.amazon.in/s?k=water+bottle+gym'
+    // Resistance & Strength
+    'band': { name: 'Resistance Band', url: `https://www.amazon.in/s?k=resistance+bands+physiotherapy&tag=${AFFILIATE_TAG}` },
+    'theraband': { name: 'Theraband', url: `https://www.amazon.in/s?k=theraband+physiotherapy&tag=${AFFILIATE_TAG}` },
+    'resistance': { name: 'Resistance Band', url: `https://www.amazon.in/s?k=resistance+bands+exercise&tag=${AFFILIATE_TAG}` },
+    'dumbbell': { name: 'Dumbbells', url: `https://www.amazon.in/s?k=dumbbells+1kg+2kg&tag=${AFFILIATE_TAG}` },
+    'weight': { name: 'Ankle Weights', url: `https://www.amazon.in/s?k=ankle+weights+physiotherapy&tag=${AFFILIATE_TAG}` },
+    'kettlebell': { name: 'Kettlebell', url: `https://www.amazon.in/s?k=kettlebell+4kg&tag=${AFFILIATE_TAG}` },
+
+    // Balls & Rollers
+    'ball': { name: 'Exercise Ball', url: `https://www.amazon.in/s?k=exercise+ball+65cm+anti+burst&tag=${AFFILIATE_TAG}` },
+    'swiss ball': { name: 'Swiss Ball', url: `https://www.amazon.in/s?k=swiss+ball+gym&tag=${AFFILIATE_TAG}` },
+    'roller': { name: 'Foam Roller', url: `https://www.amazon.in/s?k=foam+roller+muscle+recovery&tag=${AFFILIATE_TAG}` },
+    'foam': { name: 'Foam Roller', url: `https://www.amazon.in/s?k=foam+roller+physiotherapy&tag=${AFFILIATE_TAG}` },
+    'massage ball': { name: 'Massage Ball', url: `https://www.amazon.in/s?k=massage+ball+trigger+point&tag=${AFFILIATE_TAG}` },
+    'spiky ball': { name: 'Spiky Massage Ball', url: `https://www.amazon.in/s?k=spiky+ball+physiotherapy&tag=${AFFILIATE_TAG}` },
+
+    // Mats & Surfaces
+    'mat': { name: 'Yoga Mat', url: `https://www.amazon.in/s?k=yoga+mat+6mm+anti+slip&tag=${AFFILIATE_TAG}` },
+    'yoga mat': { name: 'Yoga Mat', url: `https://www.amazon.in/s?k=yoga+mat+thick+exercise&tag=${AFFILIATE_TAG}` },
+
+    // Hot/Cold Therapy
+    'ice': { name: 'Ice Pack', url: `https://www.amazon.in/s?k=ice+pack+gel+reusable&tag=${AFFILIATE_TAG}` },
+    'heat': { name: 'Hot Water Bag', url: `https://www.amazon.in/s?k=hot+water+bag+electric&tag=${AFFILIATE_TAG}` },
+    'hot pack': { name: 'Hot Pack', url: `https://www.amazon.in/s?k=hot+cold+pack+therapy&tag=${AFFILIATE_TAG}` },
+    'cold pack': { name: 'Cold Pack', url: `https://www.amazon.in/s?k=cold+pack+gel+pain+relief&tag=${AFFILIATE_TAG}` },
+
+    // Supports & Braces
+    'brace': { name: 'Support Brace', url: `https://www.amazon.in/s?k=knee+brace+support&tag=${AFFILIATE_TAG}` },
+    'knee brace': { name: 'Knee Brace', url: `https://www.amazon.in/s?k=knee+brace+pain+relief&tag=${AFFILIATE_TAG}` },
+    'ankle brace': { name: 'Ankle Brace', url: `https://www.amazon.in/s?k=ankle+brace+support&tag=${AFFILIATE_TAG}` },
+    'wrist brace': { name: 'Wrist Brace', url: `https://www.amazon.in/s?k=wrist+brace+carpal+tunnel&tag=${AFFILIATE_TAG}` },
+    'back brace': { name: 'Back Support', url: `https://www.amazon.in/s?k=back+brace+lumbar+support&tag=${AFFILIATE_TAG}` },
+    'lumbar': { name: 'Lumbar Support', url: `https://www.amazon.in/s?k=lumbar+support+pillow+office&tag=${AFFILIATE_TAG}` },
+    'neck brace': { name: 'Neck Collar', url: `https://www.amazon.in/s?k=cervical+collar+soft&tag=${AFFILIATE_TAG}` },
+    'shoulder brace': { name: 'Shoulder Support', url: `https://www.amazon.in/s?k=shoulder+brace+support&tag=${AFFILIATE_TAG}` },
+
+    // Pillows & Cushions
+    'pillow': { name: 'Cervical Pillow', url: `https://www.amazon.in/s?k=cervical+pillow+memory+foam&tag=${AFFILIATE_TAG}` },
+    'neck pillow': { name: 'Neck Pillow', url: `https://www.amazon.in/s?k=neck+pillow+orthopedic&tag=${AFFILIATE_TAG}` },
+    'cushion': { name: 'Seat Cushion', url: `https://www.amazon.in/s?k=seat+cushion+coccyx+orthopedic&tag=${AFFILIATE_TAG}` },
+
+    // Props & Accessories
+    'towel': { name: 'Exercise Towel', url: `https://www.amazon.in/s?k=gym+towel+microfiber&tag=${AFFILIATE_TAG}` },
+    'strap': { name: 'Yoga Strap', url: `https://www.amazon.in/s?k=yoga+strap+stretching&tag=${AFFILIATE_TAG}` },
+    'block': { name: 'Yoga Block', url: `https://www.amazon.in/s?k=yoga+block+foam&tag=${AFFILIATE_TAG}` },
+    'stick': { name: 'Massage Stick', url: `https://www.amazon.in/s?k=muscle+roller+stick&tag=${AFFILIATE_TAG}` },
+    'step': { name: 'Aerobic Step', url: `https://www.amazon.in/s?k=aerobic+step+platform&tag=${AFFILIATE_TAG}` },
+    'balance': { name: 'Balance Board', url: `https://www.amazon.in/s?k=balance+board+wobble&tag=${AFFILIATE_TAG}` },
+
+    // TENS & Devices
+    'tens': { name: 'TENS Machine', url: `https://www.amazon.in/s?k=tens+machine+pain+relief&tag=${AFFILIATE_TAG}` },
+    'massager': { name: 'Electric Massager', url: `https://www.amazon.in/s?k=body+massager+muscle+pain&tag=${AFFILIATE_TAG}` },
+
+    // General
+    'bottle': { name: 'Water Bottle', url: `https://www.amazon.in/s?k=water+bottle+gym+1+litre&tag=${AFFILIATE_TAG}` },
+    'grip': { name: 'Hand Gripper', url: `https://www.amazon.in/s?k=hand+gripper+strengthener&tag=${AFFILIATE_TAG}` },
+    'squeeze': { name: 'Stress Ball', url: `https://www.amazon.in/s?k=stress+ball+hand+exercise&tag=${AFFILIATE_TAG}` }
 };
 
 function enrichWithSmartLinks(plan) {
@@ -853,13 +906,13 @@ function enrichWithSmartLinks(plan) {
                 thumbUrl = `https://img.youtube.com/vi/${verifiedId}/mqdefault.jpg`;
             }
 
-            // Check for equipment
+            // Check for equipment (with affiliate links)
             let equipLink = null, equipName = null;
             const lowerName = (ex.name + ' ' + (ex.description || '')).toLowerCase();
-            for (const [key, url] of Object.entries(EQUIPMENT_MAP)) {
+            for (const [key, equipData] of Object.entries(EQUIPMENT_MAP)) {
                 if (lowerName.includes(key)) {
-                    equipLink = url;
-                    equipName = key.charAt(0).toUpperCase() + key.slice(1);
+                    equipLink = equipData.url;
+                    equipName = equipData.name;
                     break;
                 }
             }
