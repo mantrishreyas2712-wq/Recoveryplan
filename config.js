@@ -27,3 +27,4 @@ const CONFIG = {
     // GEMINI_API_KEY: "",
     // OPENAI_BASE_URL: "",
 };
+console.log("✅ Config Loaded:", CONFIG);

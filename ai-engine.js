@@ -966,12 +966,32 @@ async function generateRecoveryPlan(patientData) {
     let conditionData = CONDITION_DB[areaKey]?.[conditionKey] || CONDITION_DB[areaKey]?.["pain"] || CONDITION_DB["back"]["pain"];
 
 
-    // --- CONTEXT AWARENESS (Hybrid: Keywords + TensorFlow.js) ---
+    // --- CONTEXT AWARENESS (Hybrid: Online LLM > Offline Semantic > Keywords) ---
     const pText = (problemStatement + " " + (patientData.recentSurgery || "")).toLowerCase();
     let contextCause = "";
 
-    // 1. Semantic Analysis (Universal Sentence Encoder)
-    if (window.SemanticCore && window.SemanticCore.isReady) {
+    // 0. ONLINE BRAIN (OpenRouter Proxy) - Highest Accuracy
+    if (window.OpenRouter && window.OpenRouter.isConfigured()) {
+        try {
+            console.log("🌐 Attempting Online AI Analysis (via Proxy)...");
+            const onlineCause = await window.OpenRouter.analyze(problemStatement);
+            if (onlineCause) {
+                contextCause += `• AI Expert Analysis (Online): ${onlineCause}\n`;
+                console.log("✅ Online AI Success:", onlineCause);
+            } else {
+                console.warn("⚠️ Online AI returned empty response.");
+            }
+        } catch (e) {
+            console.warn("🌐 Online Brain Failed:", e);
+        }
+    } else {
+        console.log("ℹ️ OpenRouter not configured or invalid.");
+    }
+
+    // 1. OFFLINE SEMANTIC (TensorFlow.js) - Fallback if Online missing/failed
+    // IMPORTANT: Only run if contextCause is STILL empty (or we want to combine them? Let's fallback if empty)
+    if (!contextCause && window.SemanticCore && window.SemanticCore.isReady) {
+        console.log("🔄 Triggering Offline Semantic Core...");
         try {
             const semanticCategory = await window.SemanticCore.classify(pText);
             console.log("AI Semantic Category:", semanticCategory);

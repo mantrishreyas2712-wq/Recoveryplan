@@ -88,8 +88,11 @@ document.getElementById('patientForm').addEventListener('submit', async function
             if (loadingHeader) loadingHeader.style.color = "";
             if (loadingIcon) loadingIcon.style.animation = "";
         }, 6000);
-    }
-});
+    });
+
+// ==========================================
+// SETTINGS UI REMOVED (Moved to Secure Backend)
+// ==========================================
 
 function renderResults(plan, userData) {
     const resultsSection = document.getElementById('resultsSection');

@@ -16,6 +16,11 @@
  * 6. Paste the URL into your frontend config.js
  */
 
+// DEPLOYMENT INSTRUCTIONS:
+// 1. npx wrangler deploy
+// 2. npx wrangler secret put OPENROUTER_API_KEY
+//    (Paste your key when prompted)
+
 export default {
     async fetch(request, env, ctx) {
         // Handle CORS preflight
@@ -30,80 +35,48 @@ export default {
             });
         }
 
-        // Only allow POST requests
         if (request.method !== 'POST') {
-            return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-                status: 405,
-                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-            });
+            return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
         }
 
         try {
-            // Get request body (patient data from frontend)
             const body = await request.json();
-            const { prompt } = body;
+            const { messages } = body; // Expecting Chat Messages array for OpenRouter
 
-            if (!prompt) {
-                return new Response(JSON.stringify({ error: 'Missing prompt' }), {
-                    status: 400,
-                    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-                });
+            if (!messages) {
+                return new Response(JSON.stringify({ error: 'Missing messages' }), { status: 400 });
             }
 
-            // Call Gemini API with secret key (hidden from browser)
-            const GEMINI_API_KEY = env.GEMINI_API_KEY;
-            if (!GEMINI_API_KEY) {
-                return new Response(JSON.stringify({ error: 'API key not configured' }), {
-                    status: 500,
-                    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-                });
+            // SECURE KEY INJECTION (Secret from Env)
+            const API_KEY = env.OPENROUTER_API_KEY;
+            if (!API_KEY) {
+                return new Response(JSON.stringify({ error: 'Server misconfiguration: Missing API Key' }), { status: 500 });
             }
 
-            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-            const geminiResponse = await fetch(geminiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            // Proxy to OpenRouter
+            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${API_KEY}`,
+                    "HTTP-Referer": "https://physioassist.workers.dev",
+                    "X-Title": "PhysioAssist Backend",
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({
-                    contents: [
-                        {
-                            parts: [{ text: prompt }],
-                        },
-                    ],
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 2048,
-                    },
-                }),
+                    "model": "deepseek/deepseek-chat", // Or use body.model if you want dynamic
+                    "messages": messages
+                })
             });
 
-            if (!geminiResponse.ok) {
-                const errorText = await geminiResponse.text();
-                console.error('Gemini Error:', errorText);
-                return new Response(JSON.stringify({ error: 'AI service error', details: errorText }), {
-                    status: geminiResponse.status,
-                    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-                });
-            }
-
-            const geminiData = await geminiResponse.json();
-
-            // Extract text from Gemini response
-            const aiText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-            return new Response(JSON.stringify({ success: true, response: aiText }), {
-                status: 200,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
+            const data = await response.json();
+            return new Response(JSON.stringify(data), {
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
             });
 
         } catch (error) {
-            console.error('Worker Error:', error);
-            return new Response(JSON.stringify({ error: 'Internal server error', message: error.message }), {
+            return new Response(JSON.stringify({ error: error.message }), {
                 status: 500,
-                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+                headers: { 'Access-Control-Allow-Origin': '*' }
             });
         }
     },

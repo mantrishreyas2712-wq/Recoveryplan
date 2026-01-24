@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- SECURITY POLICY: Allow TensorFlow, Worker, and OpenRouter -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; connect-src 'self' https://physio-ai-proxy.mantrishreyas2712.workers.dev https://cdn.jsdelivr.net https://openrouter.ai https://storage.googleapis.com https://tfhub.dev;">
     <title>PhysioAssist - AI Recovery</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon"
@@ -38,199 +41,197 @@
                         d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
                         class="shape-fill"></path>
                 </svg>
+                </svg>
             </div>
-        </header>
+    </div>
+    </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
+    <!-- Main Content -->
+    <main class="main-content">
 
-            <!-- WIZARD FORM SECTION -->
-            <section id="formSection" class="section active">
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <h2>📋 Patient Profile</h2>
-                        <span class="step-indicator" id="stepIndicator">Step 1 of 4</span>
+        <!-- WIZARD FORM SECTION -->
+        <section id="formSection" class="section active">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h2>📋 Patient Profile</h2>
+                    <span class="step-indicator" id="stepIndicator">Step 1 of 4</span>
+                </div>
+
+                <form id="patientForm" class="compact-form">
+
+                    <!-- STEP 1: PERSONAL IDENTITY -->
+                    <div class="form-step active" id="step1">
+                        <div class="input-group">
+                            <div class="floating-input">
+                                <input type="text" id="name" name="name" required placeholder=" " class="input-field">
+                                <label for="name">Full Name</label>
+                            </div>
+                            <div class="floating-input">
+                                <input type="tel" id="mobile" name="mobile" required placeholder=" " class="input-field"
+                                    pattern="[0-9]{10}" maxlength="10">
+                                <label for="mobile">Mobile Number</label>
+                            </div>
+                            <div class="row-inputs">
+                                <div class="floating-input">
+                                    <input type="number" id="age" name="age" required placeholder=" "
+                                        class="input-field">
+                                    <label for="age">Age</label>
+                                </div>
+                                <div class="floating-input">
+                                    <select id="gender" name="gender" required class="input-field">
+                                        <option value="" disabled selected hidden></option>
+                                        <!-- Placeholder Magic -->
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <label for="gender">Gender</label>
+                                </div>
+                            </div>
+                            <div class="row-inputs">
+                                <div class="floating-input">
+                                    <input type="number" id="weight" name="weight" required placeholder=" "
+                                        class="input-field" min="20" max="200" step="0.1">
+                                    <label for="weight">Weight (kg)</label>
+                                </div>
+                                <div class="floating-input">
+                                    <input type="number" id="height" name="height" required placeholder=" "
+                                        class="input-field" min="100" max="220">
+                                    <label for="height">Height (cm)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next: Lifestyle
+                            ➔</button>
                     </div>
 
-                    <form id="patientForm" class="compact-form">
-
-                        <!-- STEP 1: PERSONAL IDENTITY -->
-                        <div class="form-step active" id="step1">
-                            <div class="input-group">
-                                <div class="floating-input">
-                                    <input type="text" id="name" name="name" required placeholder=" "
-                                        class="input-field">
-                                    <label for="name">Full Name</label>
-                                </div>
-                                <div class="floating-input">
-                                    <input type="tel" id="mobile" name="mobile" required placeholder=" "
-                                        class="input-field" pattern="[0-9]{10}" maxlength="10">
-                                    <label for="mobile">Mobile Number</label>
-                                </div>
-                                <div class="row-inputs">
-                                    <div class="floating-input">
-                                        <input type="number" id="age" name="age" required placeholder=" "
-                                            class="input-field">
-                                        <label for="age">Age</label>
-                                    </div>
-                                    <div class="floating-input">
-                                        <select id="gender" name="gender" required class="input-field">
-                                            <option value="" disabled selected hidden></option>
-                                            <!-- Placeholder Magic -->
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                            <option value="other">Other</option>
-                                        </select>
-                                        <label for="gender">Gender</label>
-                                    </div>
-                                </div>
-                                <div class="row-inputs">
-                                    <div class="floating-input">
-                                        <input type="number" id="weight" name="weight" required placeholder=" "
-                                            class="input-field" min="20" max="200" step="0.1">
-                                        <label for="weight">Weight (kg)</label>
-                                    </div>
-                                    <div class="floating-input">
-                                        <input type="number" id="height" name="height" required placeholder=" "
-                                            class="input-field" min="100" max="220">
-                                        <label for="height">Height (cm)</label>
-                                    </div>
-                                </div>
+                    <!-- STEP 2: LIFESTYLE -->
+                    <div class="form-step hidden" id="step2">
+                        <div class="input-group">
+                            <div class="floating-input">
+                                <input type="text" id="occupation" name="occupation" placeholder=" "
+                                    class="input-field">
+                                <label for="occupation">Occupation</label>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next: Lifestyle
+                            <div class="floating-input">
+                                <select id="dietPreference" name="dietPreference" required class="input-field">
+                                    <option value="" disabled selected hidden></option>
+                                    <option value="veg">Vegetarian</option>
+                                    <option value="non-veg">Non-Vegetarian</option>
+                                    <option value="vegan">Vegan</option>
+                                    <option value="keto">Keto</option>
+                                </select>
+                                <label for="dietPreference">Diet Type</label>
+                            </div>
+                        </div>
+                        <div class="nav-buttons">
+                            <button type="button" class="btn btn-secondary" onclick="nextStep(1)">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next: Medical
+                                History ➔</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: MEDICAL HISTORY -->
+                    <div class="form-step hidden" id="step3">
+                        <div class="clinical-group">
+                            <h3>Medical Profile</h3>
+                            <div class="checkbox-group">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="condition_diabetes" value="yes">
+                                    <span>Diabetes</span>
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="condition_bp" value="yes">
+                                    <span>High BP</span>
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="condition_heart" value="yes">
+                                    <span>Heart Issue</span>
+                                </label>
+                            </div>
+
+                            <div class="floating-input" style="margin-top:1rem;">
+                                <select id="recentSurgery" name="recentSurgery" class="input-field">
+                                    <option value="" disabled selected hidden></option>
+                                    <option value="no">No Recent Surgery</option>
+                                    <option value="yes_minor">Yes (Minor / < 3 months)</option>
+                                    <option value="yes_major">Yes (Major Operation)</option>
+                                </select>
+                                <label for="recentSurgery">Recent Operations?</label>
+                            </div>
+                        </div>
+                        <div class="nav-buttons">
+                            <button type="button" class="btn btn-secondary" onclick="nextStep(2)">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(4)">Next: Symptoms
                                 ➔</button>
                         </div>
+                    </div>
 
-                        <!-- STEP 2: LIFESTYLE -->
-                        <div class="form-step hidden" id="step2">
-                            <div class="input-group">
-                                <div class="floating-input">
-                                    <input type="text" id="occupation" name="occupation" placeholder=" "
-                                        class="input-field">
-                                    <label for="occupation">Occupation</label>
-                                </div>
-                                <div class="floating-input">
-                                    <select id="dietPreference" name="dietPreference" required class="input-field">
-                                        <option value="" disabled selected hidden></option>
-                                        <option value="veg">Vegetarian</option>
-                                        <option value="non-veg">Non-Vegetarian</option>
-                                        <option value="vegan">Vegan</option>
-                                        <option value="keto">Keto</option>
-                                    </select>
-                                    <label for="dietPreference">Diet Type</label>
-                                </div>
+                    <!-- STEP 4: SYMPTOMS -->
+                    <div class="form-step hidden" id="step4">
+                        <div class="clinical-group">
+                            <h3>Tell us about the pain</h3>
+                            <div class="floating-input">
+                                <select id="problemArea" name="problemArea" required class="input-field">
+                                    <option value="" disabled selected hidden></option>
+                                    <option value="neck">Neck & Cervical</option>
+                                    <option value="shoulder">Shoulder</option>
+                                    <option value="back">Back (Upper/Lower)</option>
+                                    <option value="knee">Knee</option>
+                                    <option value="ankle">Ankle & Foot</option>
+                                    <option value="wrist">Wrist & Hand</option>
+                                </select>
+                                <label for="problemArea">Affected Area</label>
                             </div>
-                            <div class="nav-buttons">
-                                <button type="button" class="btn btn-secondary" onclick="nextStep(1)">Back</button>
-                                <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next: Medical
-                                    History ➔</button>
-                            </div>
-                        </div>
 
-                        <!-- STEP 3: MEDICAL HISTORY -->
-                        <div class="form-step hidden" id="step3">
-                            <div class="clinical-group">
-                                <h3>Medical Profile</h3>
-                                <div class="checkbox-group">
-                                    <label class="custom-checkbox">
-                                        <input type="checkbox" name="condition_diabetes" value="yes">
-                                        <span>Diabetes</span>
-                                    </label>
-                                    <label class="custom-checkbox">
-                                        <input type="checkbox" name="condition_bp" value="yes">
-                                        <span>High BP</span>
-                                    </label>
-                                    <label class="custom-checkbox">
-                                        <input type="checkbox" name="condition_heart" value="yes">
-                                        <span>Heart Issue</span>
-                                    </label>
-                                </div>
-
-                                <div class="floating-input" style="margin-top:1rem;">
-                                    <select id="recentSurgery" name="recentSurgery" class="input-field">
-                                        <option value="" disabled selected hidden></option>
-                                        <option value="no">No Recent Surgery</option>
-                                        <option value="yes_minor">Yes (Minor / < 3 months)</option>
-                                        <option value="yes_major">Yes (Major Operation)</option>
-                                    </select>
-                                    <label for="recentSurgery">Recent Operations?</label>
-                                </div>
+                            <div class="floating-input">
+                                <textarea id="problemStatement" name="problemStatement" required rows="4"
+                                    placeholder=" " class="input-field textarea"></textarea>
+                                <label for="problemStatement">Describe symptoms...</label>
                             </div>
-                            <div class="nav-buttons">
-                                <button type="button" class="btn btn-secondary" onclick="nextStep(2)">Back</button>
-                                <button type="button" class="btn btn-primary" onclick="nextStep(4)">Next: Symptoms
-                                    ➔</button>
+
+                            <!-- PAIN SCALE -->
+                            <div class="pain-scale-container">
+                                <label class="pain-label">Pain Level: <span id="painValueDisplay"
+                                        style="color:var(--accent); font-weight:800;">5</span>/10</label>
+                                <input type="range" id="painLevel" name="painLevel" min="1" max="10" value="5"
+                                    class="pain-slider"
+                                    oninput="document.getElementById('painValueDisplay').innerText = this.value">
+                                <div class="pain-markers">
+                                    <span>🙂 Mild</span>
+                                    <span>😐 Moderate</span>
+                                    <span>😫 Severe</span>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- STEP 4: SYMPTOMS -->
-                        <div class="form-step hidden" id="step4">
-                            <div class="clinical-group">
-                                <h3>Tell us about the pain</h3>
-                                <div class="floating-input">
-                                    <select id="problemArea" name="problemArea" required class="input-field">
-                                        <option value="" disabled selected hidden></option>
-                                        <option value="neck">Neck & Cervical</option>
-                                        <option value="shoulder">Shoulder</option>
-                                        <option value="back">Back (Upper/Lower)</option>
-                                        <option value="knee">Knee</option>
-                                        <option value="ankle">Ankle & Foot</option>
-                                        <option value="wrist">Wrist & Hand</option>
-                                    </select>
-                                    <label for="problemArea">Affected Area</label>
-                                </div>
-
-                                <div class="floating-input">
-                                    <textarea id="problemStatement" name="problemStatement" required rows="4"
-                                        placeholder=" " class="input-field textarea"></textarea>
-                                    <label for="problemStatement">Describe symptoms...</label>
-                                </div>
-
-                                <!-- PAIN SCALE -->
-                                <div class="pain-scale-container">
-                                    <label class="pain-label">Pain Level: <span id="painValueDisplay"
-                                            style="color:var(--accent); font-weight:800;">5</span>/10</label>
-                                    <input type="range" id="painLevel" name="painLevel" min="1" max="10" value="5"
-                                        class="pain-slider"
-                                        oninput="document.getElementById('painValueDisplay').innerText = this.value">
-                                    <div class="pain-markers">
-                                        <span>🙂 Mild</span>
-                                        <span>😐 Moderate</span>
-                                        <span>😫 Severe</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="nav-buttons">
-                                <button type="button" class="btn btn-secondary" onclick="nextStep(3)">Back</button>
-                                <button type="submit" class="btn btn-primary btn-pulse">Generate Plan ⚡</button>
-                            </div>
+                        <div class="nav-buttons">
+                            <button type="button" class="btn btn-secondary" onclick="nextStep(3)">Back</button>
+                            <button type="submit" class="btn btn-primary btn-pulse">Generate Plan ⚡</button>
                         </div>
+                    </div>
 
-                    </form>
-                </div>
-            </section>
+                </form>
+            </div>
+        </section>
 
-            <!-- Loading Section -->
-            <section id="loadingSection" class="section hidden">
-                <div class="loading-container glass-panel">
-                    <div class="pulse-icon">🩺</div>
-                    <h3>Analyzing Symptoms...</h3>
-                    <p>Consulting AI Knowledge Base</p>
-                </div>
-            </section>
+        <!-- Loading Section -->
+        <section id="loadingSection" class="section hidden">
+            <div class="loading-container glass-panel">
+                <div class="pulse-icon">🩺</div>
+                <h3>Analyzing Symptoms...</h3>
+                <p>Consulting AI Knowledge Base</p>
+            </div>
+        </section>
 
-            <!-- Results Section -->
-            <section id="resultsSection" class="section hidden">
-                <!-- Injected via JavaScript -->
-            </section>
+        <!-- Results Section -->
+        <section id="resultsSection" class="section hidden">
+            <!-- Injected via JavaScript -->
+        </section>
 
-        </main>
+    </main>
     </div>
 
-    <!-- Scripts with Cache Busting -->
-    <script src="config.js?v=pure"></script>
-    <script src="ai-engine.js?v=pure"></script>
-    <script src="app.js?v=pure"></script>
+    <!-- Scripts Duplicate Removed -->
 
     <!-- Wizard Logic Script -->
     <script>
@@ -268,7 +269,13 @@
             }
         }
     </script>
-    <script src="semantic-core.js"></script>
+    <!-- SCRIPTS (Order is Critical) -->
+    <script src="config.js?v=fix4"></script>
+    <script src="openrouter-client.js?v=fix4"></script>
+    <script src="semantic-core.js?v=fix4"></script>
+    <script src="ai-engine.js?v=fix4"></script>
+    <script src="sheets-webhook.js?v=fix4"></script>
+    <script src="app.js?v=fix4"></script>
 </body>
 
 </html>
