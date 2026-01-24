@@ -953,7 +953,7 @@ function generateRecoveryPlan(patientData) {
     // Pass age to meal plan generator
     const dietData = getDietPersonalization(dietPref, problemArea, name, age, conditions, painLevel);
     // Re-generate detailed meal plan with age
-    const detailedMealPlan = generateMealPlan(dietData.nutrition, dietPref, bmiData.category, age);
+    const detailedMealPlan = generateMealPlan(nutritionData, dietPref, bmiData.category, age);
     dietData.mealPlan = detailedMealPlan;
 
     // Dynamic recovery speed based on age
