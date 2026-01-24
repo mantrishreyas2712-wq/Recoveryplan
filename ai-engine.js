@@ -834,7 +834,28 @@ function getStockThumbnail(name) {
 // Associate ID: drvanshika0d-21
 const AFFILIATE_TAG = 'drvanshika0d-21';
 
-const EQUIPMENT_MAP = {
+// CLINIC EQUIPMENT - Requires professional/Dr. Vanshika session
+const CLINIC_EQUIPMENT = {
+    'tens': { name: 'TENS Machine', sessionName: 'TENS Therapy Session' },
+    'ultrasound': { name: 'Ultrasound Therapy', sessionName: 'Ultrasound Session' },
+    'tekar': { name: 'Tekar/TECAR Therapy', sessionName: 'Tekar Therapy Session' },
+    'tecar': { name: 'TECAR Therapy', sessionName: 'TECAR Session' },
+    'ift': { name: 'IFT Machine', sessionName: 'IFT Therapy Session' },
+    'interferential': { name: 'Interferential Therapy', sessionName: 'IFT Session' },
+    'laser': { name: 'Laser Therapy', sessionName: 'Laser Therapy Session' },
+    'traction': { name: 'Traction Machine', sessionName: 'Traction Session' },
+    'shockwave': { name: 'Shockwave Therapy', sessionName: 'Shockwave Session' },
+    'cupping': { name: 'Cupping Therapy', sessionName: 'Cupping Session' },
+    'dry needling': { name: 'Dry Needling', sessionName: 'Dry Needling Session' },
+    'ems': { name: 'EMS Machine', sessionName: 'EMS Therapy Session' },
+    'electrical stimulation': { name: 'Electrical Stimulation', sessionName: 'E-Stim Session' },
+    'hydro': { name: 'Hydrotherapy', sessionName: 'Hydrotherapy Session' },
+    'wax': { name: 'Paraffin Wax', sessionName: 'Wax Therapy Session' },
+    'cryotherapy': { name: 'Cryotherapy', sessionName: 'Cryotherapy Session' }
+};
+
+// HOME EQUIPMENT - Can be bought on Amazon
+const HOME_EQUIPMENT = {
     // Resistance & Strength
     'band': { name: 'Resistance Band', url: `https://www.amazon.in/s?k=resistance+bands+physiotherapy&tag=${AFFILIATE_TAG}` },
     'theraband': { name: 'Theraband', url: `https://www.amazon.in/s?k=theraband+physiotherapy&tag=${AFFILIATE_TAG}` },
@@ -884,8 +905,7 @@ const EQUIPMENT_MAP = {
     'step': { name: 'Aerobic Step', url: `https://www.amazon.in/s?k=aerobic+step+platform&tag=${AFFILIATE_TAG}` },
     'balance': { name: 'Balance Board', url: `https://www.amazon.in/s?k=balance+board+wobble&tag=${AFFILIATE_TAG}` },
 
-    // TENS & Devices
-    'tens': { name: 'TENS Machine', url: `https://www.amazon.in/s?k=tens+machine+pain+relief&tag=${AFFILIATE_TAG}` },
+    // Massage devices (home versions)
     'massager': { name: 'Electric Massager', url: `https://www.amazon.in/s?k=body+massager+muscle+pain&tag=${AFFILIATE_TAG}` },
 
     // General
@@ -906,18 +926,46 @@ function enrichWithSmartLinks(plan) {
                 thumbUrl = `https://img.youtube.com/vi/${verifiedId}/mqdefault.jpg`;
             }
 
-            // Check for equipment (with affiliate links)
-            let equipLink = null, equipName = null;
+            // Check for equipment - prioritize clinic detection first
+            let equipType = null; // 'clinic' or 'home'
+            let equipLink = null;
+            let equipName = null;
+            let sessionName = null;
+
             const lowerName = (ex.name + ' ' + (ex.description || '')).toLowerCase();
-            for (const [key, equipData] of Object.entries(EQUIPMENT_MAP)) {
+
+            // First check for clinic equipment
+            for (const [key, equipData] of Object.entries(CLINIC_EQUIPMENT)) {
                 if (lowerName.includes(key)) {
-                    equipLink = equipData.url;
+                    equipType = 'clinic';
                     equipName = equipData.name;
+                    sessionName = equipData.sessionName;
                     break;
                 }
             }
 
-            return { ...ex, type: 'search', thumbnailUrl: thumbUrl, videoUrl: videoUrl, equipmentUrl: equipLink, equipmentName: equipName };
+            // If not clinic, check for home equipment
+            if (!equipType) {
+                for (const [key, equipData] of Object.entries(HOME_EQUIPMENT)) {
+                    if (lowerName.includes(key)) {
+                        equipType = 'home';
+                        equipLink = equipData.url;
+                        equipName = equipData.name;
+                        break;
+                    }
+                }
+            }
+
+            return {
+                ...ex,
+                type: 'search',
+                thumbnailUrl: thumbUrl,
+                videoUrl: videoUrl,
+                equipmentType: equipType,
+                equipmentUrl: equipLink,
+                equipmentName: equipName,
+                sessionName: sessionName
+            };
         });
     }
     return plan;

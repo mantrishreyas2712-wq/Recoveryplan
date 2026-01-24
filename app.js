@@ -114,17 +114,57 @@ function renderResults(plan, userData) {
         const btnIcon = isDirect ? '▶' : '🔎';
         const btnText = isDirect ? 'Watch Now' : 'Find Video';
 
-        // Equipment recommendation (caring, not salesy)
+        // Get pain level for conditional display
+        const painLevel = parseInt(userData.painLevel) || 5;
+
+        // Equipment recommendation - different for clinic vs home
         let equipBtn = '';
-        if (ex.equipmentUrl) {
+
+        if (ex.equipmentType === 'clinic') {
+            // CLINIC EQUIPMENT - Book session with Dr. Vanshika
+            const sessionMsg = encodeURIComponent(`Hi Dr. Vanshika, I'd like to book a ${ex.sessionName} for my ${userData.problemArea} problem. Can you help me schedule an appointment?`);
+            const sessionLink = `https://wa.me/${DR_VANSHIKA_NUMBER}?text=${sessionMsg}`;
+
             equipBtn = `
-            <div style="margin-top: 0.75rem; padding: 0.6rem; background: #F0FDF4; border-radius: 8px; border: 1px solid #BBF7D0;">
-                <p style="font-size: 0.8rem; color: #166534; margin: 0 0 0.4rem 0;">💡 This exercise works best with a <strong>${ex.equipmentName}</strong></p>
-                <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; background: #059669; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
-                    View ${ex.equipmentName} Options →
+            <div style="margin-top: 0.75rem; padding: 0.6rem; background: #EEF2FF; border-radius: 8px; border: 1px solid #C7D2FE;">
+                <p style="font-size: 0.8rem; color: #4338CA; margin: 0 0 0.4rem 0;">🏥 This therapy works best with a <strong>${ex.equipmentName}</strong></p>
+                <a href="${sessionLink}" target="_blank" style="display: inline-block; background: #4F46E5; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                    📅 Book ${ex.sessionName}
                 </a>
-                <p style="font-size: 0.7rem; color: #6B7280; margin: 0.4rem 0 0 0; font-style: italic;">Optional - only if you don't have one at home</p>
+                <p style="font-size: 0.7rem; color: #6B7280; margin: 0.4rem 0 0 0; font-style: italic;">Professional therapy for faster pain relief</p>
             </div>`;
+        }
+        else if (ex.equipmentType === 'home' && ex.equipmentUrl) {
+            // HOME EQUIPMENT - Show Amazon link
+            if (painLevel > 7) {
+                // HIGH PAIN - Show BOTH book session + equipment
+                const sessionMsg = encodeURIComponent(`Hi Dr. Vanshika, I have ${userData.problemArea} pain (${painLevel}/10). I'd like to book a professional session. Can you help?`);
+                const sessionLink = `https://wa.me/${DR_VANSHIKA_NUMBER}?text=${sessionMsg}`;
+
+                equipBtn = `
+                <div style="margin-top: 0.75rem; padding: 0.6rem; background: #FEF3C7; border-radius: 8px; border: 1px solid #FCD34D;">
+                    <p style="font-size: 0.8rem; color: #92400E; margin: 0 0 0.4rem 0;">💡 This exercise works best with a <strong>${ex.equipmentName}</strong></p>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <a href="${sessionLink}" target="_blank" style="display: inline-block; background: #D97706; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                            📅 Book Professional Session
+                        </a>
+                        <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; background: #059669; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                            View ${ex.equipmentName} →
+                        </a>
+                    </div>
+                    <p style="font-size: 0.7rem; color: #6B7280; margin: 0.4rem 0 0 0; font-style: italic;">At pain ${painLevel}/10, professional supervision recommended alongside home therapy</p>
+                </div>`;
+            } else {
+                // NORMAL PAIN - Just show equipment link
+                equipBtn = `
+                <div style="margin-top: 0.75rem; padding: 0.6rem; background: #F0FDF4; border-radius: 8px; border: 1px solid #BBF7D0;">
+                    <p style="font-size: 0.8rem; color: #166534; margin: 0 0 0.4rem 0;">💡 This exercise works best with a <strong>${ex.equipmentName}</strong></p>
+                    <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; background: #059669; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                        View ${ex.equipmentName} Options →
+                    </a>
+                    <p style="font-size: 0.7rem; color: #6B7280; margin: 0.4rem 0 0 0; font-style: italic;">Optional - only if you don't have one at home</p>
+                </div>`;
+            }
         }
 
         return `
