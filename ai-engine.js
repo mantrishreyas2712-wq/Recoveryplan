@@ -605,21 +605,21 @@ function getSurgeryInfo(recentSurgery, problemStatement, name) {
         return {
             hasSurgery: true,
             isMajor: true,
-            warning: `🚨 **CRITICAL - POST-SURGICAL PATIENT:** ${name}, you've mentioned a recent major operation. This takes PRIORITY over everything else in this plan.`,
+            warning: `🚨 <strong>CRITICAL - POST-SURGICAL PATIENT:</strong> ${name}, you've mentioned a recent major operation. This takes PRIORITY over everything else in this plan.`,
             restrictions: [
                 "DO NOT start any exercises without your surgeon's explicit clearance",
                 "Your body is healing internally - strenuous activity can cause complications",
                 "Wait minimum 6-8 weeks post-surgery before active rehabilitation",
                 "Your surgical site healing comes FIRST before addressing other pain"
             ],
-            exerciseNote: `⚠️ **STOP - SURGEON CLEARANCE REQUIRED:** ${name}, the exercises below are NOT to be started until your operating surgeon clears you. Major surgery recovery takes precedence.`,
+            exerciseNote: `⚠️ <strong>STOP - SURGEON CLEARANCE REQUIRED:</strong> ${name}, the exercises below are NOT to be started until your operating surgeon clears you. Major surgery recovery takes precedence.`,
             consultNote: `${name}, with your recent surgery, please FIRST see your surgeon for clearance. Dr. Vanshika can then design a post-surgical rehabilitation program coordinated with your surgeon's guidelines.`
         };
     } else {
         return {
             hasSurgery: true,
             isMajor: false,
-            warning: `⚠️ **POST-SURGICAL NOTE:** ${name}, your recent surgery has been factored into these recommendations.`,
+            warning: `⚠️ <strong>POST-SURGICAL NOTE:</strong> ${name}, your recent surgery has been factored into these recommendations.`,
             restrictions: [
                 "Avoid exercises that strain or pull near the surgery site",
                 "Start at 50% of recommended intensity",
@@ -700,7 +700,7 @@ function generateRecoveryPlan(patientData) {
 
 ${surgeryInfo.hasSurgery ? buildSurgeryValidationPhrase(problemStatement, name, age, areaKey, painLevel, surgeryInfo.isMajor ? 'major' : 'minor') : buildValidationPhrase(problemStatement, occupation, name, age, areaKey, painLevel)}
 
-${conditions.length > 0 ? `**Medical Profile Noted:** Your conditions (${conditions.join(", ")}) have been carefully factored into every recommendation below.` : ""}
+${conditions.length > 0 ? `<strong>Medical Profile Noted:</strong> Your conditions (${conditions.join(", ")}) have been carefully factored into every recommendation below.` : ""}
 
 ${surgeryInfo.hasSurgery ? `
 ${surgeryInfo.warning}
@@ -708,46 +708,46 @@ ${surgeryInfo.warning}
 ${surgeryInfo.consultNote}
 ` : ""}
 
-**Your Pain Level:** ${painData.severity} (${painLevel}/10)
+<strong>Your Pain Level:</strong> ${painData.severity} (${painLevel}/10)
 ${painData.description}
 
-📋 Below is your personalized recovery plan with exercises, nutrition, and timeline. For optimal results, I recommend consulting **Dr. Vanshika** who can:
+📋 Below is your personalized recovery plan with exercises, nutrition, and timeline. For optimal results, I recommend consulting <strong>Dr. Vanshika</strong> who can:
 • Assess your condition hands-on
 • Customize exercises for ${genderTerms.possessive} specific body mechanics
 • Coordinate with ${surgeryInfo.hasSurgery ? "your surgeon for safe rehabilitation" : "any specialists you're seeing"}
 • Accelerate your recovery by 40-60%
 
-👉 **Book Dr. Vanshika now** for expert-guided recovery.`,
+👉 <strong>Book Dr. Vanshika now</strong> for expert-guided recovery.`,
 
             // CAUSES (uses age, occupation, surgery, conditions)
-            likelyCauses: `**Root causes of your ${areaKey} ${conditionKey}:**
+            likelyCauses: `<strong>Root causes of your ${areaKey} ${conditionKey}:</strong>
 
 Based on your profile:
 • ${pick(conditionData.causes)}
 • ${pick(conditionData.causes.filter(c => c !== conditionData.causes[0])) || conditionData.causes[1]}
 
-**Your specific contributing factors:**
-• **Age ${age}:** ${age < 30 ? "Young tissues are resilient but not immune to strain" : age < 50 ? "Some normal wear patterns may be developing" : "Natural age-related changes are a factor"}
-• **Work (${occupation}):** ${occData.workImpact}
-${surgeryInfo.hasSurgery ? `• **Recent Surgery:** Your body is allocating healing resources to your surgical recovery, which impacts overall healing capacity.` : ""}
-${conditions.includes("Heart Conditions") ? `• **Heart Condition:** Circulation affects tissue healing - important to keep moving gently.` : ""}`,
+<strong>Your specific contributing factors:</strong>
+• <strong>Age ${age}:</strong> ${age < 30 ? "Young tissues are resilient but not immune to strain" : age < 50 ? "Some normal wear patterns may be developing" : "Natural age-related changes are a factor"}
+• <strong>Work (${occupation}):</strong> ${occData.workImpact}
+${surgeryInfo.hasSurgery ? `• <strong>Recent Surgery:</strong> Your body is allocating healing resources to your surgical recovery, which impacts overall healing capacity.` : ""}
+${conditions.includes("Heart Conditions") ? `• <strong>Heart Condition:</strong> Circulation affects tissue healing - important to keep moving gently.` : ""}`,
 
             severity: `${painData.severity} - Pain ${painLevel}/10`,
 
             // PROGNOSIS (uses age, pain level, surgery)
-            prognosis: `**Your Recovery Outlook:**
+            prognosis: `<strong>Your Recovery Outlook:</strong>
 
-${surgeryInfo.isMajor ? `🚨 **SURGICAL RECOVERY FIRST:** Your major operation requires 6-8 weeks minimum healing before focusing on ${areaKey} rehabilitation. Consult your surgeon.
+${surgeryInfo.isMajor ? `🚨 <strong>SURGICAL RECOVERY FIRST:</strong> Your major operation requires 6-8 weeks minimum healing before focusing on ${areaKey} rehabilitation. Consult your surgeon.
 
-` : ""}**Expected Timeline:** ${expectedTimeline} (at current pain level ${painLevel}/10)
+` : ""}<strong>Expected Timeline:</strong> ${expectedTimeline} (at current pain level ${painLevel}/10)
 
-**Your Age Factor (${age}):** ${pick(PHRASES.recovery[recoverySpeed])}
+<strong>Your Age Factor (${age}):</strong> ${pick(PHRASES.recovery[recoverySpeed])}
 
-**Urgency Level:** ${painData.urgency}
+<strong>Urgency Level:</strong> ${painData.urgency}
 
-${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? `⚠️ **Surgery Note:** Your recent procedure may extend recovery by 1-2 weeks. Be patient with ${genderTerms.possessive.toLowerCase()} body.` : ""}
+${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? `⚠️ <strong>Surgery Note:</strong> Your recent procedure may extend recovery by 1-2 weeks. Be patient with ${genderTerms.possessive.toLowerCase()} body.` : ""}
 
-💡 **With Dr. Vanshika's guidance**, recovery typically accelerates significantly.`
+💡 <strong>With Dr. Vanshika's guidance</strong>, recovery typically accelerates significantly.`
         },
 
         exercisePlan: {
@@ -755,7 +755,7 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? `⚠️ **Surgery Note:** You
 
 ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\n\n" : ""}${painData.exerciseAdvice}
 
-**Frequency:** ${age > 55 ? "Once daily, gently" : (painLevel > 6 ? "Once daily initially" : "2-3 times daily")}`,
+<strong>Frequency:</strong> ${age > 55 ? "Once daily, gently" : (painLevel > 6 ? "Once daily initially" : "2-3 times daily")}`,
 
             selectedExercises: conditionData.exercises.map(ex => ({
                 ...ex,
@@ -798,20 +798,20 @@ ${surgeryInfo.hasSurgery ? surgeryInfo.consultNote : `With pain at ${painLevel}/
         },
 
         recoveryTimeline: {
-            week1: `**Week 1 - ${surgeryInfo.isMajor ? "REST & SURGICAL HEALING" : "Foundation Phase"}**
+            week1: `<strong>Week 1 - ${surgeryInfo.isMajor ? "REST & SURGICAL HEALING" : "Foundation Phase"}</strong>
 ${surgeryInfo.isMajor ? "Focus entirely on surgical recovery. No exercises without surgeon clearance." : `
 Pain Management: Ice/heat as needed, ${painData.lifestyle}
 Exercise: ${age > 55 ? "Once daily, very gently" : (painLevel > 6 ? "Once daily, gentle" : "2-3 times daily")}
 ${age < 30 ? "Your young body should respond quickly!" : "Be patient - consistency matters."}`}`,
 
-            week2_3: `**Week 2-3 - ${surgeryInfo.isMajor ? "FOLLOW SURGEON'S GUIDANCE" : "Progress Phase"}**
+            week2_3: `<strong>Week 2-3 - ${surgeryInfo.isMajor ? "FOLLOW SURGEON'S GUIDANCE" : "Progress Phase"}</strong>
 ${surgeryInfo.isMajor ? "Continue following surgeon's post-op instructions. No independent rehabilitation." : `
 ${name}, you should notice improvement.
-${age < 30 ? "Being ${age}, you may feel significantly better by now!" : "Steady progress - each day is a step forward."}
+${age < 30 ? `Being ${age}, you may feel significantly better by now!` : "Steady progress - each day is a step forward."}
 
 Increase exercise duration gradually.`}`,
 
-            longTerm: `**Long-term - Maintenance**
+            longTerm: `<strong>Long-term - Maintenance</strong>
 ${surgeryInfo.isMajor ? "Once cleared by surgeon, begin rehabilitation with Dr. Vanshika's guidance." : `
 ${occData.returnToWork}
 
