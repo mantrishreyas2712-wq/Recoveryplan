@@ -761,3 +761,217 @@ body {
         color: #0F766E;
     }
 }
+
+/* --- ANIMATIONS & GRAPHICS (NEW) --- */
+
+/* 1. Pulse Animation (Heartbeat / Urgent) */
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.8);
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(244, 63, 94, 0);
+    }
+
+    100% {
+        transform: scale(0.8);
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
+    }
+}
+
+.anim-pulse {
+    animation: pulse-ring 2s infinite;
+    display: inline-block;
+}
+
+/* 2. Slide In Up (Entry Animation) */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.anim-entry {
+    animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 3. Rotating Sun (Breakfast) - CSS Only */
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.icon-sun {
+    width: 24px;
+    height: 24px;
+    background: radial-gradient(circle, #F59E0B 40%, transparent 40%),
+        conic-gradient(from 0deg, transparent 0deg, #F59E0B 10deg, transparent 20deg, #F59E0B 30deg, transparent 40deg, #F59E0B 50deg, transparent 60deg, #F59E0B 70deg, transparent 80deg, #F59E0B 90deg, transparent 100deg, #F59E0B 110deg, transparent 120deg, #F59E0B 130deg, transparent 140deg, #F59E0B 150deg, transparent 160deg, #F59E0B 170deg, transparent 180deg, #F59E0B 190deg, transparent 200deg, #F59E0B 210deg, transparent 220deg, #F59E0B 230deg, transparent 240deg, #F59E0B 250deg, transparent 260deg, #F59E0B 270deg, transparent 280deg, #F59E0B 290deg, transparent 300deg, #F59E0B 310deg, transparent 320deg, #F59E0B 330deg, transparent 340deg, #F59E0B 350deg, transparent 360deg);
+    border-radius: 50%;
+    animation: spin-slow 12s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* 4. Moon (Dinner) */
+.icon-moon {
+    width: 18px;
+    height: 18px;
+    background: transparent;
+    box-shadow: -4px 2px 0 0 #6366F1;
+    border-radius: 50%;
+    transform: rotate(-20deg);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* 5. Water Drop (Hydration) */
+@keyframes drip {
+    0% {
+        transform: scale(1) rotate(45deg);
+    }
+
+    50% {
+        transform: scale(0.9, 1.1) rotate(45deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(45deg);
+    }
+}
+
+.icon-water {
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, #60A5FA, #2563EB);
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    animation: drip 3s infinite ease-in-out;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* 6. Warning Triangle (CSS Shape) */
+.icon-warning {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 14px solid #EF4444;
+    position: relative;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: baseline;
+}
+
+.icon-warning::after {
+    content: '!';
+    position: absolute;
+    top: 2px;
+    left: -2px;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* 7. Loading Scanner (New Loading Animation) */
+.scanner-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: #E0F2FE;
+    position: relative;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.scanner-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to bottom, rgba(14, 165, 233, 0), rgba(14, 165, 233, 0.5));
+    animation: scan-down 1.5s infinite linear;
+    z-index: 10;
+}
+
+@keyframes scan-down {
+    0% {
+        top: -30%;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+.scanner-icon {
+    font-size: 2rem;
+    z-index: 5;
+}
+
+/* --- GLASSMORPHISM & GRADIENTS --- */
+.glass-card-pro {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+    border-radius: 16px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-pro:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.12);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #0F766E, #0EA5E9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+/* List Bullets Replacement */
+.styled-list li {
+    list-style: none;
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.styled-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary);
+}
+
+.styled-list.warning li::before {
+    background: #EF4444;
+}

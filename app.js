@@ -13,37 +13,37 @@ document.getElementById('patientForm').addEventListener('submit', async function
     const loadingSection = document.getElementById('loadingSection');
     loadingSection.classList.remove('hidden');
 
-    // Start "Flash Summary" Animation
+    // Start "Flash Summary" Animation (CSS Graphic Version)
     let stepIndex = 0;
     const steps = [
-        { text: "Analyzing Symptoms...", icon: "🩺" },
-        { text: "Consulting Specialist AI...", icon: "🤖" },
-        { text: "Building Diet Plan...", icon: "🥗" },
-        { text: "Selecting Best Exercises...", icon: "🏃" },
-        { text: "Finalizing Protocol...", icon: "✅" }
+        { text: "Scanning Symptoms...", html: '<div class="scanner-container"><div class="scanner-line"></div><div class="scanner-icon">🩺</div></div>' },
+        { text: "Consulting Specialist AI...", html: '<div class="scanner-container"><div class="scanner-line" style="animation-duration: 1s;"></div><div class="scanner-icon">🤖</div></div>' },
+        { text: "Building Diet Plan...", html: '<div class="scanner-container"><div class="scanner-line" style="background: linear-gradient(to bottom, transparent, #10B981);"></div><div class="scanner-icon">🥗</div></div>' },
+        { text: "Optimizing Exercises...", html: '<div class="scanner-container"><div class="scanner-line" style="background: linear-gradient(to bottom, transparent, #F59E0B);"></div><div class="scanner-icon">🏃</div></div>' },
+        { text: "Finalizing Protocol...", html: '<div class="anim-pulse" style="font-size: 3rem;">✅</div>' }
     ];
 
     const loadingHeader = loadingSection.querySelector('h3');
-    const loadingIcon = loadingSection.querySelector('.pulse-icon');
+    const loadingIconWrapper = loadingSection.querySelector('.pulse-icon');
 
     // Initial State
     if (loadingHeader) loadingHeader.innerText = steps[0].text;
-    if (loadingIcon) loadingIcon.innerText = steps[0].icon;
+    if (loadingIconWrapper) loadingIconWrapper.innerHTML = steps[0].html;
 
     // Cycle Animation
     const intervalId = setInterval(() => {
         stepIndex = (stepIndex + 1) % steps.length;
         if (loadingHeader) {
-            loadingHeader.style.opacity = '0'; // Fade out
-            if (loadingIcon) loadingIcon.style.transform = 'scale(0.5)';
+            loadingHeader.style.opacity = '0';
+            if (loadingIconWrapper) loadingIconWrapper.style.transform = 'scale(0.95)';
 
             setTimeout(() => {
                 loadingHeader.innerText = steps[stepIndex].text;
-                if (loadingIcon) {
-                    loadingIcon.innerText = steps[stepIndex].icon;
-                    loadingIcon.style.transform = 'scale(1)';
+                if (loadingIconWrapper) {
+                    loadingIconWrapper.innerHTML = steps[stepIndex].html;
+                    loadingIconWrapper.style.transform = 'scale(1)';
                 }
-                loadingHeader.style.opacity = '1'; // Fade in
+                loadingHeader.style.opacity = '1';
             }, 300);
         }
     }, 2500);
@@ -74,9 +74,9 @@ document.getElementById('patientForm').addEventListener('submit', async function
             loadingHeader.innerText = "Connection Failed. Please Retry.";
             loadingHeader.style.color = "#dc2626"; // Red
         }
-        if (loadingIcon) {
-            loadingIcon.innerText = "⚠️";
-            loadingIcon.style.animation = "none";
+        if (loadingIconWrapper) {
+            loadingIconWrapper.innerHTML = '<div class="anim-pulse" style="font-size: 3rem;">⚠️</div>';
+            loadingIconWrapper.style.animation = "none";
         }
 
         // Auto-hide loading after 6s (Safe Retry Time - Increased for Mobile Readability)
@@ -251,8 +251,8 @@ function renderResults(plan, userData) {
 
             <!-- 3. RED FLAGS WARNING -->
             ${plan.consultation.redFlags ? `
-            <div style="background: #FEF2F2; border: 1px solid #FECACA; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-                <strong style="color: #DC2626;">⚠️ Warning Signs - Seek Immediate Care If:</strong>
+            <div class="glass-card-pro" style="background: rgba(254, 242, 242, 0.85); border: 1px solid #FECACA; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                <strong style="color: #DC2626; display: flex; align-items: center; gap: 6px;"><span class="icon-warning"></span> Warning Signs - Seek Immediate Care If:</strong>
                 <ul style="margin: 0.5rem 0 0 1.5rem; color: #991B1B;">
                     ${plan.consultation.redFlags.map(f => `<li>${f}</li>`).join('')}
                 </ul>
@@ -399,8 +399,8 @@ function renderResults(plan, userData) {
                     </div>
                     ` : ''}
                     
-                    <div class="hydration-box">
-                        <span class="drop">💧</span> 
+                    <div class="hydration-box glass-card-pro" style="background: rgba(239, 246, 255, 0.8);">
+                        <span class="icon-water"></span> 
                         <strong>Hydration:</strong> ${plan.dietRecommendations.hydration}
                     </div>
                     
@@ -428,9 +428,9 @@ function renderResults(plan, userData) {
                         </h4>
                         
                         <!-- BREAKFAST -->
-                        <div style="background: #FEF3C7; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                        <div class="glass-card-pro" style="background: rgba(254, 243, 199, 0.6); border: 1px solid rgba(253, 230, 138, 0.8); padding: 1rem; margin-bottom: 1rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <strong style="color: #92400E;">🌅 Breakfast</strong>
+                                <strong style="color: #92400E; display: flex; align-items: center; gap: 8px;"><span class="icon-sun"></span> Breakfast</strong>
                                 <span style="font-size: 0.75rem; color: #78350F;">${plan.dietRecommendations.mealPlan.timing.breakfast}</span>
                             </div>
                             <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
@@ -461,9 +461,9 @@ function renderResults(plan, userData) {
                         </div>
                         
                         <!-- LUNCH -->
-                        <div style="background: #DBEAFE; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                        <div class="glass-card-pro" style="background: rgba(219, 234, 254, 0.7); border: 1px solid rgba(191, 219, 254, 0.8); padding: 1rem; margin-bottom: 1rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <strong style="color: #1E40AF;">☀️ Lunch</strong>
+                                <strong style="color: #1E40AF; display: flex; align-items: center; gap: 8px;"><div class="icon-sun" style="transform: scale(0.9); opacity: 0.8;"></div> Lunch</strong>
                                 <span style="font-size: 0.75rem; color: #1E3A8A;">${plan.dietRecommendations.mealPlan.timing.lunch}</span>
                             </div>
                             <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
@@ -494,9 +494,9 @@ function renderResults(plan, userData) {
                         </div>
                         
                         <!-- DINNER -->
-                        <div style="background: #E0E7FF; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                        <div class="glass-card-pro" style="background: rgba(224, 231, 255, 0.7); border: 1px solid rgba(199, 210, 254, 0.8); padding: 1rem; margin-bottom: 1rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <strong style="color: #4338CA;">🌙 Dinner</strong>
+                                <strong style="color: #4338CA; display: flex; align-items: center; gap: 8px;"><span class="icon-moon"></span> Dinner</strong>
                                 <span style="font-size: 0.75rem; color: #3730A3;">${plan.dietRecommendations.mealPlan.timing.dinner}</span>
                             </div>
                             <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
