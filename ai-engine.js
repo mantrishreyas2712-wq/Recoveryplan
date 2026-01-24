@@ -984,8 +984,17 @@ async function generateRecoveryPlan(patientData) {
     if (window.OpenRouter && window.OpenRouter.isConfigured()) {
         try {
             console.log("🌐 Attempting Online AI Analysis (via Proxy)...");
-            // Rich Context Prompt
-            const promptContext = `Body Part: ${areaKey}. Patient Profile: ${age}yo ${gender}. Symptoms: ${problemStatement}.`;
+            // Rich Context Prompt (v2.2 Comprehensive)
+            const promptContext = `
+            Patient: ${age}yo ${gender}, Occupation: ${occupation}
+            BMI: ${bmiData.bmi} (${bmiData.category})
+            Body Part: ${areaKey}
+            Conditions: ${conditions.length > 0 ? conditions.join(', ') : 'None'}
+            Surgery: ${surgeryInfo.hasSurgery ? surgeryInfo.description : 'None'}
+            Pain: ${painLevel}/10
+            Story: ${problemStatement}
+            Task: Diagnose injury & explain WHY considering profile. concise.
+            `;
             const onlineCause = await window.OpenRouter.analyze(promptContext);
 
             if (onlineCause) {
