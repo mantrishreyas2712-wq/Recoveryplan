@@ -28,18 +28,6 @@ const PHRASES = {
             (name, age) => `${name}, your ${age} years of experience teach you to listen to your body well!`
         ]
     },
-    validation: [
-        (symptom, occ) => `I understand you're dealing with "${symptom}" - this is something we can absolutely address, especially given your work in ${occ}.`,
-        (symptom, occ) => `Your concern about "${symptom}" is completely valid. As someone working in ${occ}, this needs proper attention.`,
-        (symptom, occ) => `"${symptom}" can indeed be challenging, particularly with your ${occ} responsibilities. Let's tackle this together.`,
-        (symptom, occ) => `What you're experiencing - "${symptom}" - we understand this can be frustrating. Given your ${occ} responsibilities, let's create a plan that works for you.`
-    ],
-    // Surgery-specific validation (used when surgery detected)
-    validationSurgery: [
-        (symptom, name) => `${name}, post-operative pain like "${symptom}" is something we take very seriously. Your body is healing, and we're here to support that recovery.`,
-        (symptom, name) => `${name}, recovering from surgery with "${symptom}" requires careful attention. This plan is designed with your post-surgical needs in mind.`,
-        (symptom, name) => `We understand "${symptom}" after surgery can be concerning, ${name}. Rest assured, this is part of the healing process and we'll guide you through it safely.`
-    ],
     recovery: {
         fast: [
             "Your youthful biology supports rapid tissue repair - expect to feel better soon!",
@@ -58,6 +46,50 @@ const PHRASES = {
         ]
     }
 };
+
+// --- DYNAMIC SENTENCE BUILDERS (not preset phrases) ---
+// These build unique sentences using actual patient data
+
+function buildValidationPhrase(symptom, occupation, name, age, bodyArea, painLevel) {
+    // Dynamic word choices
+    const empathyWords = ['understand', 'recognize', 'acknowledge', 'see', 'note'];
+    const concernWords = ['dealing with', 'experiencing', 'going through', 'facing', 'managing'];
+    const actionWords = ['address', 'tackle', 'work on', 'focus on', 'help with'];
+    const supportWords = ['together', 'step by step', 'with proper guidance', 'systematically', 'carefully'];
+
+    const empathy = empathyWords[Math.floor(Math.random() * empathyWords.length)];
+    const concern = concernWords[Math.floor(Math.random() * concernWords.length)];
+    const action = actionWords[Math.floor(Math.random() * actionWords.length)];
+    const support = supportWords[Math.floor(Math.random() * supportWords.length)];
+
+    // Age-specific context
+    const ageContext = age < 30 ? "Your young body has excellent healing potential" :
+        age < 50 ? "At your age, focused rehabilitation yields great results" :
+            "With experience comes patience, which aids recovery";
+
+    // Pain-level context
+    const painContext = painLevel <= 4 ? "catching this early gives us a great advantage" :
+        painLevel <= 7 ? "this level of discomfort needs proper attention" :
+            "this significant pain requires immediate, focused care";
+
+    return `${name}, I ${empathy} you're ${concern} "${symptom}" in your ${bodyArea}. ${ageContext}, and ${painContext}. Let's ${action} this ${support}.`;
+}
+
+function buildSurgeryValidationPhrase(symptom, name, age, bodyArea, painLevel, surgeryType) {
+    const severityWords = surgeryType === 'major' ?
+        ['serious', 'significant', 'major', 'important'] :
+        ['healing', 'recovering', 'post-operative', 'recent'];
+    const careWords = ['carefully designed', 'specifically tailored', 'thoughtfully created', 'specially adapted'];
+    const priorityWords = ['your surgical recovery comes first', 'healing from surgery is the priority', 'your post-operative care takes precedence'];
+
+    const severity = severityWords[Math.floor(Math.random() * severityWords.length)];
+    const care = careWords[Math.floor(Math.random() * careWords.length)];
+    const priority = priorityWords[Math.floor(Math.random() * priorityWords.length)];
+
+    const painNote = painLevel > 6 ? ` With pain at ${painLevel}/10, ` : ` `;
+
+    return `${name}, experiencing "${symptom}" after your ${severity} surgery requires specialized attention.${painNote}This plan is ${care} for your ${bodyArea} while ${priority}.`;
+}
 
 // Random picker
 function pick(arr) {
@@ -666,7 +698,7 @@ function generateRecoveryPlan(patientData) {
             // PERSONALIZED GREETING (uses name, age, gender, occupation, symptoms)
             understanding: `${getPersonalizedGreeting(name, age, gender)}
 
-${surgeryInfo.hasSurgery ? pick(PHRASES.validationSurgery)(problemStatement, name) : pick(PHRASES.validation)(problemStatement, occupation)}
+${surgeryInfo.hasSurgery ? buildSurgeryValidationPhrase(problemStatement, name, age, areaKey, painLevel, surgeryInfo.isMajor ? 'major' : 'minor') : buildValidationPhrase(problemStatement, occupation, name, age, areaKey, painLevel)}
 
 ${conditions.length > 0 ? `**Medical Profile Noted:** Your conditions (${conditions.join(", ")}) have been carefully factored into every recommendation below.` : ""}
 
