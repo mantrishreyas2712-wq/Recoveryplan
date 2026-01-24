@@ -1152,19 +1152,25 @@ function findVerifiedVideo(exerciseName) {
 }
 
 // --- ENRICHMENT LOGIC ---
-const STOCK_IMAGES = [
-    'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80',
-    'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80',
-    'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=600&q=80',
-    'https://images.unsplash.com/photo-1544367563-12123d8959bd?w=600&q=80',
-    'https://images.unsplash.com/photo-1594381898411-846e7d193883?w=600&q=80',
-    'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80'
-];
-
-function getStockThumbnail(name) {
+// Use inline SVG data URL as reliable placeholder (never grey)
+function getPlaceholderThumbnail(name) {
+    // Generate a color based on exercise name for variety
     let hash = 0;
     for (let i = 0; i < name.length; i++) { hash = name.charCodeAt(i) + ((hash << 5) - hash); }
-    return STOCK_IMAGES[Math.abs(hash) % STOCK_IMAGES.length];
+    const colors = ['10B981', '3B82F6', '8B5CF6', 'EC4899', 'F59E0B', '06B6D4'];
+    const color = colors[Math.abs(hash) % colors.length];
+
+    // SVG placeholder with play button and exercise emoji
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180">
+            <rect fill="%23${color}" width="320" height="180"/>
+            <circle cx="160" cy="90" r="35" fill="white" opacity="0.9"/>
+            <polygon points="150,75 150,105 175,90" fill="%23${color}"/>
+            <text x="160" y="150" text-anchor="middle" fill="white" font-size="12" font-family="Arial">🏃 ${encodeURIComponent(name.substring(0, 20))}</text>
+        </svg>
+    `.replace(/\n/g, '').replace(/\s+/g, ' ');
+
+    return `data:image/svg+xml,${svg}`;
 }
 
 // --- AMAZON AFFILIATE EQUIPMENT LINKS ---
@@ -1256,7 +1262,7 @@ function enrichWithSmartLinks(plan) {
         plan.exercisePlan.selectedExercises = plan.exercisePlan.selectedExercises.map((ex) => {
             const verifiedId = findVerifiedVideo(ex.name);
             const query = encodeURIComponent(`${ex.name} exercise physical therapy`);
-            let thumbUrl = getStockThumbnail(ex.name || 'exercise');
+            let thumbUrl = getPlaceholderThumbnail(ex.name || 'exercise');
             let videoUrl = `https://www.youtube.com/results?search_query=${query}`;
 
             if (verifiedId && verifiedId.length > 5) {
