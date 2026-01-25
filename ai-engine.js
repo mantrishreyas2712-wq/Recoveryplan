@@ -1048,13 +1048,29 @@ async function generateRecoveryPlan(patientData) {
                     { type: "text", text: "Analyze this medical image/report. List the key findings (fractures, tears, disc bulges) concisely. Ignore normal findings." },
                     { type: "image_url", image_url: { url: patientData.reportImage } }
                 ];
-                const visionResponse = await window.OpenRouter.analyze(visionPayload, "You are a Radio-Diagnosis AI. Output findings only.", "google/gemini-2.0-flash-exp:free");
-                if (visionResponse) {
-                    reportFindings = visionResponse;
-                    console.log("🩻 Gemini Findings:", reportFindings);
-                } else {
-                    console.warn("🩻 Gemini Vision Failed (Busy/Error).");
-                    reportFindings = "⚠️ AI Could not analyze image (Server Busy). Please try again in 1 minute.";
+                // Vision Models Priority Queue (Primary -> Fallback)
+                const VISION_MODELS = [
+                    "google/gemini-2.0-flash-exp:free",
+                    "meta-llama/llama-3.2-11b-vision-instruct:free" // Reliable Fallback
+                ];
+
+                for (const model of VISION_MODELS) {
+                    console.log(`🩻 Vision Attempt with: ${model}...`);
+                    const visionResponse = await window.OpenRouter.analyze(visionPayload, "You are a Radio-Diagnosis AI. Output findings only.", model);
+
+                    if (visionResponse) {
+                        reportFindings = visionResponse;
+                        console.log(`✅ Success via ${model}:`, reportFindings);
+                        // Append Credit to Output so user knows which brain worked
+                        reportFindings += `\n(Analyzed by ${model.includes('llama') ? 'Llama 3.2' : 'Gemini 2.0'})`;
+                        break; // Stop loop on success
+                    } else {
+                        console.warn(`⚠️ Failed with ${model}. Switching to backup...`);
+                    }
+                }
+
+                if (reportFindings === "No report uploaded.") {
+                    reportFindings = "⚠️ All AI Vision models are currently busy. Please analyze manually or try later.";
                 }
             }
 
