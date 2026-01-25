@@ -307,7 +307,10 @@ function renderResults(plan, userData) {
                     <span style="font-size: 1.5rem;">🩻</span>
                     <div>
                         <strong style="color: #4338CA; font-size: 1rem;">Radiology / Imaging Findings (AI Analyzed)</strong>
-                        <div style="white-space: pre-line; color: #3730A3; margin-top: 0.5rem; line-height: 1.6; font-size: 0.95rem; background: rgba(255,255,255,0.5); padding: 0.5rem; border-radius: 6px;">${plan.imagingFindings.replace(/-/g, '•')}</div>
+                        <div style="white-space: pre-line; color: #3730A3; margin-top: 0.5rem; line-height: 1.6; font-size: 0.95rem; background: rgba(255,255,255,0.5); padding: 0.5rem; border-radius: 6px;">${plan.imagingFindings
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // Fix Bold
+                .replace(/__(.*?)__/g, '<u>$1</u>')    // Fix Underline
+            }</div>
                     </div>
                 </div>
             </div>
