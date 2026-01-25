@@ -1128,7 +1128,7 @@ async function generateRecoveryPlan(patientData) {
             // PERSONALIZED GREETING (uses name, age, gender, occupation, symptoms)
             // AI ASSESSMENT OVERRIDE (v2.4)
             understanding: onlineData?.assessment ?
-                `<strong>Dr. Vanshika's Assessment:</strong><br>${onlineData.assessment}` :
+                `${onlineData.diagnosis ? `<div style="margin-bottom: 0.8rem;"><span style="background: #E0F2FE; color: #0369A1; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; font-size: 0.9rem;">Likely Diagnosis</span><span style="color: #0C4A6E; font-weight: 700; margin-left: 0.5rem;">${onlineData.diagnosis}</span></div>` : ''}<strong>Dr. Vanshika's Assessment:</strong><br>${onlineData.assessment}` :
                 `${getPersonalizedGreeting(name, age, gender)}
 
 ${surgeryInfo.hasSurgery ? buildSurgeryValidationPhrase(problemStatement, name, age, areaKey, painLevel, surgeryInfo.isMajor ? 'major' : 'minor', onlineData?.diagnosis) : buildValidationPhrase(problemStatement, occupation, name, age, areaKey, painLevel, onlineData?.diagnosis)}
