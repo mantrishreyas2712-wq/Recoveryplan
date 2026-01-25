@@ -1049,7 +1049,6 @@ async function generateRecoveryPlan(patientData) {
                     { type: "image_url", image_url: { url: patientData.reportImage } }
                 ];
                 // Vision Models Priority Queue (Best -> Reliable Backup -> Last Resort)
-                // Vision Models Priority Queue (Best -> Reliable Backup -> Last Resort)
                 // v2.31: Verified Free IDs only
                 const VISION_MODELS = [
                     "google/gemini-2.0-flash-exp:free",

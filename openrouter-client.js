@@ -20,12 +20,12 @@ const OpenRouter = {
         // HYBRID STRATEGY: Use DeepSeek for Text, Gemini for Vision
         const selectedModel = modelOverride || "deepseek/deepseek-chat";
 
-        // Text Failover Queue (DeepSeek -> Llama 3.1 405B -> Gemini 2.0)
-        // Only use failover if we are in "Text Mode" (default)
+        // Text Failover Queue (DeepSeek -> Gemini 2.0 -> Llama 405B)
+        // Optimization (v2.32): Gemini is faster/more reliable than Llama 405B as first backup
         const TEXT_FAILOVER = [
             "deepseek/deepseek-chat",
-            "meta-llama/llama-3.1-405b-instruct:free",
-            "google/gemini-2.0-flash-exp:free"
+            "google/gemini-2.0-flash-exp:free",      // Fast Backup
+            "meta-llama/llama-3.1-405b-instruct:free" // Smart Backup
         ];
 
         const modelsToTry = (modelOverride || !selectedModel.includes('deepseek')) ? [selectedModel] : TEXT_FAILOVER;
