@@ -1334,7 +1334,10 @@ Maintain exercises ${age < 40 ? "3-4 times weekly" : "daily"} to prevent recurre
 ${name}, prevention is your best medicine now.`}
 
 👉 Monthly check-in with Dr. Vanshika keeps you on track.`
-        }
+        },
+
+        // SUPPORT GEAR (v2.12) - Context-Aware Affiliate Links
+        recommendedGear: SUPPORT_GEAR[areaKey] || []
     };
 
     // Enrich with video links and equipment
@@ -1462,6 +1465,34 @@ const CLINIC_EQUIPMENT = {
     'hydro': { name: 'Hydrotherapy', sessionName: 'Hydrotherapy Session' },
     'wax': { name: 'Paraffin Wax', sessionName: 'Wax Therapy Session' },
     'cryotherapy': { name: 'Cryotherapy', sessionName: 'Cryotherapy Session' }
+};
+// DEDICATED SUPPORT GEAR MAPPING (v2.12)
+// Shown based on 'problemArea' regardless of exercises
+const SUPPORT_GEAR = {
+    'neck': [
+        { name: 'Cervical Pillow', url: `https://www.amazon.in/s?k=cervical+pillow+memory+foam+orthopedic&tag=${AFFILIATE_TAG}` },
+        { name: 'Neck Collar (Soft)', url: `https://www.amazon.in/s?k=soft+cervical+collar+neck+pain&tag=${AFFILIATE_TAG}` }
+    ],
+    'back': [
+        { name: 'Lumbar Belt', url: `https://www.amazon.in/s?k=lumbar+support+belt+back+pain&tag=${AFFILIATE_TAG}` },
+        { name: 'Backrest Cushion', url: `https://www.amazon.in/s?k=orthopedic+backrest+chair+office&tag=${AFFILIATE_TAG}` }
+    ],
+    'knee': [
+        { name: 'Knee Cap Pair', url: `https://www.amazon.in/s?k=knee+cap+pain+relief+pair&tag=${AFFILIATE_TAG}` },
+        { name: 'Hinged Knee Brace', url: `https://www.amazon.in/s?k=hinged+knee+brace+ligament&tag=${AFFILIATE_TAG}` }
+    ],
+    'ankle': [
+        { name: 'Ankle Binder', url: `https://www.amazon.in/s?k=ankle+binder+support+gym&tag=${AFFILIATE_TAG}` },
+        { name: 'Heel Cushion', url: `https://www.amazon.in/s?k=silicone+heel+cushion+pain&tag=${AFFILIATE_TAG}` }
+    ],
+    'wrist': [
+        { name: 'Wrist Splint', url: `https://www.amazon.in/s?k=wrist+splint+support+typing&tag=${AFFILIATE_TAG}` },
+        { name: 'Gel Ball', url: `https://www.amazon.in/s?k=stress+relief+gel+ball+hand&tag=${AFFILIATE_TAG}` }
+    ],
+    'shoulder': [
+        { name: 'Shoulder Support', url: `https://www.amazon.in/s?k=shoulder+support+neoprene+pain&tag=${AFFILIATE_TAG}` },
+        { name: 'Theraband', url: `https://www.amazon.in/s?k=resistance+tube+physiotherapy&tag=${AFFILIATE_TAG}` }
+    ]
 };
 
 // HOME EQUIPMENT - Can be bought on Amazon

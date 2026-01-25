@@ -272,7 +272,32 @@ function renderResults(plan, userData) {
                 <div class="exercises-list">
                     ${exerciseCards}
                 </div>
+                </div>
                 
+                <!-- RECOMMENDED GEAR SECTION (v2.12) -->
+                ${plan.recommendedGear && plan.recommendedGear.length > 0 ? `
+                <div style="margin-top: 2rem; background: #FFFAF0; border: 1px solid #F6E05E; border-radius: 12px; padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;">
+                        <span style="font-size: 1.5rem;">🛡️</span>
+                        <div>
+                            <h3 style="margin: 0; color: #975A16; font-size: 1.1rem;">Essential Support Gear</h3>
+                            <p style="margin: 0.2rem 0 0 0; color: #B7791F; font-size: 0.85rem;">Dr. Vanshika recommends these for faster healing.</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        ${plan.recommendedGear.map(gear => `
+                        <a href="${gear.url}" target="_blank" style="text-decoration: none;">
+                            <div class="glass-card-pro" style="background: white; border: 1px solid #E2E8F0; padding: 1rem; text-align: center; transition: transform 0.2s;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛍️</div>
+                                <strong style="color: #2D3748; display: block; margin-bottom: 0.5rem;">${gear.name}</strong>
+                                <span style="display: inline-block; background: #ED8936; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">Check Price on Amazon</span>
+                            </div>
+                        </a>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
                 ${parseInt(userData.painLevel) >= 7 ? (() => {
             // Area-specific therapy recommendations
             const areaTherapies = {
