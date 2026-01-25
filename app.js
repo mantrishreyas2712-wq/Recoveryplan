@@ -281,7 +281,7 @@ function renderResults(plan, userData) {
                         <span style="font-size: 1.5rem;">🛡️</span>
                         <div>
                             <h3 style="margin: 0; color: #975A16; font-size: 1.1rem;">Essential Support Gear</h3>
-                            <p style="margin: 0.2rem 0 0 0; color: #B7791F; font-size: 0.85rem;">Dr. Vanshika recommends these for faster healing.</p>
+                            <p style="margin: 0.2rem 0 0 0; color: #B7791F; font-size: 0.85rem;">Dr. Vanshika recommends these based on your pain scale (${userData.painLevel}/10).</p>
                         </div>
                     </div>
                     

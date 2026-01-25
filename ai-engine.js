@@ -1347,10 +1347,14 @@ ${name}, prevention is your best medicine now.`}
                 onlineData.affected_areas.forEach(a => areas.add(a.toLowerCase()));
             }
 
-            // 3. Merge Gear Lists
+            // 3. Merge Gear Lists (Filtered by Pain Level)
             let combinedGear = [];
             areas.forEach(area => {
-                if (SUPPORT_GEAR[area]) combinedGear.push(...SUPPORT_GEAR[area]);
+                if (SUPPORT_GEAR[area]) {
+                    // Filter: Only show gear appropriate for current pain level
+                    const relevantGear = SUPPORT_GEAR[area].filter(item => parseInt(painLevel) >= (item.minPain || 0));
+                    combinedGear.push(...relevantGear);
+                }
             });
             return combinedGear;
         })()
@@ -1486,28 +1490,28 @@ const CLINIC_EQUIPMENT = {
 // Shown based on 'problemArea' regardless of exercises
 const SUPPORT_GEAR = {
     'neck': [
-        { name: 'Cervical Pillow', url: `https://www.amazon.in/s?k=cervical+pillow+memory+foam+orthopedic&tag=${AFFILIATE_TAG}` },
-        { name: 'Neck Collar (Soft)', url: `https://www.amazon.in/s?k=soft+cervical+collar+neck+pain&tag=${AFFILIATE_TAG}` }
+        { name: 'Cervical Pillow', minPain: 0, url: `https://www.amazon.in/s?k=cervical+pillow+memory+foam+orthopedic&tag=${AFFILIATE_TAG}` },
+        { name: 'Neck Collar (Soft)', minPain: 7, url: `https://www.amazon.in/s?k=soft+cervical+collar+neck+pain&tag=${AFFILIATE_TAG}` }
     ],
     'back': [
-        { name: 'Lumbar Belt', url: `https://www.amazon.in/s?k=lumbar+support+belt+back+pain&tag=${AFFILIATE_TAG}` },
-        { name: 'Backrest Cushion', url: `https://www.amazon.in/s?k=orthopedic+backrest+chair+office&tag=${AFFILIATE_TAG}` }
+        { name: 'Backrest Cushion', minPain: 0, url: `https://www.amazon.in/s?k=orthopedic+backrest+chair+office&tag=${AFFILIATE_TAG}` },
+        { name: 'Lumbar Belt', minPain: 7, url: `https://www.amazon.in/s?k=lumbar+support+belt+back+pain&tag=${AFFILIATE_TAG}` }
     ],
     'knee': [
-        { name: 'Knee Cap Pair', url: `https://www.amazon.in/s?k=knee+cap+pain+relief+pair&tag=${AFFILIATE_TAG}` },
-        { name: 'Hinged Knee Brace', url: `https://www.amazon.in/s?k=hinged+knee+brace+ligament&tag=${AFFILIATE_TAG}` }
+        { name: 'Knee Cap Pair', minPain: 0, url: `https://www.amazon.in/s?k=knee+cap+pain+relief+pair&tag=${AFFILIATE_TAG}` },
+        { name: 'Hinged Knee Brace', minPain: 7, url: `https://www.amazon.in/s?k=hinged+knee+brace+ligament&tag=${AFFILIATE_TAG}` }
     ],
     'ankle': [
-        { name: 'Ankle Binder', url: `https://www.amazon.in/s?k=ankle+binder+support+gym&tag=${AFFILIATE_TAG}` },
-        { name: 'Heel Cushion', url: `https://www.amazon.in/s?k=silicone+heel+cushion+pain&tag=${AFFILIATE_TAG}` }
+        { name: 'Heel Cushion', minPain: 0, url: `https://www.amazon.in/s?k=silicone+heel+cushion+pain&tag=${AFFILIATE_TAG}` },
+        { name: 'Ankle Binder', minPain: 5, url: `https://www.amazon.in/s?k=ankle+binder+support+gym&tag=${AFFILIATE_TAG}` }
     ],
     'wrist': [
-        { name: 'Wrist Splint', url: `https://www.amazon.in/s?k=wrist+splint+support+typing&tag=${AFFILIATE_TAG}` },
-        { name: 'Gel Ball', url: `https://www.amazon.in/s?k=stress+relief+gel+ball+hand&tag=${AFFILIATE_TAG}` }
+        { name: 'Gel Ball', minPain: 0, url: `https://www.amazon.in/s?k=stress+relief+gel+ball+hand&tag=${AFFILIATE_TAG}` },
+        { name: 'Wrist Splint', minPain: 6, url: `https://www.amazon.in/s?k=wrist+splint+support+typing&tag=${AFFILIATE_TAG}` }
     ],
     'shoulder': [
-        { name: 'Shoulder Support', url: `https://www.amazon.in/s?k=shoulder+support+neoprene+pain&tag=${AFFILIATE_TAG}` },
-        { name: 'Theraband', url: `https://www.amazon.in/s?k=resistance+tube+physiotherapy&tag=${AFFILIATE_TAG}` }
+        { name: 'Theraband', minPain: 0, url: `https://www.amazon.in/s?k=resistance+tube+physiotherapy&tag=${AFFILIATE_TAG}` },
+        { name: 'Shoulder Support', minPain: 7, url: `https://www.amazon.in/s?k=shoulder+support+neoprene+pain&tag=${AFFILIATE_TAG}` }
     ]
 };
 
