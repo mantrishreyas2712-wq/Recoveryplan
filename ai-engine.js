@@ -1333,72 +1333,59 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
         },
 
         dietRecommendations: {
-            overview: dietData.overview,
-            proteinGuidance: dietData.proteinAdvice,
-            keyFoods: dietData.keyFoods,
-            foodsToAvoid: dietData.foodsToAvoid,
-            hydration: dietData.hydration,
-            supplements: dietData.supplements,
-            conditionNotes: dietData.conditionNotes,
-            // Personalized Nutrition from BMI
-            bmi: bmiData,
-            nutrition: nutritionData,
-            // Detailed Meal Plan (uses dietPref for veg/non-veg)
-            mealPlan: generateMealPlan(nutritionData, dietPref, bmiData.category, age),
-            personalizedMacros: `<strong>Your Daily Nutrition Targets (Based on ${weight}kg, ${height}cm):</strong>
-• <strong>Calories:</strong> ${nutritionData.calories} kcal/day
-• <strong>Protein:</strong> ${nutritionData.protein}g (essential for tissue repair)
-• <strong>Carbs:</strong> ${nutritionData.carbs}g (energy for healing)
-• <strong>Fats:</strong> ${nutritionData.fats}g (healthy fats for inflammation control)
-• <strong>Water:</strong> ${onlineData?.nutrition?.hydration || nutritionData.water + "L/day minimum"}
+• <strong>Calories:</strong> ${ nutritionData.calories } kcal / day
+• <strong>Protein:</strong> ${ nutritionData.protein } g(essential for tissue repair)
+• <strong>Carbs:</strong> ${ nutritionData.carbs } g(energy for healing)
+• <strong>Fats:</strong> ${ nutritionData.fats } g(healthy fats for inflammation control)
+• <strong>Water:</strong> ${ onlineData?.nutrition?.hydration || nutritionData.water + "L/day minimum" }
 
-${nutritionData.weightToLose > 0 ? `<strong>Weight Goal:</strong> Your ideal weight range is ${nutritionData.idealWeightMin}-${nutritionData.idealWeightMax}kg. Losing ${nutritionData.weightToLose}kg would significantly reduce ${areaKey} strain.` : `<strong>Weight Status:</strong> You're within a healthy weight range - maintain this for optimal joint health.`}`
+${ nutritionData.weightToLose > 0 ? `<strong>Weight Goal:</strong> Your ideal weight range is ${nutritionData.idealWeightMin}-${nutritionData.idealWeightMax}kg. Losing ${nutritionData.weightToLose}kg would significantly reduce ${areaKey} strain.` : `<strong>Weight Status:</strong> You're within a healthy weight range - maintain this for optimal joint health.` } `
         },
 
         consultation: {
-            urgency: `${name}, ${painData.urgency}
+            urgency: `${ name }, ${ painData.urgency }
 
-${surgeryInfo.hasSurgery ? surgeryInfo.consultNote : `With pain at ${painLevel}/10, ${painLevel > 6 ? "professional assessment is recommended" : "start with home exercises and consult if no improvement in 2 weeks"}.`}`,
+${ surgeryInfo.hasSurgery ? surgeryInfo.consultNote : `With pain at ${painLevel}/10, ${painLevel > 6 ? "professional assessment is recommended" : "start with home exercises and consult if no improvement in 2 weeks"}.` } `,
             specialists: conditionData.specialists,
             redFlags: conditionData.redFlags,
-            followUp: `${name}, if any warning signs appear, seek immediate care. Otherwise, track your progress weekly.`
+            followUp: `${ name }, if any warning signs appear, seek immediate care.Otherwise, track your progress weekly.`
         },
 
         recoveryTimeline: onlineData?.recovery?.week1 ? {
-            week1: `<strong>Week 1 - Protection Phase</strong><br>${onlineData.recovery.week1}`,
-            week2_3: `<strong>Week 2-3 - Progress Phase</strong><br>${onlineData.recovery.week2_3}`,
+            week1: `< strong > Week 1 - Protection Phase</strong > <br>${onlineData.recovery.week1}`,
+        week2_3: `<strong>Week 2-3 - Progress Phase</strong><br>${onlineData.recovery.week2_3}`,
             longTerm: `<strong>Long-term</strong><br>${onlineData.recovery.longTerm}`
         } : {
-            week1: `<strong>Week 1 - ${surgeryInfo.isMajor ? "REST & SURGICAL HEALING" : "Foundation Phase"}</strong>
-${surgeryInfo.isMajor ? "Focus entirely on surgical recovery. No exercises without surgeon clearance." : `
+                    week1: `<strong>Week 1 - ${surgeryInfo.isMajor ? "REST & SURGICAL HEALING" : "Foundation Phase"}</strong>
+                ${surgeryInfo.isMajor ? "Focus entirely on surgical recovery. No exercises without surgeon clearance." : `
 Pain Management: Ice/heat as needed, ${painData.lifestyle}
 Exercise: ${age > 55 ? "Once daily, very gently" : (painLevel > 6 ? "Once daily, gentle" : "2-3 times daily")}
 ${age < 30 ? "Your young body should respond quickly!" : "Be patient - consistency matters."}`}`,
 
-            week2_3: `<strong>Week 2-3 - ${surgeryInfo.isMajor ? "FOLLOW SURGEON'S GUIDANCE" : "Progress Phase"}</strong>
-${surgeryInfo.isMajor ? "Continue following surgeon's post-op instructions. No independent rehabilitation." : `
+                week2_3: `<strong>Week 2-3 - ${surgeryInfo.isMajor ? "FOLLOW SURGEON'S GUIDANCE" : "Progress Phase"}</strong>
+                ${surgeryInfo.isMajor ? "Continue following surgeon's post-op instructions. No independent rehabilitation." : `
 ${name}, you should notice improvement.
 ${age < 30 ? `Being ${age}, you may feel significantly better by now!` : "Steady progress - each day is a step forward."}
 
 Increase exercise duration gradually.`}`,
 
-            longTerm: `<strong>Long-term - Maintenance</strong>
-${surgeryInfo.isMajor ? "Once cleared by surgeon, begin rehabilitation with Dr. Vanshika's guidance." : `
+                longTerm: `<strong>Long-term - Maintenance</strong>
+                ${surgeryInfo.isMajor ? "Once cleared by surgeon, begin rehabilitation with Dr. Vanshika's guidance." : `
 ${occData.returnToWork}
 
 Maintain exercises ${age < 40 ? "3-4 times weekly" : "daily"} to prevent recurrence.
 ${name}, prevention is your best medicine now.`}
 
-👉 Monthly check-in with Dr. Vanshika keeps you on track.`
+                👉 Monthly check-in with Dr. Vanshika keeps you on track.`
         },
 
         // EXPOSE DETECTED AREAS (v2.17)
         affectedAreas: (() => {
             const areas = new Set([areaKey]);
-            if (onlineData?.affected_areas && Array.isArray(onlineData.affected_areas)) {
-                onlineData.affected_areas.forEach(a => areas.add(a.toLowerCase()));
+                if (onlineData?.affected_areas && Array.isArray(onlineData.affected_areas)) {
+                    onlineData.affected_areas.forEach(a => areas.add(a.toLowerCase()));
             }
-            return Array.from(areas);
+                return Array.from(areas);
         })(),
 
         // SUPPORT GEAR (v2.14) - Multi-Symptom Support
@@ -1406,14 +1393,14 @@ ${name}, prevention is your best medicine now.`}
             // 1. Primary Area (Dropdown)
             const areas = new Set([areaKey]);
 
-            // 2. Secondary Areas (AI Detected)
-            if (onlineData?.affected_areas && Array.isArray(onlineData.affected_areas)) {
-                onlineData.affected_areas.forEach(a => areas.add(a.toLowerCase()));
+                // 2. Secondary Areas (AI Detected)
+                if (onlineData?.affected_areas && Array.isArray(onlineData.affected_areas)) {
+                    onlineData.affected_areas.forEach(a => areas.add(a.toLowerCase()));
             }
 
-            // 3. Merge Gear Lists (Filtered by Pain Level)
-            let combinedGear = [];
-            const addedNames = new Set(); // Prevent duplicates
+                // 3. Merge Gear Lists (Filtered by Pain Level)
+                let combinedGear = [];
+                const addedNames = new Set(); // Prevent duplicates
 
             // A. Standard Logic (Pain Filtered)
             areas.forEach(area => {
@@ -1421,356 +1408,356 @@ ${name}, prevention is your best medicine now.`}
                     const relevantGear = SUPPORT_GEAR[area].filter(item => parseInt(painLevel) >= (item.minPain || 0));
                     relevantGear.forEach(g => {
                         if (!addedNames.has(g.name)) {
-                            combinedGear.push(g);
-                            addedNames.add(g.name);
+                    combinedGear.push(g);
+                addedNames.add(g.name);
                         }
                     });
                 }
             });
 
-            // B. Text Scanning Logic (v2.18) - AI Context Override
-            // If AI explicitly mentions "belt" or "brace", show it regardless of pain level
-            if (onlineData) {
+                // B. Text Scanning Logic (v2.18) - AI Context Override
+                // If AI explicitly mentions "belt" or "brace", show it regardless of pain level
+                if (onlineData) {
                 const fullText = (
-                    (onlineData.assessment || '') +
-                    JSON.stringify(onlineData.recovery || {}) +
-                    JSON.stringify(onlineData.work_advice || {})
+                (onlineData.assessment || '') +
+                JSON.stringify(onlineData.recovery || { }) +
+                JSON.stringify(onlineData.work_advice || { })
                 ).toLowerCase();
 
                 for (const [key, item] of Object.entries(KEYWORD_GEAR_MAP)) {
                     if (fullText.includes(key) && !addedNames.has(item.name)) {
-                        combinedGear.push(item);
-                        addedNames.add(item.name);
+                    combinedGear.push(item);
+                addedNames.add(item.name);
                     }
                 }
             }
 
-            return combinedGear;
+                return combinedGear;
         })()
     };
 
-    // Enrich with video links and equipment
-    return enrichWithSmartLinks(report, age, surgeryInfo);
+                // Enrich with video links and equipment
+                return enrichWithSmartLinks(report, age, surgeryInfo);
 }
 
-// --- VERIFIED EXERCISE LIBRARY ---
-// Comprehensive mapping of exercise names to verified YouTube video IDs
-const EXERCISE_LIBRARY = {
-    // NECK EXERCISES
-    'chin tuck': 'E_Wf8_7S4gQ',
-    'chin tucks': 'E_Wf8_7S4gQ',
-    'neck rotation': 'Xk8jN5qfC3o',
-    'neck rotation stretch': 'Xk8jN5qfC3o',
-    'upper trapezius': '1Y1_T7y7KzI',
-    'upper trap': '1Y1_T7y7KzI',
-    'levator scapulae': 'W6vOwhlVq_Q',
-    'neck side flexion': 'gicD5UzB47s',
-    'neck tilt': '0eO1aB6U72c',
+                // --- VERIFIED EXERCISE LIBRARY ---
+                // Comprehensive mapping of exercise names to verified YouTube video IDs
+                const EXERCISE_LIBRARY = {
+                    // NECK EXERCISES
+                    'chin tuck': 'E_Wf8_7S4gQ',
+                'chin tucks': 'E_Wf8_7S4gQ',
+                'neck rotation': 'Xk8jN5qfC3o',
+                'neck rotation stretch': 'Xk8jN5qfC3o',
+                'upper trapezius': '1Y1_T7y7KzI',
+                'upper trap': '1Y1_T7y7KzI',
+                'levator scapulae': 'W6vOwhlVq_Q',
+                'neck side flexion': 'gicD5UzB47s',
+                'neck tilt': '0eO1aB6U72c',
 
-    // SHOULDER EXERCISES
-    'pendulum': 'GFbCDbE86-A',
-    'pendulum exercise': 'GFbCDbE86-A',
-    'doorway stretch': 'lZ8qZ0y-cRk',
-    'scapular squeeze': '33P5AI27ejU',
-    'scapular squeezes': '33P5AI27ejU',
-    'wall slide': '33P5AI27ejU',
-    'shoulder roll': 'qGL_6c8dZVQ',
-    'wall climbing': 's0os_nVdaP0',
-    'cross body stretch': 'IlFPo2Etbnc',
-    'cross body': 'IlFPo2Etbnc',
+                // SHOULDER EXERCISES
+                'pendulum': 'GFbCDbE86-A',
+                'pendulum exercise': 'GFbCDbE86-A',
+                'doorway stretch': 'lZ8qZ0y-cRk',
+                'scapular squeeze': '33P5AI27ejU',
+                'scapular squeezes': '33P5AI27ejU',
+                'wall slide': '33P5AI27ejU',
+                'shoulder roll': 'qGL_6c8dZVQ',
+                'wall climbing': 's0os_nVdaP0',
+                'cross body stretch': 'IlFPo2Etbnc',
+                'cross body': 'IlFPo2Etbnc',
 
-    // BACK EXERCISES
-    'cat cow': 'sJq0jW4_P68',
-    'cat-cow': 'sJq0jW4_P68',
-    'cat-cow stretch': 'sJq0jW4_P68',
-    'childs pose': 'Eq6oMDi00n4',
-    'child\'s pose': 'Eq6oMDi00n4',
-    'knee to chest': 'bJzM6k9gZ24',
-    'knee to chest stretch': 'bJzM6k9gZ24',
-    'superman': 'cc6UVRS7TXw',
-    'bridge': 'N3lS97aGf-Q',
-    'bridge exercise': 'N3lS97aGf-Q',
-    'glute bridge': 'N3lS97aGf-Q',
-    'mcgill': '2_e4I-brfqs',
-    'cobra': 'fOdrW7nf9gw',
-    'seated rotation': 'MfWuXRbBt44',
-    'seated rotation stretch': 'MfWuXRbBt44',
+                // BACK EXERCISES
+                'cat cow': 'sJq0jW4_P68',
+                'cat-cow': 'sJq0jW4_P68',
+                'cat-cow stretch': 'sJq0jW4_P68',
+                'childs pose': 'Eq6oMDi00n4',
+                'child\'s pose': 'Eq6oMDi00n4',
+                'knee to chest': 'bJzM6k9gZ24',
+                'knee to chest stretch': 'bJzM6k9gZ24',
+                'superman': 'cc6UVRS7TXw',
+                'bridge': 'N3lS97aGf-Q',
+                'bridge exercise': 'N3lS97aGf-Q',
+                'glute bridge': 'N3lS97aGf-Q',
+                'mcgill': '2_e4I-brfqs',
+                'cobra': 'fOdrW7nf9gw',
+                'seated rotation': 'MfWuXRbBt44',
+                'seated rotation stretch': 'MfWuXRbBt44',
 
-    // KNEE EXERCISES
-    'quad set': 'I7C7nF9i8aU',
-    'quad sets': 'I7C7nF9i8aU',
-    'straight leg': 'L8Z_F2qR0lY',
-    'straight leg raise': 'L8Z_F2qR0lY',
-    'heel slide': '02sW4F11i_E',
-    'heel slides': '02sW4F11i_E',
-    'step up': 'dVVQyZ0RjYk',
-    'hamstring': 'JWqNgy9w54s',
-    'hamstring stretch': 'JWqNgy9w54s',
-    'clam': '7L0sT5XwK5s',
-    'clamshell': '7L0sT5XwK5s',
-    'ankle pump': 'OdYKE8PVVqg',
-    'ankle pumps': 'OdYKE8PVVqg',
-    'gentle flexion': 'xS9K4xyGpHE',
-    'gentle flexion range': 'xS9K4xyGpHE',
+                // KNEE EXERCISES
+                'quad set': 'I7C7nF9i8aU',
+                'quad sets': 'I7C7nF9i8aU',
+                'straight leg': 'L8Z_F2qR0lY',
+                'straight leg raise': 'L8Z_F2qR0lY',
+                'heel slide': '02sW4F11i_E',
+                'heel slides': '02sW4F11i_E',
+                'step up': 'dVVQyZ0RjYk',
+                'hamstring': 'JWqNgy9w54s',
+                'hamstring stretch': 'JWqNgy9w54s',
+                'clam': '7L0sT5XwK5s',
+                'clamshell': '7L0sT5XwK5s',
+                'ankle pump': 'OdYKE8PVVqg',
+                'ankle pumps': 'OdYKE8PVVqg',
+                'gentle flexion': 'xS9K4xyGpHE',
+                'gentle flexion range': 'xS9K4xyGpHE',
 
-    // ANKLE/FOOT EXERCISES
-    'ankle alphabet': 'vvlZ4b19E50',
-    'calf raise': 'M4Cj4h9bXM',
-    'calf raises': 'M4Cj4h9bXM',
-    'towel curl': '9q0Wj2_8eK0',
-    'towel curls': '9q0Wj2_8eK0',
+                // ANKLE/FOOT EXERCISES
+                'ankle alphabet': 'vvlZ4b19E50',
+                'calf raise': 'M4Cj4h9bXM',
+                'calf raises': 'M4Cj4h9bXM',
+                'towel curl': '9q0Wj2_8eK0',
+                'towel curls': '9q0Wj2_8eK0',
 
-    // WRIST/HAND EXERCISES
-    'wrist flexor': 'Ejl47X2-G2w',
-    'wrist flexor stretch': 'Ejl47X2-G2w',
-    'wrist extensor': 'ClhOerJrpBY',
-    'wrist extensor stretch': 'ClhOerJrpBY',
-    'tendon glide': 'VlKeRWz4Z2c',
-    'tendon glides': 'VlKeRWz4Z2c',
+                // WRIST/HAND EXERCISES
+                'wrist flexor': 'Ejl47X2-G2w',
+                'wrist flexor stretch': 'Ejl47X2-G2w',
+                'wrist extensor': 'ClhOerJrpBY',
+                'wrist extensor stretch': 'ClhOerJrpBY',
+                'tendon glide': 'VlKeRWz4Z2c',
+                'tendon glides': 'VlKeRWz4Z2c',
 
-    // HIP EXERCISES
-    'hip flexor': 'YZK5K2vF_eo',
-    'hip flexor stretch': 'YZK5K2vF_eo'
+                // HIP EXERCISES
+                'hip flexor': 'YZK5K2vF_eo',
+                'hip flexor stretch': 'YZK5K2vF_eo'
 };
 
-function findVerifiedVideo(exerciseName) {
+                function findVerifiedVideo(exerciseName) {
     if (!exerciseName) return null;
-    const cleanName = exerciseName.toLowerCase();
-    for (const [key, id] of Object.entries(EXERCISE_LIBRARY)) {
+                const cleanName = exerciseName.toLowerCase();
+                for (const [key, id] of Object.entries(EXERCISE_LIBRARY)) {
         if (cleanName.includes(key)) return id;
     }
-    return null;
+                return null;
 }
 
-// --- ENRICHMENT LOGIC ---
-function getExerciseThumbnail(name) {
+                // --- ENRICHMENT LOGIC ---
+                function getExerciseThumbnail(name) {
     // Use LoremFlickr (Reliable, free, no rate limits for this usage)
     const cleanName = String(name || 'exercise').replace(/[^a-zA-Z ]/g, '').trim();
-    // Use diverse keywords to get varied images
-    const keywords = `physiotherapy,stretching,fitness,${cleanName.split(' ')[0]}`;
-    // Lock to ensure consistency for the same exercise name
-    return `https://loremflickr.com/320/180/${keywords}/all?lock=${cleanName.length}`;
+                // Use diverse keywords to get varied images
+                const keywords = `physiotherapy,stretching,fitness,${cleanName.split(' ')[0]}`;
+                // Lock to ensure consistency for the same exercise name
+                return `https://loremflickr.com/320/180/${keywords}/all?lock=${cleanName.length}`;
 }
 
-// --- AMAZON AFFILIATE EQUIPMENT LINKS ---
-// Associate ID: drvanshika0d-21
-const AFFILIATE_TAG = 'drvanshika0d-21';
+                // --- AMAZON AFFILIATE EQUIPMENT LINKS ---
+                // Associate ID: drvanshika0d-21
+                const AFFILIATE_TAG = 'drvanshika0d-21';
 
-// CLINIC EQUIPMENT - Requires professional/Dr. Vanshika session
-const CLINIC_EQUIPMENT = {
-    'tens': { name: 'TENS Machine', sessionName: 'TENS Therapy Session' },
-    'ultrasound': { name: 'Ultrasound Therapy', sessionName: 'Ultrasound Session' },
-    'tekar': { name: 'Tekar/TECAR Therapy', sessionName: 'Tekar Therapy Session' },
-    'tecar': { name: 'TECAR Therapy', sessionName: 'TECAR Session' },
-    'ift': { name: 'IFT Machine', sessionName: 'IFT Therapy Session' },
-    'interferential': { name: 'Interferential Therapy', sessionName: 'IFT Session' },
-    'laser': { name: 'Laser Therapy', sessionName: 'Laser Therapy Session' },
-    'traction': { name: 'Traction Machine', sessionName: 'Traction Session' },
-    'shockwave': { name: 'Shockwave Therapy', sessionName: 'Shockwave Session' },
-    'cupping': { name: 'Cupping Therapy', sessionName: 'Cupping Session' },
-    'dry needling': { name: 'Dry Needling', sessionName: 'Dry Needling Session' },
-    'ems': { name: 'EMS Machine', sessionName: 'EMS Therapy Session' },
-    'electrical stimulation': { name: 'Electrical Stimulation', sessionName: 'E-Stim Session' },
-    'hydro': { name: 'Hydrotherapy', sessionName: 'Hydrotherapy Session' },
-    'wax': { name: 'Paraffin Wax', sessionName: 'Wax Therapy Session' },
-    'cryotherapy': { name: 'Cryotherapy', sessionName: 'Cryotherapy Session' }
+                // CLINIC EQUIPMENT - Requires professional/Dr. Vanshika session
+                const CLINIC_EQUIPMENT = {
+                    'tens': {name: 'TENS Machine', sessionName: 'TENS Therapy Session' },
+                'ultrasound': {name: 'Ultrasound Therapy', sessionName: 'Ultrasound Session' },
+                'tekar': {name: 'Tekar/TECAR Therapy', sessionName: 'Tekar Therapy Session' },
+                'tecar': {name: 'TECAR Therapy', sessionName: 'TECAR Session' },
+                'ift': {name: 'IFT Machine', sessionName: 'IFT Therapy Session' },
+                'interferential': {name: 'Interferential Therapy', sessionName: 'IFT Session' },
+                'laser': {name: 'Laser Therapy', sessionName: 'Laser Therapy Session' },
+                'traction': {name: 'Traction Machine', sessionName: 'Traction Session' },
+                'shockwave': {name: 'Shockwave Therapy', sessionName: 'Shockwave Session' },
+                'cupping': {name: 'Cupping Therapy', sessionName: 'Cupping Session' },
+                'dry needling': {name: 'Dry Needling', sessionName: 'Dry Needling Session' },
+                'ems': {name: 'EMS Machine', sessionName: 'EMS Therapy Session' },
+                'electrical stimulation': {name: 'Electrical Stimulation', sessionName: 'E-Stim Session' },
+                'hydro': {name: 'Hydrotherapy', sessionName: 'Hydrotherapy Session' },
+                'wax': {name: 'Paraffin Wax', sessionName: 'Wax Therapy Session' },
+                'cryotherapy': {name: 'Cryotherapy', sessionName: 'Cryotherapy Session' }
 };
-// DEDICATED SUPPORT GEAR MAPPING (v2.12)
-// Shown based on 'problemArea' regardless of exercises
-const SUPPORT_GEAR = {
-    'neck': [
-        { name: 'Cervical Pillow', minPain: 0, url: `https://www.amazon.in/s?k=cervical+pillow+memory+foam+orthopedic&tag=${AFFILIATE_TAG}` },
-        { name: 'Neck Collar (Soft)', minPain: 7, url: `https://www.amazon.in/s?k=soft+cervical+collar+neck+pain&tag=${AFFILIATE_TAG}` }
-    ],
-    'back': [
-        { name: 'Backrest Cushion', minPain: 0, url: `https://www.amazon.in/s?k=orthopedic+backrest+chair+office&tag=${AFFILIATE_TAG}` },
-        { name: 'Lumbar Belt', minPain: 7, url: `https://www.amazon.in/s?k=lumbar+support+belt+back+pain&tag=${AFFILIATE_TAG}` }
-    ],
-    'knee': [
-        { name: 'Knee Cap Pair', minPain: 0, url: `https://www.amazon.in/s?k=knee+cap+pain+relief+pair&tag=${AFFILIATE_TAG}` },
-        { name: 'Hinged Knee Brace', minPain: 7, url: `https://www.amazon.in/s?k=hinged+knee+brace+ligament&tag=${AFFILIATE_TAG}` }
-    ],
-    'ankle': [
-        { name: 'Heel Cushion', minPain: 0, url: `https://www.amazon.in/s?k=silicone+heel+cushion+pain&tag=${AFFILIATE_TAG}` },
-        { name: 'Ankle Binder', minPain: 5, url: `https://www.amazon.in/s?k=ankle+binder+support+gym&tag=${AFFILIATE_TAG}` }
-    ],
-    'wrist': [
-        { name: 'Gel Ball', minPain: 0, url: `https://www.amazon.in/s?k=stress+relief+gel+ball+hand&tag=${AFFILIATE_TAG}` },
-        { name: 'Wrist Splint', minPain: 6, url: `https://www.amazon.in/s?k=wrist+splint+support+typing&tag=${AFFILIATE_TAG}` }
-    ],
-    'shoulder': [
-        { name: 'Theraband', minPain: 0, url: `https://www.amazon.in/s?k=resistance+tube+physiotherapy&tag=${AFFILIATE_TAG}` },
-        { name: 'Shoulder Support', minPain: 7, url: `https://www.amazon.in/s?k=shoulder+support+neoprene+pain&tag=${AFFILIATE_TAG}` }
-    ]
-};
-
-// IMPLICIT EQUIPMENT MAPPING (v2.17)
-// Map common exercises to optional equipment upgrades
-const IMPLICIT_EQUIPMENT = {
-    'leg raise': 'weight',
-    'squat': 'dumbbell',
-    'bridge': 'band',
-    'clam': 'band',
-    'row': 'theraband',
-    'press': 'dumbbell',
-    'curl': 'dumbbell',
-    'extension': 'band',
-    'flexion': 'band',
-    'rotation': 'band',
-    'stabilization': 'ball'
+                // DEDICATED SUPPORT GEAR MAPPING (v2.12)
+                // Shown based on 'problemArea' regardless of exercises
+                const SUPPORT_GEAR = {
+                    'neck': [
+                {name: 'Cervical Pillow', minPain: 0, url: `https://www.amazon.in/s?k=cervical+pillow+memory+foam+orthopedic&tag=${AFFILIATE_TAG}` },
+                {name: 'Neck Collar (Soft)', minPain: 7, url: `https://www.amazon.in/s?k=soft+cervical+collar+neck+pain&tag=${AFFILIATE_TAG}` }
+                ],
+                'back': [
+                {name: 'Backrest Cushion', minPain: 0, url: `https://www.amazon.in/s?k=orthopedic+backrest+chair+office&tag=${AFFILIATE_TAG}` },
+                {name: 'Lumbar Belt', minPain: 7, url: `https://www.amazon.in/s?k=lumbar+support+belt+back+pain&tag=${AFFILIATE_TAG}` }
+                ],
+                'knee': [
+                {name: 'Knee Cap Pair', minPain: 0, url: `https://www.amazon.in/s?k=knee+cap+pain+relief+pair&tag=${AFFILIATE_TAG}` },
+                {name: 'Hinged Knee Brace', minPain: 7, url: `https://www.amazon.in/s?k=hinged+knee+brace+ligament&tag=${AFFILIATE_TAG}` }
+                ],
+                'ankle': [
+                {name: 'Heel Cushion', minPain: 0, url: `https://www.amazon.in/s?k=silicone+heel+cushion+pain&tag=${AFFILIATE_TAG}` },
+                {name: 'Ankle Binder', minPain: 5, url: `https://www.amazon.in/s?k=ankle+binder+support+gym&tag=${AFFILIATE_TAG}` }
+                ],
+                'wrist': [
+                {name: 'Gel Ball', minPain: 0, url: `https://www.amazon.in/s?k=stress+relief+gel+ball+hand&tag=${AFFILIATE_TAG}` },
+                {name: 'Wrist Splint', minPain: 6, url: `https://www.amazon.in/s?k=wrist+splint+support+typing&tag=${AFFILIATE_TAG}` }
+                ],
+                'shoulder': [
+                {name: 'Theraband', minPain: 0, url: `https://www.amazon.in/s?k=resistance+tube+physiotherapy&tag=${AFFILIATE_TAG}` },
+                {name: 'Shoulder Support', minPain: 7, url: `https://www.amazon.in/s?k=shoulder+support+neoprene+pain&tag=${AFFILIATE_TAG}` }
+                ]
 };
 
-// TEXT SCANNING MAPPING (v2.18)
-// If AI mentions these words in text, force-show the gear
-const KEYWORD_GEAR_MAP = {
-    'collar': SUPPORT_GEAR['neck'][1], // Neck Collar
-    'pillow': SUPPORT_GEAR['neck'][0], // Pillow
-    'belt': SUPPORT_GEAR['back'][1],   // Lumbar Belt
-    'cushion': SUPPORT_GEAR['back'][0], // Back Cushion
-    'brace': SUPPORT_GEAR['knee'][1],   // Hinged Brace
-    'cap': SUPPORT_GEAR['knee'][0],     // Knee Cap
-    'binder': SUPPORT_GEAR['ankle'][1], // Ankle Binder
-    'splint': SUPPORT_GEAR['wrist'][1]  // Wrist Splint
+                // IMPLICIT EQUIPMENT MAPPING (v2.17)
+                // Map common exercises to optional equipment upgrades
+                const IMPLICIT_EQUIPMENT = {
+                    'leg raise': 'weight',
+                'squat': 'dumbbell',
+                'bridge': 'band',
+                'clam': 'band',
+                'row': 'theraband',
+                'press': 'dumbbell',
+                'curl': 'dumbbell',
+                'extension': 'band',
+                'flexion': 'band',
+                'rotation': 'band',
+                'stabilization': 'ball'
 };
 
-// HOME EQUIPMENT - Can be bought on Amazon
-const HOME_EQUIPMENT = {
-    // Resistance & Strength
-    'band': { name: 'Resistance Band', url: `https://www.amazon.in/s?k=resistance+bands+physiotherapy&tag=${AFFILIATE_TAG}` },
-    'theraband': { name: 'Theraband', url: `https://www.amazon.in/s?k=theraband+physiotherapy&tag=${AFFILIATE_TAG}` },
-    'resistance': { name: 'Resistance Band', url: `https://www.amazon.in/s?k=resistance+bands+exercise&tag=${AFFILIATE_TAG}` },
-    'dumbbell': { name: 'Dumbbells', url: `https://www.amazon.in/s?k=dumbbells+1kg+2kg&tag=${AFFILIATE_TAG}` },
-    'weight': { name: 'Ankle Weights', url: `https://www.amazon.in/s?k=ankle+weights+physiotherapy&tag=${AFFILIATE_TAG}` },
-    'kettlebell': { name: 'Kettlebell', url: `https://www.amazon.in/s?k=kettlebell+4kg&tag=${AFFILIATE_TAG}` },
-
-    // Balls & Rollers
-    'ball': { name: 'Exercise Ball', url: `https://www.amazon.in/s?k=exercise+ball+65cm+anti+burst&tag=${AFFILIATE_TAG}` },
-    'swiss ball': { name: 'Swiss Ball', url: `https://www.amazon.in/s?k=swiss+ball+gym&tag=${AFFILIATE_TAG}` },
-    'roller': { name: 'Foam Roller', url: `https://www.amazon.in/s?k=foam+roller+muscle+recovery&tag=${AFFILIATE_TAG}` },
-    'foam': { name: 'Foam Roller', url: `https://www.amazon.in/s?k=foam+roller+physiotherapy&tag=${AFFILIATE_TAG}` },
-    'massage ball': { name: 'Massage Ball', url: `https://www.amazon.in/s?k=massage+ball+trigger+point&tag=${AFFILIATE_TAG}` },
-    'spiky ball': { name: 'Spiky Massage Ball', url: `https://www.amazon.in/s?k=spiky+ball+physiotherapy&tag=${AFFILIATE_TAG}` },
-
-    // Mats & Surfaces
-    'mat': { name: 'Yoga Mat', url: `https://www.amazon.in/s?k=yoga+mat+6mm+anti+slip&tag=${AFFILIATE_TAG}` },
-    'yoga mat': { name: 'Yoga Mat', url: `https://www.amazon.in/s?k=yoga+mat+thick+exercise&tag=${AFFILIATE_TAG}` },
-
-    // Hot/Cold Therapy
-    'ice': { name: 'Ice Pack', url: `https://www.amazon.in/s?k=ice+pack+gel+reusable&tag=${AFFILIATE_TAG}` },
-    'heat': { name: 'Hot Water Bag', url: `https://www.amazon.in/s?k=hot+water+bag+electric&tag=${AFFILIATE_TAG}` },
-    'hot pack': { name: 'Hot Pack', url: `https://www.amazon.in/s?k=hot+cold+pack+therapy&tag=${AFFILIATE_TAG}` },
-    'cold pack': { name: 'Cold Pack', url: `https://www.amazon.in/s?k=cold+pack+gel+pain+relief&tag=${AFFILIATE_TAG}` },
-
-    // Supports & Braces
-    'brace': { name: 'Support Brace', url: `https://www.amazon.in/s?k=knee+brace+support&tag=${AFFILIATE_TAG}` },
-    'knee brace': { name: 'Knee Brace', url: `https://www.amazon.in/s?k=knee+brace+pain+relief&tag=${AFFILIATE_TAG}` },
-    'ankle brace': { name: 'Ankle Brace', url: `https://www.amazon.in/s?k=ankle+brace+support&tag=${AFFILIATE_TAG}` },
-    'wrist brace': { name: 'Wrist Brace', url: `https://www.amazon.in/s?k=wrist+brace+carpal+tunnel&tag=${AFFILIATE_TAG}` },
-    'back brace': { name: 'Back Support', url: `https://www.amazon.in/s?k=back+brace+lumbar+support&tag=${AFFILIATE_TAG}` },
-    'lumbar': { name: 'Lumbar Support', url: `https://www.amazon.in/s?k=lumbar+support+pillow+office&tag=${AFFILIATE_TAG}` },
-    'neck brace': { name: 'Neck Collar', url: `https://www.amazon.in/s?k=cervical+collar+soft&tag=${AFFILIATE_TAG}` },
-    'shoulder brace': { name: 'Shoulder Support', url: `https://www.amazon.in/s?k=shoulder+brace+support&tag=${AFFILIATE_TAG}` },
-
-    // Pillows & Cushions
-    'pillow': { name: 'Cervical Pillow', url: `https://www.amazon.in/s?k=cervical+pillow+memory+foam&tag=${AFFILIATE_TAG}` },
-    'neck pillow': { name: 'Neck Pillow', url: `https://www.amazon.in/s?k=neck+pillow+orthopedic&tag=${AFFILIATE_TAG}` },
-    'cushion': { name: 'Seat Cushion', url: `https://www.amazon.in/s?k=seat+cushion+coccyx+orthopedic&tag=${AFFILIATE_TAG}` },
-
-    // Props & Accessories
-    'towel': { name: 'Exercise Towel', url: `https://www.amazon.in/s?k=gym+towel+microfiber&tag=${AFFILIATE_TAG}` },
-    'strap': { name: 'Yoga Strap', url: `https://www.amazon.in/s?k=yoga+strap+stretching&tag=${AFFILIATE_TAG}` },
-    'block': { name: 'Yoga Block', url: `https://www.amazon.in/s?k=yoga+block+foam&tag=${AFFILIATE_TAG}` },
-    'stick': { name: 'Massage Stick', url: `https://www.amazon.in/s?k=muscle+roller+stick&tag=${AFFILIATE_TAG}` },
-    'step': { name: 'Aerobic Step', url: `https://www.amazon.in/s?k=aerobic+step+platform&tag=${AFFILIATE_TAG}` },
-    'balance': { name: 'Balance Board', url: `https://www.amazon.in/s?k=balance+board+wobble&tag=${AFFILIATE_TAG}` },
-
-    // Massage devices (home versions)
-    'massager': { name: 'Electric Massager', url: `https://www.amazon.in/s?k=body+massager+muscle+pain&tag=${AFFILIATE_TAG}` },
-
-    // General
-    'bottle': { name: 'Water Bottle', url: `https://www.amazon.in/s?k=water+bottle+gym+1+litre&tag=${AFFILIATE_TAG}` },
-    'grip': { name: 'Hand Gripper', url: `https://www.amazon.in/s?k=hand+gripper+strengthener&tag=${AFFILIATE_TAG}` },
-    'squeeze': { name: 'Stress Ball', url: `https://www.amazon.in/s?k=stress+ball+hand+exercise&tag=${AFFILIATE_TAG}` }
+                // TEXT SCANNING MAPPING (v2.18)
+                // If AI mentions these words in text, force-show the gear
+                const KEYWORD_GEAR_MAP = {
+                    'collar': SUPPORT_GEAR['neck'][1], // Neck Collar
+                'pillow': SUPPORT_GEAR['neck'][0], // Pillow
+                'belt': SUPPORT_GEAR['back'][1],   // Lumbar Belt
+                'cushion': SUPPORT_GEAR['back'][0], // Back Cushion
+                'brace': SUPPORT_GEAR['knee'][1],   // Hinged Brace
+                'cap': SUPPORT_GEAR['knee'][0],     // Knee Cap
+                'binder': SUPPORT_GEAR['ankle'][1], // Ankle Binder
+                'splint': SUPPORT_GEAR['wrist'][1]  // Wrist Splint
 };
 
-function enrichWithSmartLinks(plan, age = 30, surgeryInfo = {}) {
+                // HOME EQUIPMENT - Can be bought on Amazon
+                const HOME_EQUIPMENT = {
+                    // Resistance & Strength
+                    'band': {name: 'Resistance Band', url: `https://www.amazon.in/s?k=resistance+bands+physiotherapy&tag=${AFFILIATE_TAG}` },
+                'theraband': {name: 'Theraband', url: `https://www.amazon.in/s?k=theraband+physiotherapy&tag=${AFFILIATE_TAG}` },
+                'resistance': {name: 'Resistance Band', url: `https://www.amazon.in/s?k=resistance+bands+exercise&tag=${AFFILIATE_TAG}` },
+                'dumbbell': {name: 'Dumbbells', url: `https://www.amazon.in/s?k=dumbbells+1kg+2kg&tag=${AFFILIATE_TAG}` },
+                'weight': {name: 'Ankle Weights', url: `https://www.amazon.in/s?k=ankle+weights+physiotherapy&tag=${AFFILIATE_TAG}` },
+                'kettlebell': {name: 'Kettlebell', url: `https://www.amazon.in/s?k=kettlebell+4kg&tag=${AFFILIATE_TAG}` },
+
+                // Balls & Rollers
+                'ball': {name: 'Exercise Ball', url: `https://www.amazon.in/s?k=exercise+ball+65cm+anti+burst&tag=${AFFILIATE_TAG}` },
+                'swiss ball': {name: 'Swiss Ball', url: `https://www.amazon.in/s?k=swiss+ball+gym&tag=${AFFILIATE_TAG}` },
+                'roller': {name: 'Foam Roller', url: `https://www.amazon.in/s?k=foam+roller+muscle+recovery&tag=${AFFILIATE_TAG}` },
+                'foam': {name: 'Foam Roller', url: `https://www.amazon.in/s?k=foam+roller+physiotherapy&tag=${AFFILIATE_TAG}` },
+                'massage ball': {name: 'Massage Ball', url: `https://www.amazon.in/s?k=massage+ball+trigger+point&tag=${AFFILIATE_TAG}` },
+                'spiky ball': {name: 'Spiky Massage Ball', url: `https://www.amazon.in/s?k=spiky+ball+physiotherapy&tag=${AFFILIATE_TAG}` },
+
+                // Mats & Surfaces
+                'mat': {name: 'Yoga Mat', url: `https://www.amazon.in/s?k=yoga+mat+6mm+anti+slip&tag=${AFFILIATE_TAG}` },
+                'yoga mat': {name: 'Yoga Mat', url: `https://www.amazon.in/s?k=yoga+mat+thick+exercise&tag=${AFFILIATE_TAG}` },
+
+                // Hot/Cold Therapy
+                'ice': {name: 'Ice Pack', url: `https://www.amazon.in/s?k=ice+pack+gel+reusable&tag=${AFFILIATE_TAG}` },
+                'heat': {name: 'Hot Water Bag', url: `https://www.amazon.in/s?k=hot+water+bag+electric&tag=${AFFILIATE_TAG}` },
+                'hot pack': {name: 'Hot Pack', url: `https://www.amazon.in/s?k=hot+cold+pack+therapy&tag=${AFFILIATE_TAG}` },
+                'cold pack': {name: 'Cold Pack', url: `https://www.amazon.in/s?k=cold+pack+gel+pain+relief&tag=${AFFILIATE_TAG}` },
+
+                // Supports & Braces
+                'brace': {name: 'Support Brace', url: `https://www.amazon.in/s?k=knee+brace+support&tag=${AFFILIATE_TAG}` },
+                'knee brace': {name: 'Knee Brace', url: `https://www.amazon.in/s?k=knee+brace+pain+relief&tag=${AFFILIATE_TAG}` },
+                'ankle brace': {name: 'Ankle Brace', url: `https://www.amazon.in/s?k=ankle+brace+support&tag=${AFFILIATE_TAG}` },
+                'wrist brace': {name: 'Wrist Brace', url: `https://www.amazon.in/s?k=wrist+brace+carpal+tunnel&tag=${AFFILIATE_TAG}` },
+                'back brace': {name: 'Back Support', url: `https://www.amazon.in/s?k=back+brace+lumbar+support&tag=${AFFILIATE_TAG}` },
+                'lumbar': {name: 'Lumbar Support', url: `https://www.amazon.in/s?k=lumbar+support+pillow+office&tag=${AFFILIATE_TAG}` },
+                'neck brace': {name: 'Neck Collar', url: `https://www.amazon.in/s?k=cervical+collar+soft&tag=${AFFILIATE_TAG}` },
+                'shoulder brace': {name: 'Shoulder Support', url: `https://www.amazon.in/s?k=shoulder+brace+support&tag=${AFFILIATE_TAG}` },
+
+                // Pillows & Cushions
+                'pillow': {name: 'Cervical Pillow', url: `https://www.amazon.in/s?k=cervical+pillow+memory+foam&tag=${AFFILIATE_TAG}` },
+                'neck pillow': {name: 'Neck Pillow', url: `https://www.amazon.in/s?k=neck+pillow+orthopedic&tag=${AFFILIATE_TAG}` },
+                'cushion': {name: 'Seat Cushion', url: `https://www.amazon.in/s?k=seat+cushion+coccyx+orthopedic&tag=${AFFILIATE_TAG}` },
+
+                // Props & Accessories
+                'towel': {name: 'Exercise Towel', url: `https://www.amazon.in/s?k=gym+towel+microfiber&tag=${AFFILIATE_TAG}` },
+                'strap': {name: 'Yoga Strap', url: `https://www.amazon.in/s?k=yoga+strap+stretching&tag=${AFFILIATE_TAG}` },
+                'block': {name: 'Yoga Block', url: `https://www.amazon.in/s?k=yoga+block+foam&tag=${AFFILIATE_TAG}` },
+                'stick': {name: 'Massage Stick', url: `https://www.amazon.in/s?k=muscle+roller+stick&tag=${AFFILIATE_TAG}` },
+                'step': {name: 'Aerobic Step', url: `https://www.amazon.in/s?k=aerobic+step+platform&tag=${AFFILIATE_TAG}` },
+                'balance': {name: 'Balance Board', url: `https://www.amazon.in/s?k=balance+board+wobble&tag=${AFFILIATE_TAG}` },
+
+                // Massage devices (home versions)
+                'massager': {name: 'Electric Massager', url: `https://www.amazon.in/s?k=body+massager+muscle+pain&tag=${AFFILIATE_TAG}` },
+
+                // General
+                'bottle': {name: 'Water Bottle', url: `https://www.amazon.in/s?k=water+bottle+gym+1+litre&tag=${AFFILIATE_TAG}` },
+                'grip': {name: 'Hand Gripper', url: `https://www.amazon.in/s?k=hand+gripper+strengthener&tag=${AFFILIATE_TAG}` },
+                'squeeze': {name: 'Stress Ball', url: `https://www.amazon.in/s?k=stress+ball+hand+exercise&tag=${AFFILIATE_TAG}` }
+};
+
+                function enrichWithSmartLinks(plan, age = 30, surgeryInfo = { }) {
     if (plan.exercisePlan?.selectedExercises) {
-        plan.exercisePlan.selectedExercises = plan.exercisePlan.selectedExercises.map((ex) => {
-            const query = encodeURIComponent(`${ex.name} exercise physical therapy`);
+                    plan.exercisePlan.selectedExercises = plan.exercisePlan.selectedExercises.map((ex) => {
+                        const query = encodeURIComponent(`${ex.name} exercise physical therapy`);
 
-            // THUMBNAIL LOGIC (v2.9) - YouTube ID -> AI Keyword -> Fallback
-            let thumbUrl = '';
-            let videoUrl = '';
+                        // THUMBNAIL LOGIC (v2.9) - YouTube ID -> AI Keyword -> Fallback
+                        let thumbUrl = '';
+                        let videoUrl = '';
 
-            if (ex.youtube_id && ex.youtube_id.length === 11) {
-                // High Quality YouTube Thumbnail
-                thumbUrl = `https://img.youtube.com/vi/${ex.youtube_id}/mqdefault.jpg`;
-                videoUrl = `https://www.youtube.com/watch?v=${ex.youtube_id}`;
-            } else {
-                // Fallback to Search/Placeholder
-                thumbUrl = getExerciseThumbnail(ex.name || 'exercise');
-                videoUrl = `https://www.youtube.com/results?search_query=${query}`;
-            }
-
-            // Check for equipment - prioritize clinic detection first
-            let equipType = null; // 'clinic' or 'home'
-            let equipLink = null;
-            let equipName = null;
-            let sessionName = null;
-
-            const lowerName = (ex.name + ' ' + (ex.description || '')).toLowerCase();
-
-            // First check for clinic equipment
-            for (const [key, equipData] of Object.entries(CLINIC_EQUIPMENT)) {
-                if (lowerName.includes(key)) {
-                    equipType = 'clinic';
-                    equipName = equipData.name;
-                    sessionName = equipData.sessionName;
-                    break;
-                }
-            }
-
-            // If not clinic, check for home equipment
-            // If not clinic, check for home equipment
-            if (!equipType) {
-                // 1. Explicit Mention (e.g. "Theraband Row")
-                for (const [key, equipData] of Object.entries(HOME_EQUIPMENT)) {
-                    if (lowerName.includes(key)) {
-                        equipType = 'home';
-                        equipLink = equipData.url;
-                        equipName = equipData.name;
-                        break;
-                    }
-                }
-
-                // 2. Implicit / Optional Upgrade (e.g. "Leg Raise" -> Weight)
-                // SAFETY CHECK (v2.19): Do NOT suggest upgrades for Elderly (>65) or Post-Surgical
-                const isVulnerable = (age > 65) || (surgeryInfo && surgeryInfo.hasSurgery);
-
-                if (!equipType && !isVulnerable) {
-                    for (const [key, keyword] of Object.entries(IMPLICIT_EQUIPMENT)) {
-                        if (lowerName.includes(key) && HOME_EQUIPMENT[keyword]) {
-                            const equipData = HOME_EQUIPMENT[keyword];
-                            equipType = 'optional'; // New Type
-                            equipLink = equipData.url;
-                            equipName = equipData.name;
-                            break;
+                        if (ex.youtube_id && ex.youtube_id.length === 11) {
+                            // High Quality YouTube Thumbnail
+                            thumbUrl = `https://img.youtube.com/vi/${ex.youtube_id}/mqdefault.jpg`;
+                            videoUrl = `https://www.youtube.com/watch?v=${ex.youtube_id}`;
+                        } else {
+                            // Fallback to Search/Placeholder
+                            thumbUrl = getExerciseThumbnail(ex.name || 'exercise');
+                            videoUrl = `https://www.youtube.com/results?search_query=${query}`;
                         }
-                    }
-                }
-            }
 
-            return {
-                ...ex,
-                type: 'search',
-                thumbnailUrl: thumbUrl,
-                videoUrl: videoUrl,
-                equipmentType: equipType,
-                equipmentUrl: equipLink,
-                equipmentName: equipName,
-                sessionName: sessionName
-            };
-        });
+                        // Check for equipment - prioritize clinic detection first
+                        let equipType = null; // 'clinic' or 'home'
+                        let equipLink = null;
+                        let equipName = null;
+                        let sessionName = null;
+
+                        const lowerName = (ex.name + ' ' + (ex.description || '')).toLowerCase();
+
+                        // First check for clinic equipment
+                        for (const [key, equipData] of Object.entries(CLINIC_EQUIPMENT)) {
+                            if (lowerName.includes(key)) {
+                                equipType = 'clinic';
+                                equipName = equipData.name;
+                                sessionName = equipData.sessionName;
+                                break;
+                            }
+                        }
+
+                        // If not clinic, check for home equipment
+                        // If not clinic, check for home equipment
+                        if (!equipType) {
+                            // 1. Explicit Mention (e.g. "Theraband Row")
+                            for (const [key, equipData] of Object.entries(HOME_EQUIPMENT)) {
+                                if (lowerName.includes(key)) {
+                                    equipType = 'home';
+                                    equipLink = equipData.url;
+                                    equipName = equipData.name;
+                                    break;
+                                }
+                            }
+
+                            // 2. Implicit / Optional Upgrade (e.g. "Leg Raise" -> Weight)
+                            // SAFETY CHECK (v2.19): Do NOT suggest upgrades for Elderly (>65) or Post-Surgical
+                            const isVulnerable = (age > 65) || (surgeryInfo && surgeryInfo.hasSurgery);
+
+                            if (!equipType && !isVulnerable) {
+                                for (const [key, keyword] of Object.entries(IMPLICIT_EQUIPMENT)) {
+                                    if (lowerName.includes(key) && HOME_EQUIPMENT[keyword]) {
+                                        const equipData = HOME_EQUIPMENT[keyword];
+                                        equipType = 'optional'; // New Type
+                                        equipLink = equipData.url;
+                                        equipName = equipData.name;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        return {
+                            ...ex,
+                            type: 'search',
+                            thumbnailUrl: thumbUrl,
+                            videoUrl: videoUrl,
+                            equipmentType: equipType,
+                            equipmentUrl: equipLink,
+                            equipmentName: equipName,
+                            sessionName: sessionName
+                        };
+                    });
     }
-    return plan;
+                return plan;
 }
