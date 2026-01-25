@@ -1039,76 +1039,85 @@ async function generateRecoveryPlan(patientData) {
             Task: Provide diagnosis, personalized assessment, and deeply specific causes.
             `;
 
-            // CHAINED AI LOGIC (v2.23)
-            // 1. Report Analysis (Gemini Vision) - OPTIONAL
-            let reportFindings = "No report uploaded.";
-            if (patientData.reportImage) {
-                console.log("🩻 Step 1: Sending Image to Gemini Vision...");
+            // CHAINED -> PARALLEL LOGIC (v2.37: Speed & Resilience)
+            // We run Vision (Gemini) and Text (DeepSeek) at the same time.
+
+            // TASK A: Vision Analysis
+            const visionTask = async () => {
+                if (!patientData.reportImage) return null;
+                console.log("🩻 Starting Parallel Vision Task...");
+
                 const visionPayload = [
                     { type: "text", text: "Analyze this medical image/report. List the key findings (fractures, tears, disc bulges) concisely. Ignore normal findings." },
                     { type: "image_url", image_url: { url: patientData.reportImage } }
                 ];
-                // Vision Models Priority Queue (Best -> Reliable Backup -> Last Resort)
-                // v2.31: Verified Free IDs only
+
                 const VISION_MODELS = [
                     "google/gemini-2.0-flash-exp:free",
-                    "google/gemini-flash-1.5-8b:free",       // Fast Backup (Prioritize Google infrastructure)
-                    "qwen/qwen-2.5-vl-7b-instruct:free",     // Slower Backup
+                    "google/gemini-flash-1.5-8b:free",
+                    "qwen/qwen-2.5-vl-7b-instruct:free",
                     "meta-llama/llama-3.2-11b-vision-instruct:free"
                 ];
 
                 for (const model of VISION_MODELS) {
-                    console.log(`🩻 Vision Attempt with: ${model}...`);
-                    const visionResponse = await window.OpenRouter.analyze(visionPayload, "You are a Radio-Diagnosis AI. Output findings only.", model);
-
-                    if (visionResponse) {
-                        reportFindings = visionResponse;
-                        console.log(`✅ Success via ${model}:`, reportFindings);
-                        // Append Credit to Output so user knows which brain worked
-                        reportFindings += `\n(Analyzed by ${model.includes('llama') ? 'Llama 3.2' : 'Gemini 2.0'})`;
-                        break; // Stop loop on success
-                    } else {
-                        console.warn(`⚠️ Failed with ${model}. Switching to backup...`);
+                    try {
+                        console.log(`🩻 Vision Attempt (${model})...`);
+                        const res = await window.OpenRouter.analyze(visionPayload, "Output findings only.", model);
+                        if (res) return `${res}\n(Verified by ${model})`;
+                    } catch (e) {
+                        console.warn(`Vision Fail (${model}):`, e);
                     }
                 }
+                return "⚠️ Vision Analysis Failed (All models busy).";
+            };
 
-                if (reportFindings === "No report uploaded.") {
-                    reportFindings = "⚠️ All AI Vision models are currently busy. Please analyze manually or try later.";
-                }
+            // TASK B: Text Analysis (DeepSeek)
+            const textTask = async () => {
+                console.log("📝 Starting Parallel Text Task (DeepSeek)...");
+                const safePrompt = promptContext + `
+                
+                [IMAGING NOTE]
+                The patient HAS uploaded a medical image, but it is being analyzed separately.
+                You generally DO NOT have access to the image contents yet.
+                1. Base your diagnosis on the user's description.
+                2. Be CONSERVATIVE. Do not rule out fractures/tears.
+                3. Advise the patient to check the "Radiology Findings" card for the image results.
+                `;
+
+                const rawResponse = await window.OpenRouter.analyze(safePrompt, systemPrompt, "deepseek/deepseek-chat");
+                if (!rawResponse) throw new Error("DeepSeek returned empty.");
+
+                const cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(cleanJson);
+            };
+
+            // EXECUTE BOTH
+            console.log("🚀 Launching AI Parallel Tracks...");
+            const [visionResult, textResult] = await Promise.allSettled([visionTask(), textTask()]);
+
+            let reportFindings = "No report uploaded.";
+
+            // PROCESS VISION
+            if (visionResult.status === 'fulfilled' && visionResult.value) {
+                onlineData = onlineData || {};
+                reportFindings = visionResult.value;
+                console.log("✅ Vision Track Complete:", reportFindings);
             }
 
-            // 2. Recovery Plan Generation (DeepSeek Text) - ALWAYS
-            // Inject Gemini's findings into DeepSeek's context
-            const finalPrompt = promptContext + `
-            
-            [MEDICAL REPORT/IMAGING FINDINGS]
-            The patient uploaded a report. Another AI analyze it and found:
-            "${reportFindings}"
-            
-            INSTRUCTION: Use these findings as GROUND TRUTH. If the report says 'Fracture', treat it as a fracture even if the patient says it's just 'pain'.
-            `;
-
-            // Use DeepSeek (or default) for the main logic
-            const rawResponse = await window.OpenRouter.analyze(finalPrompt, systemPrompt, "deepseek/deepseek-chat");
-
-            // Handle JSON Response
-            if (rawResponse) {
-                try {
-                    const cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-                    onlineData = JSON.parse(cleanJson);
-                    if (onlineData.diagnosis) contextCause += `• AI Diagnosis: ${onlineData.diagnosis}\n`;
-
-                    // Inject Raw Findings for UI Display (v2.24)
-                    if (patientData.reportImage && reportFindings !== "No report uploaded.") {
-                        onlineData.imagingFindings = reportFindings;
-                    }
-                } catch (e) {
-                    // Fallback - If JSON fails, do NOT show raw string.
-                    console.warn("AI JSON Parse Failed:", e);
-                    onlineData = null;
-                }
+            // PROCESS TEXT
+            if (textResult.status === 'fulfilled' && textResult.value) {
+                onlineData = textResult.value;
+                console.log("✅ Text Track Complete");
+                if (onlineData.diagnosis) contextCause += `• AI Diagnosis: ${onlineData.diagnosis}\n`;
+            } else {
+                console.error("❌ Text Track Failed:", textResult.reason);
+                throw new Error("Text Logic Failed");
             }
 
+            // Merge Vision into OnlineData
+            if (onlineData && reportFindings !== "No report uploaded.") {
+                onlineData.imagingFindings = reportFindings;
+            }
 
         } catch (e) {
             console.warn("🌐 Online Brain Failed:", e);
