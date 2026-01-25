@@ -260,7 +260,7 @@
     </main>
 
     <div style="text-align: center; color: #cbd5e1; font-size: 0.8rem; padding: 20px;">
-        PhysioAssist AI v2.20 (Report/X-Ray Analysis) • <span id="statusIndicator">System Ready</span>
+        PhysioAssist AI v2.21 (Action Lag Fixed) • <span id="statusIndicator">System Ready</span>
     </div>
     </div>
 
@@ -269,19 +269,24 @@
     <!-- Wizard Logic Script -->
     <script>
         // Floating Label Logic (Consistent across inputs/selects)
+        // Floating Label Logic (Optimized v2.21)
+        // Uses CSS :valid/:focus mostly, JS only for load/autofill fix
         function initFloatingLabels() {
+            const update = (input) => {
+                if (input.value && input.value.trim() !== '') {
+                    input.classList.add('has-content');
+                } else {
+                    input.classList.remove('has-content');
+                }
+            };
+
             document.querySelectorAll('.input-field').forEach(input => {
-                const update = () => {
-                    if (input.value && input.value.trim() !== '') {
-                        input.classList.add('has-content');
-                    } else {
-                        input.classList.remove('has-content');
-                    }
-                };
-                input.addEventListener('input', update);
-                input.addEventListener('change', update);
-                input.addEventListener('blur', update);
-                setTimeout(update, 100); // Check on load/autofill
+                // Only listen to blur (focus out) to avoid Input Lag
+                input.addEventListener('blur', () => update(input));
+                input.addEventListener('change', () => update(input));
+
+                // Initial check
+                setTimeout(() => update(input), 100);
             });
         }
         document.addEventListener('DOMContentLoaded', initFloatingLabels);
@@ -310,12 +315,12 @@
         }
     </script>
     <!-- SCRIPTS (Order is Critical) -->
-    <script src="config.js?v=final22"></script>
-    <script src="openrouter-client.js?v=final22"></script>
-    <script src="semantic-core.js?v=final22"></script>
-    <script src="ai-engine.js?v=final22"></script>
-    <script src="sheets-webhook.js?v=final22"></script>
-    <script src="app.js?v=final22"></script>
+    <script src="config.js?v=final23"></script>
+    <script src="openrouter-client.js?v=final23"></script>
+    <script src="semantic-core.js?v=final23"></script>
+    <script src="ai-engine.js?v=final23"></script>
+    <script src="sheets-webhook.js?v=final23"></script>
+    <script src="app.js?v=final23"></script>
 </body>
 
 </html>
