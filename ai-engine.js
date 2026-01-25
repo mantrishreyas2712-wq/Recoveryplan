@@ -1049,14 +1049,11 @@ async function generateRecoveryPlan(patientData) {
                     { type: "image_url", image_url: { url: patientData.reportImage } }
                 ];
                 // Vision Models Priority Queue (Best -> Reliable Backup -> Last Resort)
-                // Research-Based Update (v2.28): 
-                // 1. Gemini (Most Detail)
-                // 2. Qwen 2 VL (Best OCR/Medical Reading)
-                // 3. Llama 3.2 (Fallback)
                 const VISION_MODELS = [
-                    "google/gemini-2.0-flash-exp:free",      // Best Quality, prone to 429
-                    "qwen/qwen-2-vl-72b-instruct:free",      // High Reliability, Great OCR
-                    "meta-llama/llama-3.2-11b-vision-instruct:free" // Backup
+                    "google/gemini-2.0-flash-exp:free",
+                    "qwen/qwen-2.5-vl-72b-instruct:free",    // Trying 72B first (better OCR)
+                    "qwen/qwen2.5-vl-7b-instruct:free",      // Fallback to 7B (verified free)
+                    "meta-llama/llama-3.2-11b-vision-instruct:free"
                 ];
 
                 for (const model of VISION_MODELS) {
