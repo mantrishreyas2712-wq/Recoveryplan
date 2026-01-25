@@ -1052,8 +1052,8 @@ async function generateRecoveryPlan(patientData) {
                 // v2.31: Verified Free IDs only
                 const VISION_MODELS = [
                     "google/gemini-2.0-flash-exp:free",
-                    "qwen/qwen-2.5-vl-7b-instruct:free",     // Correct ID (7B is free, 72B is paid)
-                    "google/gemini-flash-1.5-8b:free",       // High availability Google model
+                    "google/gemini-flash-1.5-8b:free",       // Fast Backup (Prioritize Google infrastructure)
+                    "qwen/qwen-2.5-vl-7b-instruct:free",     // Slower Backup
                     "meta-llama/llama-3.2-11b-vision-instruct:free"
                 ];
 

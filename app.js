@@ -107,8 +107,8 @@ document.getElementById('patientForm').addEventListener('submit', async function
         }
     }, 2500);
 
-    // 3. AI Generation with Safety Timeout (60s Max for Detailed/Mobile Analysis)
-    const TIMEOUT_MS = 60000;
+    // 3. AI Generation with Safety Timeout (120s Max for Failover Chains)
+    const TIMEOUT_MS = 120000;
     const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("AI_TIMEOUT")), TIMEOUT_MS)
     );
