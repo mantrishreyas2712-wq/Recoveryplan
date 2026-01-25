@@ -1049,10 +1049,12 @@ async function generateRecoveryPlan(patientData) {
                     { type: "image_url", image_url: { url: patientData.reportImage } }
                 ];
                 // Vision Models Priority Queue (Best -> Reliable Backup -> Last Resort)
+                // Vision Models Priority Queue (Best -> Reliable Backup -> Last Resort)
                 const VISION_MODELS = [
                     "google/gemini-2.0-flash-exp:free",
-                    "qwen/qwen-2.5-vl-72b-instruct:free",    // Trying 72B first (better OCR)
-                    "qwen/qwen2.5-vl-7b-instruct:free",      // Fallback to 7B (verified free)
+                    "qwen/qwen-2.5-vl-72b-instruct:free",    // Qwen 2.5 (New)
+                    "qwen/qwen-2-vl-72b-instruct:free",      // Qwen 2.0 (Stable)
+                    "qwen/qwen2.5-vl-7b-instruct:free",      // 7B Variant
                     "meta-llama/llama-3.2-11b-vision-instruct:free"
                 ];
 
