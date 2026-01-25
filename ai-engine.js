@@ -1180,7 +1180,26 @@ async function generateRecoveryPlan(patientData) {
     if (onlineData?.nutrition) {
         // Validation could go here, but we trust the prompt structure
         detailedMealPlan = onlineData.nutrition;
-        console.log("✅ AI Nutrition Plan Applied");
+
+        // v2.39 Fix: AI often forgets 'dailyTotals' or does bad math.
+        // We calculate it locally to prevent UI Crash.
+        try {
+            let dCal = 0, dPro = 0, dCarb = 0, dFat = 0;
+            ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(meal => {
+                if (detailedMealPlan[meal]?.totals) {
+                    dCal += parseInt(detailedMealPlan[meal].totals.cal) || 0;
+                    dPro += parseInt(detailedMealPlan[meal].totals.protein) || 0;
+                    dCarb += parseInt(detailedMealPlan[meal].totals.carbs) || 0;
+                    dFat += parseInt(detailedMealPlan[meal].totals.fats) || 0;
+                }
+            });
+            detailedMealPlan.dailyTotals = { cal: dCal, protein: dPro, carbs: dCarb, fats: dFat };
+            console.log("✅ AI Nutrition Plan Applied & Totals Calculated");
+        } catch (e) {
+            console.warn("Table Math Failed", e);
+            // Fallback to offline plan if AI structure is totally broken
+            detailedMealPlan = generateMealPlan(nutritionData, dietPref, bmiData.category, age);
+        }
     }
     dietData.mealPlan = detailedMealPlan;
 
