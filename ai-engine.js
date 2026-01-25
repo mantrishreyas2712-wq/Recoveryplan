@@ -1047,9 +1047,9 @@ async function generateRecoveryPlan(patientData) {
                     onlineData = JSON.parse(cleanJson);
                     if (onlineData.diagnosis) contextCause += `• AI Diagnosis: ${onlineData.diagnosis}\n`;
                 } catch (e) {
-                    // Fallback
-                    onlineData = { diagnosis: rawResponse, assessment: null, causes: null };
-                    contextCause += `• AI Diagnosis: ${rawResponse}\n`;
+                    // Fallback - If JSON fails, do NOT show raw string.
+                    console.warn("AI JSON Parse Failed:", e);
+                    onlineData = null;
                 }
             }
 
