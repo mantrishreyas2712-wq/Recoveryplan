@@ -1003,6 +1003,9 @@ async function generateRecoveryPlan(patientData) {
                   "week1": "Specific advice for Week 1 (Rest/Ice/Gentle)",
                   "week2_3": "Specific advice for Weeks 2-3 (Progress/Loading)",
                   "longTerm": "Long-term maintenance advice",
+                  "exercises": [
+                     { "name": "Pendulum", "reps": "1 min", "sets": "3", "youtube_id": "I7C7nF9i8aU (or best match)" }
+                  ],
                   "age_factor": "Specific comment on age ${age}",
                   "urgency": "High/Moderate/Low"
                },
@@ -1234,12 +1237,24 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
 
 <strong>Frequency:</strong> ${age > 55 ? "Once daily, gently" : (painLevel > 6 ? "Once daily initially" : "2-3 times daily")}`,
 
-            selectedExercises: conditionData.exercises.map(ex => ({
-                ...ex,
-                personalNote: surgeryInfo.isMajor
-                    ? "<span class='icon-warning'></span> GET SURGEON CLEARANCE BEFORE STARTING"
-                    : (painLevel > 7 ? "Start very gently - stop if pain increases" : (age > 60 ? "Go slowly and gently" : "Progress at your comfort"))
-            }))
+            selectedExercises: onlineData?.recovery?.exercises ?
+                onlineData.recovery.exercises.map(ex => ({
+                    name: ex.name,
+                    sets: ex.sets,
+                    reps: ex.reps,
+                    // Use AI youtube_id if valid, else fallback
+                    youtube_id: ex.youtube_id && ex.youtube_id.length === 11 ? ex.youtube_id : findVerifiedVideo(ex.name),
+                    difficulty: "Adaptive",
+                    description: "AI Prescribed specific to your job/sport conflict.",
+                    personalNote: surgeryInfo.isMajor ? "Check with surgeon first." : "Customized for you."
+                }))
+                :
+                conditionData.exercises.map(ex => ({
+                    ...ex,
+                    personalNote: surgeryInfo.isMajor
+                        ? "<span class='icon-warning'></span> GET SURGEON CLEARANCE BEFORE STARTING"
+                        : (painLevel > 7 ? "Start very gently - stop if pain increases" : (age > 60 ? "Go slowly and gently" : "Progress at your comfort"))
+                }))
         },
 
         workAdvice: onlineData?.work_advice ? {
@@ -1513,9 +1528,20 @@ function enrichWithSmartLinks(plan) {
     if (plan.exercisePlan?.selectedExercises) {
         plan.exercisePlan.selectedExercises = plan.exercisePlan.selectedExercises.map((ex) => {
             const query = encodeURIComponent(`${ex.name} exercise physical therapy`);
-            // Use Unsplash for real exercise photos
-            let thumbUrl = getExerciseThumbnail(ex.name || 'exercise');
-            let videoUrl = `https://www.youtube.com/results?search_query=${query}`;
+
+            // THUMBNAIL LOGIC (v2.9) - YouTube ID -> AI Keyword -> Fallback
+            let thumbUrl = '';
+            let videoUrl = '';
+
+            if (ex.youtube_id && ex.youtube_id.length === 11) {
+                // High Quality YouTube Thumbnail
+                thumbUrl = `https://img.youtube.com/vi/${ex.youtube_id}/mqdefault.jpg`;
+                videoUrl = `https://www.youtube.com/watch?v=${ex.youtube_id}`;
+            } else {
+                // Fallback to Search/Placeholder
+                thumbUrl = getExerciseThumbnail(ex.name || 'exercise');
+                videoUrl = `https://www.youtube.com/results?search_query=${query}`;
+            }
 
             // Check for equipment - prioritize clinic detection first
             let equipType = null; // 'clinic' or 'home'
