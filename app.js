@@ -173,6 +173,16 @@ function renderResults(plan, userData) {
                 </div>`;
             }
         }
+        else if (ex.equipmentType === 'optional' && ex.equipmentUrl) {
+            // OPTIONAL UPGRADE (v2.17)
+            equipBtn = `
+            <div style="margin-top: 0.75rem; padding: 0.5rem; background: #F8FAFC; border-radius: 8px; border: 1px dashed #CBD5E1;">
+                <p style="font-size: 0.75rem; color: #475569; margin: 0 0 0.3rem 0;">🚀 <strong>Level Up:</strong> Can be done with ${ex.equipmentName}</p>
+                <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; color: #0EA5E9; font-size: 0.75rem; font-weight: 600; text-decoration: none;">
+                    Check ${ex.equipmentName} Price →
+                </a>
+            </div>`;
+        }
 
         return `
         <div class="exercise-card">
@@ -300,6 +310,7 @@ function renderResults(plan, userData) {
                 ` : ''}
                 ${parseInt(userData.painLevel) >= 7 ? (() => {
             // Area-specific therapy recommendations
+            // v2.17: Multi-Area Support
             const areaTherapies = {
                 'neck': [
                     { icon: '🔄', name: 'Cervical Traction', desc: 'Spine decompression for nerve relief' },
@@ -327,27 +338,40 @@ function renderResults(plan, userData) {
                 ]
             };
 
-            const therapies = areaTherapies[userData.problemArea] || areaTherapies['back'];
+            // v2.17 - Support Multiple Areas
+            // If plan.affectedAreas is missing (fallback), use primary
+            const targetAreas = plan.affectedAreas || [userData.problemArea];
+
+            // Gather unique therapies (avoid duplicates if areas overlap in logic)
+            // But here we want to show sections per area or combined? 
+            // Let's stack them: "Recommended for BACK", then "Recommended for KNEE"
 
             return `
                     <!-- PROFESSIONAL THERAPY RECOMMENDATIONS (Pain >= 7) -->
                     <div style="margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 12px; border: 1px solid #A5B4FC;">
-                        <h4 style="color: #4338CA; margin: 0 0 0.75rem 0; font-size: 1rem;">🏥 Recommended for ${userData.problemArea.charAt(0).toUpperCase() + userData.problemArea.slice(1)} Pain</h4>
-                        <p style="color: #6366F1; font-size: 0.85rem; margin-bottom: 0.75rem;">At pain level ${userData.painLevel}/10, these therapies can accelerate your recovery:</p>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            ${therapies.map(t => `
-                            <a href="https://wa.me/${DR_VANSHIKA_NUMBER}?text=${encodeURIComponent(`Hi Dr. Vanshika, I have ${userData.problemArea} pain (${userData.painLevel}/10). I'd like to book a ${t.name} session. Can you help?`)}" target="_blank" style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.6rem; border-radius: 8px; text-decoration: none; border: 1px solid #C7D2FE;">
-                                <span style="font-size: 1.2rem;">${t.icon}</span>
-                                <div>
-                                    <strong style="color: #4338CA; font-size: 0.85rem;">${t.name}</strong>
-                                    <p style="color: #6B7280; font-size: 0.75rem; margin: 0;">${t.desc}</p>
+                        ${targetAreas.map(area => {
+                const tList = areaTherapies[area.toLowerCase()];
+                if (!tList) return '';
+
+                return `
+                            <div style="margin-bottom: 1rem;">
+                                <h4 style="color: #4338CA; margin: 0 0 0.5rem 0; font-size: 1rem; border-bottom: 1px dashed #C7D2FE; padding-bottom: 0.3rem;">🏥 Recommended for ${area.charAt(0).toUpperCase() + area.slice(1)} Pain</h4>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    ${tList.map(t => `
+                                    <a href="https://wa.me/${DR_VANSHIKA_NUMBER}?text=${encodeURIComponent(`Hi Dr. Vanshika, I have ${area} pain (${userData.painLevel}/10). I'd like to book a ${t.name} session. Can you help?`)}" target="_blank" style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.6rem; border-radius: 8px; text-decoration: none; border: 1px solid #C7D2FE;">
+                                        <span style="font-size: 1.2rem;">${t.icon}</span>
+                                        <div>
+                                            <strong style="color: #4338CA; font-size: 0.85rem;">${t.name}</strong>
+                                            <p style="color: #6B7280; font-size: 0.75rem; margin: 0;">${t.desc}</p>
+                                        </div>
+                                    </a>
+                                    `).join('')}
                                 </div>
-                            </a>
-                            `).join('')}
-                        </div>
+                            </div>`;
+            }).join('')}
                         
-                        <p style="color: #6B7280; font-size: 0.75rem; margin: 0.75rem 0 0 0; font-style: italic; text-align: center;">Professional therapy + home exercises = fastest recovery</p>
+                        <p style="color: #6366F1; font-size: 0.85rem; margin-bottom: 0.75rem; text-align: center;">At pain level ${userData.painLevel}/10, these therapies accelerate recovery.</p>
+                        <p style="color: #6B7280; font-size: 0.75rem; margin: 0; font-style: italic; text-align: center;">Professional therapy + home exercises = fastest recovery</p>
                     </div>
                     `;
         })() : ''}

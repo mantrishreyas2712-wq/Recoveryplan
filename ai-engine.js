@@ -1337,6 +1337,15 @@ ${name}, prevention is your best medicine now.`}
 👉 Monthly check-in with Dr. Vanshika keeps you on track.`
         },
 
+        // EXPOSE DETECTED AREAS (v2.17)
+        affectedAreas: (() => {
+            const areas = new Set([areaKey]);
+            if (onlineData?.affected_areas && Array.isArray(onlineData.affected_areas)) {
+                onlineData.affected_areas.forEach(a => areas.add(a.toLowerCase()));
+            }
+            return Array.from(areas);
+        })(),
+
         // SUPPORT GEAR (v2.14) - Multi-Symptom Support
         recommendedGear: (() => {
             // 1. Primary Area (Dropdown)
@@ -1515,6 +1524,22 @@ const SUPPORT_GEAR = {
     ]
 };
 
+// IMPLICIT EQUIPMENT MAPPING (v2.17)
+// Map common exercises to optional equipment upgrades
+const IMPLICIT_EQUIPMENT = {
+    'leg raise': 'weight',
+    'squat': 'dumbbell',
+    'bridge': 'band',
+    'clam': 'band',
+    'row': 'theraband',
+    'press': 'dumbbell',
+    'curl': 'dumbbell',
+    'extension': 'band',
+    'flexion': 'band',
+    'rotation': 'band',
+    'stabilization': 'ball'
+};
+
 // HOME EQUIPMENT - Can be bought on Amazon
 const HOME_EQUIPMENT = {
     // Resistance & Strength
@@ -1613,13 +1638,28 @@ function enrichWithSmartLinks(plan) {
             }
 
             // If not clinic, check for home equipment
+            // If not clinic, check for home equipment
             if (!equipType) {
+                // 1. Explicit Mention (e.g. "Theraband Row")
                 for (const [key, equipData] of Object.entries(HOME_EQUIPMENT)) {
                     if (lowerName.includes(key)) {
                         equipType = 'home';
                         equipLink = equipData.url;
                         equipName = equipData.name;
                         break;
+                    }
+                }
+
+                // 2. Implicit / Optional Upgrade (e.g. "Leg Raise" -> Weight)
+                if (!equipType) {
+                    for (const [key, keyword] of Object.entries(IMPLICIT_EQUIPMENT)) {
+                        if (lowerName.includes(key) && HOME_EQUIPMENT[keyword]) {
+                            const equipData = HOME_EQUIPMENT[keyword];
+                            equipType = 'optional'; // New Type
+                            equipLink = equipData.url;
+                            equipName = equipData.name;
+                            break;
+                        }
                     }
                 }
             }
