@@ -987,12 +987,18 @@ async function generateRecoveryPlan(patientData) {
         try {
             console.log("🌐 Attempting Online AI Analysis (via Proxy)...");
             // Rich Context Prompt (v2.2 Comprehensive)
-            const systemPrompt = `You are Dr. Vanshika, a specialist Physiotherapist.
+            const systemPrompt = `You are Dr. Vanshika, a specialist Sports Physiotherapist.
+            DIAGNOSIS RULE: You MUST correlate 'Occupation' + 'Story' + 'Body Part' to find specific syndromes.
+            - IT/Desk + Neck Pain -> "Tech Neck / Upper Cross Syndrome"
+            - Cricket/Tennis + Thumb -> "De Quervain's Tenosynovitis"
+            - Runner + Knee -> "Patellofemoral Pain Syndrome"
+            - Heavy Lifting + Back -> "Lumbar Strain / Disc Herniation"
+            
             Output STRICTLY Valid JSON with this structure:
             {
-               "diagnosis": "Short medical name (e.g. Rotator Cuff Tendinitis)",
-               "assessment": "2-3 sentences talking directly to the patient (use name ${name}). specific to their age, job, and mechanism of injury. Empathetic but clinical.",
-               "causes": "Bullet points explaining the anatomy and specific reasons (e.g. 'Your desk job causes x'). Use HTML <strong> tags for key terms.",
+               "diagnosis": "Specific Medical Syndrome (based on occupation/mechanism)",
+               "assessment": "2-3 sentences talking directly to the patient (use name ${name}). Explicitly link their JOB (${occupation}) to their PAIN. Empathetic but clinical.",
+               "causes": "Bullet points explaining the biomechanics. E.g. 'Your mouse usage causes thumb tendon friction'. Use HTML <strong> tags.",
                "recovery": {
                   "timeline": "e.g. 6-8 weeks",
                   "age_factor": "Specific comment on how their age ${age} affects healing.",
