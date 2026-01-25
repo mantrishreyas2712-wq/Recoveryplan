@@ -925,6 +925,7 @@ async function generateRecoveryPlan(patientData) {
         weight: rawWeight = 70,
         height: rawHeight = 170,
         occupation = "working professional",
+        activity = "None", // New Field (v2.7)
         dietPreference: dietPref = "non-veg",
         problemArea: rawProblemArea = "back",
         problemStatement = "pain",
@@ -1016,7 +1017,9 @@ async function generateRecoveryPlan(patientData) {
             JSON ONLY. No markdown.`;
 
             const promptContext = `
-            Patient: ${name}, ${age}yo ${gender}, Occupation: ${occupation}
+            Patient: ${name}, ${age}yo ${gender}
+            Occupation: ${occupation}
+            Daily Activity/Sports: ${activity}
             BMI: ${bmiData.bmi} (${bmiData.category})
             Body Part: ${areaKey}
             Conditions: ${conditions.length > 0 ? conditions.join(', ') : 'None'}
