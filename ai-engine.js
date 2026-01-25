@@ -1052,7 +1052,12 @@ async function generateRecoveryPlan(patientData) {
 
                 const visionLogic = async () => {
                     const visionPayload = [
-                        { type: "text", text: "Analyze this medical image/report. List the key findings (fractures, tears, disc bulges) concisely. Ignore normal findings." },
+                        {
+                            type: "text", text: `Analyze this medical image/report. 
+                        1. List the key findings concisely.
+                        2. USE HTML <b> tags for key terms/headers. DO NOT use markdown like **.
+                        3. Ignore normal findings.
+                        4. At the end, add a section "<b>Patient Summary:</b>" with a 1-sentence simple explanation.` },
                         { type: "image_url", image_url: { url: patientData.reportImage } }
                     ];
 
@@ -1066,7 +1071,7 @@ async function generateRecoveryPlan(patientData) {
                         try {
                             console.log(`🩻 Vision Attempt (${model})...`);
                             const res = await window.OpenRouter.analyze(visionPayload, "Output findings only.", model);
-                            if (res) return `${res}\n(Verified by ${model})`;
+                            if (res) return res;
                         } catch (e) {
                             console.warn(`Vision Fail (${model}):`, e);
                         }
