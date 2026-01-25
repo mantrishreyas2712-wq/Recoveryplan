@@ -1395,7 +1395,7 @@ ${name}, prevention is your best medicine now.`}
     };
 
     // Enrich with video links and equipment
-    return enrichWithSmartLinks(report);
+    return enrichWithSmartLinks(report, age, surgeryInfo);
 }
 
 // --- VERIFIED EXERCISE LIBRARY ---
@@ -1638,7 +1638,7 @@ const HOME_EQUIPMENT = {
     'squeeze': { name: 'Stress Ball', url: `https://www.amazon.in/s?k=stress+ball+hand+exercise&tag=${AFFILIATE_TAG}` }
 };
 
-function enrichWithSmartLinks(plan) {
+function enrichWithSmartLinks(plan, age = 30, surgeryInfo = {}) {
     if (plan.exercisePlan?.selectedExercises) {
         plan.exercisePlan.selectedExercises = plan.exercisePlan.selectedExercises.map((ex) => {
             const query = encodeURIComponent(`${ex.name} exercise physical therapy`);
@@ -1689,7 +1689,10 @@ function enrichWithSmartLinks(plan) {
                 }
 
                 // 2. Implicit / Optional Upgrade (e.g. "Leg Raise" -> Weight)
-                if (!equipType) {
+                // SAFETY CHECK (v2.19): Do NOT suggest upgrades for Elderly (>65) or Post-Surgical
+                const isVulnerable = (age > 65) || (surgeryInfo && surgeryInfo.hasSurgery);
+
+                if (!equipType && !isVulnerable) {
                     for (const [key, keyword] of Object.entries(IMPLICIT_EQUIPMENT)) {
                         if (lowerName.includes(key) && HOME_EQUIPMENT[keyword]) {
                             const equipData = HOME_EQUIPMENT[keyword];
