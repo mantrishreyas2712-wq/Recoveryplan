@@ -995,7 +995,8 @@ async function generateRecoveryPlan(patientData) {
             
             Output STRICTLY Valid JSON with this structure:
             {
-               "diagnosis": "Specific Medical Syndrome",
+               "diagnosis": "Specific Medical Syndrome (e.g. 'Lumbar Strain + Wrist Tendonitis')",
+               "affected_areas": ["primary_area_key", "secondary_area_key"],
                "assessment": "2-3 sentences linking JOB (${occupation}) + ACTIVITY (${activity}) to PAIN.",
                "causes": "Bullet points explaining biomechanics. Use HTML <strong> tags.",
                "recovery": {
@@ -1336,8 +1337,23 @@ ${name}, prevention is your best medicine now.`}
 👉 Monthly check-in with Dr. Vanshika keeps you on track.`
         },
 
-        // SUPPORT GEAR (v2.12) - Context-Aware Affiliate Links
-        recommendedGear: SUPPORT_GEAR[areaKey] || []
+        // SUPPORT GEAR (v2.14) - Multi-Symptom Support
+        recommendedGear: (() => {
+            // 1. Primary Area (Dropdown)
+            const areas = new Set([areaKey]);
+
+            // 2. Secondary Areas (AI Detected)
+            if (onlineData?.affected_areas && Array.isArray(onlineData.affected_areas)) {
+                onlineData.affected_areas.forEach(a => areas.add(a.toLowerCase()));
+            }
+
+            // 3. Merge Gear Lists
+            let combinedGear = [];
+            areas.forEach(area => {
+                if (SUPPORT_GEAR[area]) combinedGear.push(...SUPPORT_GEAR[area]);
+            });
+            return combinedGear;
+        })()
     };
 
     // Enrich with video links and equipment
