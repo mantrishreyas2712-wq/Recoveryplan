@@ -119,4 +119,5 @@ const SemanticCore = {
 };
 
 window.SemanticCore = SemanticCore;
-setTimeout(() => SemanticCore.init(), 100);
+// Manual Init triggered by UI to preventing blocking input
+// setTimeout(() => SemanticCore.init(), 100);

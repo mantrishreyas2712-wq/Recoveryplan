@@ -236,7 +236,7 @@
     </main>
 
     <div style="text-align: center; color: #cbd5e1; font-size: 0.8rem; padding: 20px;">
-        PhysioAssist AI v2.9 (Real Exercise Thumbnails) • <span id="statusIndicator">System Ready</span>
+        PhysioAssist AI v2.10 (Performance Optimized) • <span id="statusIndicator">System Ready</span>
     </div>
     </div>
 
@@ -275,16 +275,23 @@
 
                 // Update indicator
                 document.getElementById('stepIndicator').innerText = `Step ${stepNumber} of 4`;
+
+                // PERFORMANCE OPTIMIZATION (v2.10)
+                // Initialize Heavy AI Model only AFTER user finishes Step 1 (Typing)
+                if (stepNumber === 2 && window.SemanticCore && !window.SemanticCore.isReady) {
+                    console.log("⚡ Triggering Deferred AI Core Init...");
+                    window.SemanticCore.init();
+                }
             }
         }
     </script>
     <!-- SCRIPTS (Order is Critical) -->
-    <script src="config.js?v=final11"></script>
-    <script src="openrouter-client.js?v=final11"></script>
-    <script src="semantic-core.js?v=final11"></script>
-    <script src="ai-engine.js?v=final11"></script>
-    <script src="sheets-webhook.js?v=final11"></script>
-    <script src="app.js?v=final11"></script>
+    <script src="config.js?v=final12"></script>
+    <script src="openrouter-client.js?v=final12"></script>
+    <script src="semantic-core.js?v=final12"></script>
+    <script src="ai-engine.js?v=final12"></script>
+    <script src="sheets-webhook.js?v=final12"></script>
+    <script src="app.js?v=final12"></script>
 </body>
 
 </html>
