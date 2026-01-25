@@ -1047,28 +1047,34 @@ async function generateRecoveryPlan(patientData) {
                 if (!patientData.reportImage) return null;
                 console.log("🩻 Starting Parallel Vision Task...");
 
-                const visionPayload = [
-                    { type: "text", text: "Analyze this medical image/report. List the key findings (fractures, tears, disc bulges) concisely. Ignore normal findings." },
-                    { type: "image_url", image_url: { url: patientData.reportImage } }
-                ];
+                // Helper: Timeout Promise (45s Limit)
+                const timeout = new Promise(resolve => setTimeout(() => resolve("⚠️ Vision Analysis Timed Out (Skipped)"), 45000));
 
-                const VISION_MODELS = [
-                    "google/gemini-2.0-flash-exp:free",
-                    "google/gemini-flash-1.5-8b:free",
-                    "qwen/qwen-2.5-vl-7b-instruct:free",
-                    "meta-llama/llama-3.2-11b-vision-instruct:free"
-                ];
+                const visionLogic = async () => {
+                    const visionPayload = [
+                        { type: "text", text: "Analyze this medical image/report. List the key findings (fractures, tears, disc bulges) concisely. Ignore normal findings." },
+                        { type: "image_url", image_url: { url: patientData.reportImage } }
+                    ];
 
-                for (const model of VISION_MODELS) {
-                    try {
-                        console.log(`🩻 Vision Attempt (${model})...`);
-                        const res = await window.OpenRouter.analyze(visionPayload, "Output findings only.", model);
-                        if (res) return `${res}\n(Verified by ${model})`;
-                    } catch (e) {
-                        console.warn(`Vision Fail (${model}):`, e);
+                    const VISION_MODELS = [
+                        "google/gemini-2.0-flash-exp:free",
+                        "qwen/qwen-2.5-vl-7b-instruct:free",
+                        "meta-llama/llama-3.2-11b-vision-instruct:free"
+                    ];
+
+                    for (const model of VISION_MODELS) {
+                        try {
+                            console.log(`🩻 Vision Attempt (${model})...`);
+                            const res = await window.OpenRouter.analyze(visionPayload, "Output findings only.", model);
+                            if (res) return `${res}\n(Verified by ${model})`;
+                        } catch (e) {
+                            console.warn(`Vision Fail (${model}):`, e);
+                        }
                     }
-                }
-                return "⚠️ Vision Analysis Failed (All models busy).";
+                    return "⚠️ Vision Analysis Failed (All models busy).";
+                };
+
+                return Promise.race([visionLogic(), timeout]);
             };
 
             // TASK B: Text Analysis (DeepSeek)
