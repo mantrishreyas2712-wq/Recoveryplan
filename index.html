@@ -164,6 +164,30 @@
                                 </select>
                                 <label for="recentSurgery">Recent Operations?</label>
                             </div>
+
+                            <!-- UPLOAD SECTION (v2.20) -->
+                            <div style="margin-top: 1.5rem; border-top: 1px dashed #E2E8F0; padding-top: 1rem;">
+                                <h4 style="margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #475569;">Have an X-Ray, MRI,
+                                    or Report? (Optional)</h4>
+                                <input type="file" id="reportUpload"
+                                    accept="image/jpeg,image/png,image/webp,application/pdf" style="display: none;">
+                                <label for="reportUpload"
+                                    style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #F1F5F9; border: 2px dashed #94A3B8; border-radius: 8px; padding: 1rem; cursor: pointer; transition: all 0.2s;">
+                                    <span style="font-size: 1.5rem;">📎</span>
+                                    <span id="uploadLabelText"
+                                        style="color: #64748B; font-size: 0.9rem; font-weight: 500;">Click to Upload
+                                        Image/Report (Max 1MB)</span>
+                                </label>
+                                <div id="previewContainer" style="margin-top: 0.5rem; display: none;">
+                                    <div
+                                        style="display: flex; align-items: center; gap: 0.5rem; background: #E0F2FE; color: #0369A1; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem;">
+                                        <span>✅</span>
+                                        <span id="fileName">report.jpg</span>
+                                        <button type="button" id="removeFileBtn"
+                                            style="margin-left: auto; background: none; border: none; cursor: pointer; font-size: 1rem;">❌</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="nav-buttons">
                             <button type="button" class="btn btn-secondary" onclick="nextStep(2)">Back</button>
@@ -236,7 +260,7 @@
     </main>
 
     <div style="text-align: center; color: #cbd5e1; font-size: 0.8rem; padding: 20px;">
-        PhysioAssist AI v2.19 (Age Safety Protocols) • <span id="statusIndicator">System Ready</span>
+        PhysioAssist AI v2.20 (Report/X-Ray Analysis) • <span id="statusIndicator">System Ready</span>
     </div>
     </div>
 
@@ -286,12 +310,12 @@
         }
     </script>
     <!-- SCRIPTS (Order is Critical) -->
-    <script src="config.js?v=final21"></script>
-    <script src="openrouter-client.js?v=final21"></script>
-    <script src="semantic-core.js?v=final21"></script>
-    <script src="ai-engine.js?v=final21"></script>
-    <script src="sheets-webhook.js?v=final21"></script>
-    <script src="app.js?v=final21"></script>
+    <script src="config.js?v=final22"></script>
+    <script src="openrouter-client.js?v=final22"></script>
+    <script src="semantic-core.js?v=final22"></script>
+    <script src="ai-engine.js?v=final22"></script>
+    <script src="sheets-webhook.js?v=final22"></script>
+    <script src="app.js?v=final22"></script>
 </body>
 
 </html>

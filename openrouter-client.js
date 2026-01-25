@@ -26,14 +26,8 @@ const OpenRouter = {
                 },
                 body: JSON.stringify({
                     "messages": [
-                        {
-                            "role": "system",
-                            "content": finalSystem
-                        },
-                        {
-                            "role": "user",
-                            "content": text
-                        }
+                        { "role": "system", "content": finalSystem },
+                        { "role": "user", "content": text } // 'text' can be string or array (multimodal)
                     ]
                 })
             });

@@ -1039,7 +1039,26 @@ async function generateRecoveryPlan(patientData) {
             Task: Provide diagnosis, personalized assessment, and deeply specific causes.
             `;
 
-            const rawResponse = await window.OpenRouter.analyze(promptContext, systemPrompt);
+            // VISION API INTEGRATION (v2.20)
+            let payload = promptContext;
+
+            // If Report Image Attached, Switch to Multimodal Payload
+            // Data passed from app.js as data.reportImage
+            if (data.reportImage) {
+                console.log("🩻 Vision API: Image Payload Detected.");
+                payload = [
+                    { type: "text", text: promptContext + "\n\nCRITICAL INSTRUCTION: A medical report/image is attached. Analyze it. Use findings to REFINE the diagnosis and assessment. Mention 'Based on your uploaded report...' in the assessment." },
+                    { type: "image_url", image_url: { url: data.reportImage } }
+                ];
+
+                // Add explicit instruction to system prompt to look at image
+                systemPrompt += `\n\nIMAGE ANALYSIS MODE: A medical image/doc is provided. 
+                1. EXTRACT findings (Fracture, Tear, Bulge, Sprain).
+                2. If findings contradict symptoms, TRUST THE IMAGE.
+                3. Update 'diagnosis' and 'assessment' to reflect these hard facts.`;
+            }
+
+            const rawResponse = await window.OpenRouter.analyze(payload, systemPrompt);
 
             // Handle JSON Response
             if (rawResponse) {

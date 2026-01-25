@@ -1,9 +1,68 @@
+// Global Store for Uploaded Report (Base64)
+let uploadedReportBase64 = null;
+
+// FILE UPLOAD HANDLING (v2.20)
+document.addEventListener('DOMContentLoaded', () => {
+    const reportInput = document.getElementById('reportUpload');
+    const previewContainer = document.getElementById('previewContainer');
+    const fileNameDisplay = document.getElementById('fileName');
+    const removeBtn = document.getElementById('removeFileBtn');
+    const uploadLabelText = document.getElementById('uploadLabelText');
+
+    if (reportInput) {
+        reportInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // 1. Validate Size (Max 1MB)
+            if (file.size > 1024 * 1024) {
+                alert("File too large! Please upload under 1MB.");
+                this.value = ''; // Reset
+                return;
+            }
+
+            // 2. Validate Type
+            if (!['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(file.type)) {
+                alert("Invalid format. Please use JPG, PNG, WEBP, or PDF.");
+                this.value = '';
+                return;
+            }
+
+            // 3. Convert to Base64
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                uploadedReportBase64 = e.target.result; // Data URL
+
+                // UI Update
+                fileNameDisplay.textContent = file.name;
+                previewContainer.style.display = 'flex';
+                uploadLabelText.textContent = "File Selected";
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Remove File Logic
+        removeBtn.addEventListener('click', () => {
+            reportInput.value = '';
+            uploadedReportBase64 = null;
+            previewContainer.style.display = 'none';
+            uploadLabelText.textContent = "Click to Upload Image/Report (Max 1MB)";
+        });
+    }
+});
+
 document.getElementById('patientForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     // 1. Gather Data
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
+
+    // Inject Computed Fields
+    if (uploadedReportBase64) {
+        data.reportImage = uploadedReportBase64;
+        data.hasReport = "Yes";
+    }
 
     // 1.5 Save to Google Sheets (async, non-blocking)
     saveToGoogleSheets(data);
