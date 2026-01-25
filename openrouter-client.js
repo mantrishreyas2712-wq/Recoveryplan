@@ -8,7 +8,7 @@ const OpenRouter = {
     },
 
     // 2. AI Inference (Proxy Call)
-    async analyze(text, systemInstruction = null) {
+    async analyze(text, systemInstruction = null, modelOverride = null) {
         if (!this.isConfigured()) {
             console.log("🌐 OpenRouter: Proxy URL missing. Using Offline Brain.");
             return null;
@@ -17,7 +17,10 @@ const OpenRouter = {
         const defaultSystem = "You are an expert Physiotherapist AI. Analyze the patient's problem statement. Output strictly the 'Likely Medical Cause' (e.g. 'Acute Lumbar Strain'). Keep it concise (under 15 words). Do not give advice yet. Output ONLY the cause.";
         const finalSystem = systemInstruction || defaultSystem;
 
-        console.log("🌐 OpenRouter: Calling Secure Proxy...");
+        // HYBRID STRATEGY: Use DeepSeek for Text, Gemini for Vision
+        const selectedModel = modelOverride || "deepseek/deepseek-chat";
+
+        console.log(`🌐 OpenRouter: Calling Secure Proxy (${selectedModel})...`);
         try {
             const response = await fetch(CONFIG.WORKER_URL, {
                 method: "POST",
@@ -25,6 +28,7 @@ const OpenRouter = {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
+                    "model": selectedModel,
                     "messages": [
                         { "role": "system", "content": finalSystem },
                         { "role": "user", "content": text } // 'text' can be string or array (multimodal)

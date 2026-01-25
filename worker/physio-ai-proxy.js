@@ -63,7 +63,7 @@ export default {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    "model": "deepseek/deepseek-chat", // Or use body.model if you want dynamic
+                    "model": body.model || "google/gemini-2.0-flash-exp:free", // Support Client Model Selection
                     "messages": messages
                 })
             });

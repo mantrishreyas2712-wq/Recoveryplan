@@ -1041,14 +1041,16 @@ async function generateRecoveryPlan(patientData) {
 
             // VISION API INTEGRATION (v2.20)
             let payload = promptContext;
+            let modelToUse = "deepseek/deepseek-chat"; // Default for Text
 
-            // If Report Image Attached, Switch to Multimodal Payload
-            // Data passed from app.js as data.reportImage
-            if (data.reportImage) {
-                console.log("🩻 Vision API: Image Payload Detected.");
+            // If Report Image Attached, Switch to Multimodal Payload & Gemini
+            // Data passed from app.js as patientData.reportImage
+            if (patientData.reportImage) {
+                console.log("🩻 Vision API: Image Payload Detected -> Switching to Gemini 2.0 Flash");
+                modelToUse = "google/gemini-2.0-flash-exp:free"; // Vision Capable Phase
                 payload = [
                     { type: "text", text: promptContext + "\n\nCRITICAL INSTRUCTION: A medical report/image is attached. Analyze it. Use findings to REFINE the diagnosis and assessment. Mention 'Based on your uploaded report...' in the assessment." },
-                    { type: "image_url", image_url: { url: data.reportImage } }
+                    { type: "image_url", image_url: { url: patientData.reportImage } }
                 ];
 
                 // Add explicit instruction to system prompt to look at image
@@ -1058,7 +1060,7 @@ async function generateRecoveryPlan(patientData) {
                 3. Update 'diagnosis' and 'assessment' to reflect these hard facts.`;
             }
 
-            const rawResponse = await window.OpenRouter.analyze(payload, systemPrompt);
+            const rawResponse = await window.OpenRouter.analyze(payload, systemPrompt, modelToUse);
 
             // Handle JSON Response
             if (rawResponse) {
