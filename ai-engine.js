@@ -1052,6 +1052,9 @@ async function generateRecoveryPlan(patientData) {
                 if (visionResponse) {
                     reportFindings = visionResponse;
                     console.log("🩻 Gemini Findings:", reportFindings);
+                } else {
+                    console.warn("🩻 Gemini Vision Failed (Busy/Error).");
+                    reportFindings = "⚠️ AI Could not analyze image (Server Busy). Please try again in 1 minute.";
                 }
             }
 
