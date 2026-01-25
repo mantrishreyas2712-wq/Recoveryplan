@@ -291,7 +291,7 @@ function renderResults(plan, userData) {
                 <strong style="color:#0284C7; display:block; margin-bottom:0.5rem; font-size: 1.1rem;"><span class="icon-bulb"></span> Your Personalized Assessment</strong>
                 <p style="font-size:1.05rem; line-height:1.8; color:#0C4A6E; white-space: pre-line;">${plan.analysis.understanding}</p>
                 
-                <!-- PROMINENT DR VANSHIKA CTA -->
+            <!-- PROMINENT DR VANSHIKA CTA -->
                 <div style="margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, #059669 0%, #10B981 100%); border-radius: 10px; text-align: center;">
                     <a href="${drVanshikaLink}" target="_blank" style="display: inline-block; color: white; text-decoration: none; font-weight: 600; font-size: 1.1rem;">
                         👩‍⚕️ Book Dr. Vanshika Now - Get Expert Guidance
@@ -299,6 +299,19 @@ function renderResults(plan, userData) {
                     <p style="color: rgba(255,255,255,0.9); margin: 0.5rem 0 0 0; font-size: 0.85rem;">Certified Physiotherapist • 40-60% Faster Recovery • Personalized Care</p>
                 </div>
             </div>
+
+            <!-- 1.5. IMAGE FINDINGS (NEW v2.24) -->
+            ${plan.imagingFindings ? `
+            <div class="anim-entry" style="background: #EEF2FF; border: 1px solid #6366F1; padding: 1rem; border-radius: 10px; margin-bottom: 0.75rem; animation-delay: 0.1s;">
+                <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
+                    <span style="font-size: 1.5rem;">🩻</span>
+                    <div>
+                        <strong style="color: #4338CA; font-size: 1rem;">Radiology / Imaging Findings (AI Analyzed)</strong>
+                        <div style="white-space: pre-line; color: #3730A3; margin-top: 0.5rem; line-height: 1.6; font-size: 0.95rem; background: rgba(255,255,255,0.5); padding: 0.5rem; border-radius: 6px;">${plan.imagingFindings.replace(/-/g, '•')}</div>
+                    </div>
+                </div>
+            </div>
+            ` : ''}
 
             <!-- 2. LIKELY CAUSES (Separate Section) -->
             <div class="anim-entry" style="background: #FEF3C7; border: 1px solid #FCD34D; padding: 1rem; border-radius: 10px; margin-bottom: 0.75rem; animation-delay: 0.1s;">

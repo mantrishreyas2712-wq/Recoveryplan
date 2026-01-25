@@ -1075,6 +1075,11 @@ async function generateRecoveryPlan(patientData) {
                     const cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
                     onlineData = JSON.parse(cleanJson);
                     if (onlineData.diagnosis) contextCause += `• AI Diagnosis: ${onlineData.diagnosis}\n`;
+
+                    // Inject Raw Findings for UI Display (v2.24)
+                    if (patientData.reportImage && reportFindings !== "No report uploaded.") {
+                        onlineData.imagingFindings = reportFindings;
+                    }
                 } catch (e) {
                     // Fallback - If JSON fails, do NOT show raw string.
                     console.warn("AI JSON Parse Failed:", e);
