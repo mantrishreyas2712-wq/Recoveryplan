@@ -1358,13 +1358,38 @@ ${name}, prevention is your best medicine now.`}
 
             // 3. Merge Gear Lists (Filtered by Pain Level)
             let combinedGear = [];
+            const addedNames = new Set(); // Prevent duplicates
+
+            // A. Standard Logic (Pain Filtered)
             areas.forEach(area => {
                 if (SUPPORT_GEAR[area]) {
-                    // Filter: Only show gear appropriate for current pain level
                     const relevantGear = SUPPORT_GEAR[area].filter(item => parseInt(painLevel) >= (item.minPain || 0));
-                    combinedGear.push(...relevantGear);
+                    relevantGear.forEach(g => {
+                        if (!addedNames.has(g.name)) {
+                            combinedGear.push(g);
+                            addedNames.add(g.name);
+                        }
+                    });
                 }
             });
+
+            // B. Text Scanning Logic (v2.18) - AI Context Override
+            // If AI explicitly mentions "belt" or "brace", show it regardless of pain level
+            if (onlineData) {
+                const fullText = (
+                    (onlineData.assessment || '') +
+                    JSON.stringify(onlineData.recovery || {}) +
+                    JSON.stringify(onlineData.work_advice || {})
+                ).toLowerCase();
+
+                for (const [key, item] of Object.entries(KEYWORD_GEAR_MAP)) {
+                    if (fullText.includes(key) && !addedNames.has(item.name)) {
+                        combinedGear.push(item);
+                        addedNames.add(item.name);
+                    }
+                }
+            }
+
             return combinedGear;
         })()
     };
@@ -1538,6 +1563,19 @@ const IMPLICIT_EQUIPMENT = {
     'flexion': 'band',
     'rotation': 'band',
     'stabilization': 'ball'
+};
+
+// TEXT SCANNING MAPPING (v2.18)
+// If AI mentions these words in text, force-show the gear
+const KEYWORD_GEAR_MAP = {
+    'collar': SUPPORT_GEAR['neck'][1], // Neck Collar
+    'pillow': SUPPORT_GEAR['neck'][0], // Pillow
+    'belt': SUPPORT_GEAR['back'][1],   // Lumbar Belt
+    'cushion': SUPPORT_GEAR['back'][0], // Back Cushion
+    'brace': SUPPORT_GEAR['knee'][1],   // Hinged Brace
+    'cap': SUPPORT_GEAR['knee'][0],     // Knee Cap
+    'binder': SUPPORT_GEAR['ankle'][1], // Ankle Binder
+    'splint': SUPPORT_GEAR['wrist'][1]  // Wrist Splint
 };
 
 // HOME EQUIPMENT - Can be bought on Amazon
