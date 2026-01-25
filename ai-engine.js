@@ -1039,28 +1039,35 @@ async function generateRecoveryPlan(patientData) {
             Task: Provide diagnosis, personalized assessment, and deeply specific causes.
             `;
 
-            // VISION API INTEGRATION (v2.20)
-            let payload = promptContext;
-            let modelToUse = "deepseek/deepseek-chat"; // Default for Text
-
-            // If Report Image Attached, Switch to Multimodal Payload & Gemini
-            // Data passed from app.js as patientData.reportImage
+            // CHAINED AI LOGIC (v2.23)
+            // 1. Report Analysis (Gemini Vision) - OPTIONAL
+            let reportFindings = "No report uploaded.";
             if (patientData.reportImage) {
-                console.log("🩻 Vision API: Image Payload Detected -> Switching to Gemini 2.0 Flash");
-                modelToUse = "google/gemini-2.0-flash-exp:free"; // Vision Capable Phase
-                payload = [
-                    { type: "text", text: promptContext + "\n\nCRITICAL INSTRUCTION: A medical report/image is attached. Analyze it. Use findings to REFINE the diagnosis and assessment. Mention 'Based on your uploaded report...' in the assessment." },
+                console.log("🩻 Step 1: Sending Image to Gemini Vision...");
+                const visionPayload = [
+                    { type: "text", text: "Analyze this medical image/report. List the key findings (fractures, tears, disc bulges) concisely. Ignore normal findings." },
                     { type: "image_url", image_url: { url: patientData.reportImage } }
                 ];
-
-                // Add explicit instruction to system prompt to look at image
-                systemPrompt += `\n\nIMAGE ANALYSIS MODE: A medical image/doc is provided. 
-                1. EXTRACT findings (Fracture, Tear, Bulge, Sprain).
-                2. If findings contradict symptoms, TRUST THE IMAGE.
-                3. Update 'diagnosis' and 'assessment' to reflect these hard facts.`;
+                const visionResponse = await window.OpenRouter.analyze(visionPayload, "You are a Radio-Diagnosis AI. Output findings only.", "google/gemini-2.0-flash-exp:free");
+                if (visionResponse) {
+                    reportFindings = visionResponse;
+                    console.log("🩻 Gemini Findings:", reportFindings);
+                }
             }
 
-            const rawResponse = await window.OpenRouter.analyze(payload, systemPrompt, modelToUse);
+            // 2. Recovery Plan Generation (DeepSeek Text) - ALWAYS
+            // Inject Gemini's findings into DeepSeek's context
+            const finalPrompt = promptContext + `
+            
+            [MEDICAL REPORT/IMAGING FINDINGS]
+            The patient uploaded a report. Another AI analyze it and found:
+            "${reportFindings}"
+            
+            INSTRUCTION: Use these findings as GROUND TRUTH. If the report says 'Fracture', treat it as a fracture even if the patient says it's just 'pain'.
+            `;
+
+            // Use DeepSeek (or default) for the main logic
+            const rawResponse = await window.OpenRouter.analyze(finalPrompt, systemPrompt, "deepseek/deepseek-chat");
 
             // Handle JSON Response
             if (rawResponse) {
