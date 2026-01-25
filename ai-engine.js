@@ -992,20 +992,27 @@ async function generateRecoveryPlan(patientData) {
             DIAGNOSIS RULE: You MUST correlate 'Occupation' + 'Story' + 'Body Part' to find specific syndromes.
             - IT/Desk + Neck Pain -> "Tech Neck / Upper Cross Syndrome"
             - Cricket/Tennis + Thumb -> "De Quervain's Tenosynovitis"
-            - Runner + Knee -> "Patellofemoral Pain Syndrome"
-            - Heavy Lifting + Back -> "Lumbar Strain / Disc Herniation"
             
             Output STRICTLY Valid JSON with this structure:
             {
-               "diagnosis": "Specific Medical Syndrome (based on occupation/mechanism)",
-               "assessment": "2-3 sentences talking directly to the patient (use name ${name}). Explicitly link their JOB (${occupation}) to their PAIN. Empathetic but clinical.",
-               "causes": "Bullet points explaining the biomechanics. E.g. 'Your mouse usage causes thumb tendon friction'. Use HTML <strong> tags.",
+               "diagnosis": "Specific Medical Syndrome",
+               "assessment": "2-3 sentences linking JOB (${occupation}) + ACTIVITY (${activity}) to PAIN.",
+               "causes": "Bullet points explaining biomechanics. Use HTML <strong> tags.",
                "recovery": {
-                  "timeline": "e.g. 6-8 weeks",
-                  "age_factor": "Specific comment on how their age ${age} affects healing.",
-                  "urgency": "High/Moderate/Low - Explain why briefly"
+                  "timeline": "e.g. 4-6 weeks",
+                  "week1": "Specific advice for Week 1 (Rest/Ice/Gentle)",
+                  "week2_3": "Specific advice for Weeks 2-3 (Progress/Loading)",
+                  "longTerm": "Long-term maintenance advice",
+                  "age_factor": "Specific comment on age ${age}",
+                  "urgency": "High/Moderate/Low"
+               },
+               "work_advice": {
+                  "impact": "How ${occupation} + ${activity} affects this injury.",
+                  "modifications": ["Work mod 1", "Activity mod 2"],
+                  "restrictions": ["Restriction 1", "Restriction 2"]
                },
                "nutrition": {
+                  "hydration": "e.g. 3L/day",
                   "timing": { "breakfast": "8:00 AM", "lunch": "1:00 PM", "dinner": "8:00 PM", "midMorningSnack": "11:00 AM", "eveningSnack": "5:00 PM" },
                   "breakfast": { "items": [{ "item": "e.g. Oats", "quantity": "1 bowl", "protein": 5, "carbs": 20, "fats": 3 }], "totals": { "cal": 150, "protein": 5, "carbs": 20, "fats": 3 } },
                   "lunch": { "items": [{ "item": "e.g. Roti", "quantity": "2 pcs", "protein": 6, "carbs": 30, "fats": 2 }], "totals": { "cal": 200, "protein": 6, "carbs": 30, "fats": 2 } },
@@ -1013,8 +1020,7 @@ async function generateRecoveryPlan(patientData) {
                   "snacks": { "items": [{ "item": "e.g. Almonds", "quantity": "10 pcs", "protein": 3, "carbs": 2, "fats": 5 }], "totals": { "cal": 80, "protein": 3, "carbs": 2, "fats": 5 } }
                }
             }
-            CRITICAL: Nutrition must be culturally appropriate (${dietPref}) and specific to conditions (${conditions.join(',')}). Estimate macros.
-            JSON ONLY. No markdown.`;
+            CRITICAL: Nutrition must be culturally appropriate (${dietPref}). JSON ONLY.`;
 
             const promptContext = `
             Patient: ${name}, ${age}yo ${gender}
@@ -1236,7 +1242,13 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
             }))
         },
 
-        workAdvice: {
+        workAdvice: onlineData?.work_advice ? {
+            impact: onlineData.work_advice.impact,
+            restrictions: onlineData.work_advice.restrictions,
+            modifications: onlineData.work_advice.modifications,
+            returnToWork: "Follow the modifications above.",
+            painLevelNote: `At pain ${painLevel}/10: Listen to your body.`
+        } : {
             impact: occData.workImpact,
             restrictions: surgeryInfo.hasSurgery ? [...occData.restrictions, ...surgeryInfo.restrictions] : occData.restrictions,
             modifications: occData.modifications,
@@ -1267,7 +1279,7 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
 • <strong>Protein:</strong> ${nutritionData.protein}g (essential for tissue repair)
 • <strong>Carbs:</strong> ${nutritionData.carbs}g (energy for healing)
 • <strong>Fats:</strong> ${nutritionData.fats}g (healthy fats for inflammation control)
-• <strong>Water:</strong> ${nutritionData.water}L/day minimum
+• <strong>Water:</strong> ${onlineData?.nutrition?.hydration || nutritionData.water + "L/day minimum"}
 
 ${nutritionData.weightToLose > 0 ? `<strong>Weight Goal:</strong> Your ideal weight range is ${nutritionData.idealWeightMin}-${nutritionData.idealWeightMax}kg. Losing ${nutritionData.weightToLose}kg would significantly reduce ${areaKey} strain.` : `<strong>Weight Status:</strong> You're within a healthy weight range - maintain this for optimal joint health.`}`
         },
@@ -1281,7 +1293,11 @@ ${surgeryInfo.hasSurgery ? surgeryInfo.consultNote : `With pain at ${painLevel}/
             followUp: `${name}, if any warning signs appear, seek immediate care. Otherwise, track your progress weekly.`
         },
 
-        recoveryTimeline: {
+        recoveryTimeline: onlineData?.recovery?.week1 ? {
+            week1: `<strong>Week 1 - Protection Phase</strong><br>${onlineData.recovery.week1}`,
+            week2_3: `<strong>Week 2-3 - Progress Phase</strong><br>${onlineData.recovery.week2_3}`,
+            longTerm: `<strong>Long-term</strong><br>${onlineData.recovery.longTerm}`
+        } : {
             week1: `<strong>Week 1 - ${surgeryInfo.isMajor ? "REST & SURGICAL HEALING" : "Foundation Phase"}</strong>
 ${surgeryInfo.isMajor ? "Focus entirely on surgical recovery. No exercises without surgeon clearance." : `
 Pain Management: Ice/heat as needed, ${painData.lifestyle}
