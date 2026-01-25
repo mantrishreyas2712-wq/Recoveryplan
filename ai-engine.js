@@ -1048,10 +1048,12 @@ async function generateRecoveryPlan(patientData) {
                     { type: "text", text: "Analyze this medical image/report. List the key findings (fractures, tears, disc bulges) concisely. Ignore normal findings." },
                     { type: "image_url", image_url: { url: patientData.reportImage } }
                 ];
-                // Vision Models Priority Queue (Primary -> Fallback)
+                // Vision Models Priority Queue (Primary -> Fallback -> Last Resort)
+                // v2.27: Added Qwen and fixed Llama availability checks
                 const VISION_MODELS = [
                     "google/gemini-2.0-flash-exp:free",
-                    "meta-llama/llama-3.2-11b-vision-instruct:free" // Reliable Fallback
+                    "meta-llama/llama-3.2-11b-vision-instruct:free",
+                    "qwen/qwen-2-vl-72b-instruct:free" // Extra Backup
                 ];
 
                 for (const model of VISION_MODELS) {
