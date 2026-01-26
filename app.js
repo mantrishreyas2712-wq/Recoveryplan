@@ -814,24 +814,7 @@ function renderResults(plan, userData) {
                     ` : ''}
                 </div>
 
-                <!-- TIMELINE SECTION (ENHANCED) -->
-                <div class="guideline-card">
-                   <h3>📅 Your Recovery Timeline</h3>
-                   <div class="timeline">
-                       <div class="time-marker" style="background: #DBEAFE; padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem;">
-                           <strong style="color: #1D4ED8;">Week 1:</strong>
-                           <p style="margin-top: 0.3rem; color: #1E40AF; white-space: pre-line;">${plan.recoveryTimeline.week1}</p>
-                       </div>
-                       <div class="time-marker" style="background: #D1FAE5; padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem;">
-                           <strong style="color: #059669;">Week 2-3:</strong>
-                           <p style="margin-top: 0.3rem; color: #047857; white-space: pre-line;">${plan.recoveryTimeline.week2_3}</p>
-                       </div>
-                       <div class="time-marker" style="background: #FEF3C7; padding: 1rem; border-radius: 8px;">
-                           <strong style="color: #D97706;">Long-term:</strong>
-                           <p style="margin-top: 0.3rem; color: #B45309; white-space: pre-line;">${plan.recoveryTimeline.longTerm}</p>
-                       </div>
-                   </div>
-                </div>
+                <!-- Timeline removed - now unified in "Your Complete Recovery Plan" section above -->
                 
                 <!-- CONSULTATION -->
                 <div class="guideline-card" style="background: #F0FDF4; border: 1px solid #86EFAC;">

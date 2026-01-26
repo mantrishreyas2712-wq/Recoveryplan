@@ -1231,6 +1231,9 @@ async function generateRecoveryPlan(patientData) {
                 }
             });
             detailedMealPlan.dailyTotals = { cal: dCal, protein: dPro, carbs: dCarb, fats: dFat };
+            // v2.60 Fix: Ensure waterIntake is set from AI or fallback to calculated
+            detailedMealPlan.waterIntake = onlineData.nutrition?.hydration?.replace('L/day', '').replace('/day', '').trim()
+                || nutritionData?.water || '3';
             console.log("✅ AI Nutrition Plan Applied & Totals Calculated");
         } catch (e) {
             console.warn("Table Math Failed", e);
