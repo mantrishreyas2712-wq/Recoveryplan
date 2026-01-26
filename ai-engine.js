@@ -1051,12 +1051,7 @@ async function generateRecoveryPlan(patientData) {
                     return null;
                 }
 
-                // FIX v2.55: Skip vision for PDFs (vision models can only read images, not PDFs)
-                if (patientData.reportImage.startsWith('data:application/pdf')) {
-                    console.log("📄 PDF Detected - Vision models cannot read PDFs. Skipping vision analysis.");
-                    return "📄 PDF Report Uploaded. Vision analysis is not available for PDF files - please refer to your radiologist's written findings on the document.";
-                }
-
+                // v2.56: PDFs are now converted to images in app.js, so we can proceed with vision
                 console.log("🩻 Starting Parallel Vision Task...");
 
                 // Helper: Timeout Promise (45s Limit)

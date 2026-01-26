@@ -28,17 +28,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 3. Compress & Resize (v2.49 Fix for PDF)
+            // 3. Compress & Resize (v2.56 Fix: PDF-to-Image Conversion)
             const reader = new FileReader();
-            reader.onload = function (e) {
-                // A. PDF Handling (Bypass Resize)
+            reader.onload = async function (e) {
+                // A. PDF Handling - Convert to Image using pdf.js
                 if (file.type === 'application/pdf') {
-                    uploadedReportBase64 = e.target.result;
-                    console.log("📄 PDF Selected (No Resize):", Math.round(file.size / 1024) + "KB");
-
-                    fileNameDisplay.textContent = file.name;
+                    console.log("📄 PDF Selected, converting to image for Vision AI...");
+                    fileNameDisplay.textContent = file.name + " (Converting...)";
                     previewContainer.style.display = 'flex';
-                    uploadLabelText.textContent = "PDF Report Ready";
+                    uploadLabelText.textContent = "Processing PDF...";
+
+                    try {
+                        // Set pdf.js worker
+                        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+                        // Load PDF from ArrayBuffer
+                        const arrayBuffer = await file.arrayBuffer();
+                        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+                        // Get first page only (for medical reports, first page usually has key findings)
+                        const page = await pdf.getPage(1);
+                        const scale = 1.5; // Good quality for AI vision
+                        const viewport = page.getViewport({ scale });
+
+                        // Render to canvas
+                        const canvas = document.createElement('canvas');
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+                        const ctx = canvas.getContext('2d');
+
+                        await page.render({ canvasContext: ctx, viewport }).promise;
+
+                        // Convert to JPEG (smaller size for API)
+                        const imageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        uploadedReportBase64 = imageBase64;
+
+                        console.log("✅ PDF converted to image:", Math.round(imageBase64.length / 1024) + "KB");
+                        fileNameDisplay.textContent = file.name;
+                        uploadLabelText.textContent = "PDF Ready (as Image)";
+                    } catch (pdfError) {
+                        console.error("❌ PDF conversion failed:", pdfError);
+                        // Fallback: store raw PDF (vision will fail but text analysis works)
+                        uploadedReportBase64 = e.target.result;
+                        uploadLabelText.textContent = "PDF Ready (Raw)";
+                    }
                     return;
                 }
 
@@ -267,59 +300,59 @@ function renderResults(plan, userData) {
                 // NORMAL PAIN - Just show equipment link
                 equipBtn = `
                 <div style="margin-top: 0.75rem; padding: 0.6rem; background: #F0FDF4; border-radius: 8px; border: 1px solid #BBF7D0;">
-                    <p style="font-size: 0.8rem; color: #166534; margin: 0 0 0.4rem 0;"><span class='icon-bulb'></span> This exercise works best with a <strong>${ex.equipmentName}</strong></p>
-                    <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; background: #059669; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
-                        View ${ex.equipmentName} Options →
-                    </a>
-                    <p style="font-size: 0.7rem; color: #6B7280; margin: 0.4rem 0 0 0; font-style: italic;">Optional - only if you don't have one at home</p>
-                </div>`;
+                        <p style="font-size: 0.8rem; color: #166534; margin: 0 0 0.4rem 0;"><span class='icon-bulb'></span> This exercise works best with a <strong>${ex.equipmentName}</strong></p>
+                        <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; background: #059669; color: white; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 500;">
+                            View ${ex.equipmentName} Options →
+                        </a>
+                        <p style="font-size: 0.7rem; color: #6B7280; margin: 0.4rem 0 0 0; font-style: italic;">Optional - only if you don't have one at home</p>
+                    </div>`;
             }
         }
         else if (ex.equipmentType === 'optional' && ex.equipmentUrl) {
             // OPTIONAL UPGRADE (v2.17)
             equipBtn = `
-            <div style="margin-top: 0.75rem; padding: 0.5rem; background: #F8FAFC; border-radius: 8px; border: 1px dashed #CBD5E1;">
-                <p style="font-size: 0.75rem; color: #475569; margin: 0 0 0.3rem 0;">🚀 <strong>Level Up:</strong> Can be done with ${ex.equipmentName}</p>
-                <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; color: #0EA5E9; font-size: 0.75rem; font-weight: 600; text-decoration: none;">
-                    Check ${ex.equipmentName} Price →
-                </a>
-            </div>`;
+                <div style="margin-top: 0.75rem; padding: 0.5rem; background: #F8FAFC; border-radius: 8px; border: 1px dashed #CBD5E1;">
+                    <p style="font-size: 0.75rem; color: #475569; margin: 0 0 0.3rem 0;">🚀 <strong>Level Up:</strong> Can be done with ${ex.equipmentName}</p>
+                    <a href="${ex.equipmentUrl}" target="_blank" style="display: inline-block; color: #0EA5E9; font-size: 0.75rem; font-weight: 600; text-decoration: none;">
+                        Check ${ex.equipmentName} Price →
+                    </a>
+                </div>`;
         }
 
         return `
-        <div class="exercise-card">
-            <a href="${linkUrl}" target="_blank" class="exercise-video-link">
-                <div class="exercise-thumb" style="background-image: url('${thumbUrl}'); position: relative; overflow: hidden;">
-                    <!-- Fallback Image Logic -->
-                    <img src="${thumbUrl}" onerror="this.parentElement.style.backgroundImage='linear-gradient(135deg, #E2E8F0, #CBD5E1)';" style="display:none;">
-                    <div class="play-overlay">
-                        <div class="play-btn">${btnIcon}</div>
-                        <span>${btnText}</span>
+            <div class="exercise-card">
+                <a href="${linkUrl}" target="_blank" class="exercise-video-link">
+                    <div class="exercise-thumb" style="background-image: url('${thumbUrl}'); position: relative; overflow: hidden;">
+                        <!-- Fallback Image Logic -->
+                        <img src="${thumbUrl}" onerror="this.parentElement.style.backgroundImage='linear-gradient(135deg, #E2E8F0, #CBD5E1)';" style="display:none;">
+                        <div class="play-overlay">
+                            <div class="play-btn">${btnIcon}</div>
+                            <span>${btnText}</span>
+                        </div>
                     </div>
-                </div>
-            </a>
-            <div class="exercise-details">
-                <div class="exercise-header">
-                    <h4>${index + 1}. ${ex.name}</h4>
-                    <span class="badge">${ex.difficulty || 'Easy'}</span>
-                </div>
-                <!-- Affiliate Button -->
-                ${equipBtn}
+                </a>
+                <div class="exercise-details">
+                    <div class="exercise-header">
+                        <h4>${index + 1}. ${ex.name}</h4>
+                        <span class="badge">${ex.difficulty || 'Easy'}</span>
+                    </div>
+                    <!-- Affiliate Button -->
+                    ${equipBtn}
 
-                <div class="exercise-meta">
-                    <div class="meta-item">
-                        <span class="meta-label">SETS</span>
-                        <span class="meta-val">${ex.sets || ex.customSets || '3'}</span>
+                    <div class="exercise-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">SETS</span>
+                            <span class="meta-val">${ex.sets || ex.customSets || '3'}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">REPS</span>
+                            <span class="meta-val">${ex.reps || ex.customReps || '10'}</span>
+                        </div>
                     </div>
-                    <div class="meta-item">
-                        <span class="meta-label">REPS</span>
-                        <span class="meta-val">${ex.reps || ex.customReps || '10'}</span>
-                    </div>
+                    <p class="exercise-tip">${ex.description || 'Perform slowly with control.'}</p>
                 </div>
-                <p class="exercise-tip">${ex.description || 'Perform slowly with control.'}</p>
             </div>
-        </div>
-        `;
+            `;
     }).join('');
 
     // Dr. Vanshika WhatsApp link - Direct number
