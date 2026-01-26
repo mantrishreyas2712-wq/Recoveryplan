@@ -1072,8 +1072,8 @@ async function generateRecoveryPlan(patientData) {
                 // v2.56: PDFs are now converted to images in app.js, so we can proceed with vision
                 console.log("🩻 Starting Parallel Vision Task...");
 
-                // Helper: Timeout Promise (45s Limit)
-                const timeout = new Promise(resolve => setTimeout(() => resolve("⚠️ Vision Analysis Timed Out (Skipped)"), 45000));
+                // Helper: Timeout Promise (70s Limit - v2.64: Increased for better reliability)
+                const timeout = new Promise(resolve => setTimeout(() => resolve("⚠️ Vision Analysis Timed Out (Skipped)"), 70000));
 
                 const visionLogic = async () => {
                     const visionPayload = [
@@ -1086,10 +1086,10 @@ async function generateRecoveryPlan(patientData) {
                         { type: "image_url", image_url: { url: patientData.reportImage } }
                     ];
 
+                    // v2.64: Removed Llama-3.2-90B (always fails with 400), only use working models
                     const VISION_MODELS = [
-                        "Llama-3.2-90B-Vision-Instruct", // SambaNova 90B (Most Stable)
-                        "google/gemini-2.0-flash-exp:free",
-                        "qwen/qwen-2.5-vl-7b-instruct:free"
+                        "google/gemini-2.0-flash-exp:free",  // Primary: Google Gemini via Worker
+                        "qwen/qwen-2.5-vl-7b-instruct:free"  // Backup: Qwen Vision
                     ];
 
                     for (const model of VISION_MODELS) {
