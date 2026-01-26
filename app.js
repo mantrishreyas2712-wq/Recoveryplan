@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const file = e.target.files[0];
             if (!file) return;
 
-            // 1. Validate Size (Max 1MB)
-            if (file.size > 1024 * 1024) {
-                alert("File too large! Please upload under 1MB.");
+            // 1. Validate Size (Max 10MB - We compress it anyway)
+            if (file.size > 10 * 1024 * 1024) {
+                alert("File too large! Please upload under 10MB.");
                 this.value = ''; // Reset
                 return;
             }
@@ -28,15 +28,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 3. Convert to Base64
+            // 3. Compress & Resize (v2.44 Fix for 500 Errors)
             const reader = new FileReader();
             reader.onload = function (e) {
-                uploadedReportBase64 = e.target.result; // Data URL
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
 
-                // UI Update
-                fileNameDisplay.textContent = file.name;
-                previewContainer.style.display = 'flex';
-                uploadLabelText.textContent = "File Selected";
+                    // Resize logic (Max 1024px)
+                    const MAX_SIZE = 1024;
+                    if (width > height) {
+                        if (width > MAX_SIZE) {
+                            height *= MAX_SIZE / width;
+                            width = MAX_SIZE;
+                        }
+                    } else {
+                        if (height > MAX_SIZE) {
+                            width *= MAX_SIZE / height;
+                            height = MAX_SIZE;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Compress to JPEG 70%
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+                    uploadedReportBase64 = compressedBase64; // Optimized Data URL
+                    console.log("Image Compressed:", Math.round(compressedBase64.length / 1024) + "KB");
+
+                    // UI Update
+                    fileNameDisplay.textContent = file.name;
+                    previewContainer.style.display = 'flex';
+                    uploadLabelText.textContent = "Image Ready (Optimized)";
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         });

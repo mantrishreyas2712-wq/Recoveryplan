@@ -1,14 +1,6 @@
-/**
- * Cloudflare Worker: Physio AI Proxy (Hybrid v2)
- * Features:
- * - Robust CORS handling (Always returns headers)
- * - Hybrid Routing (SambaNova 90B Vision -> OpenRouter fallback)
- * - Improved Error Logging
- */
-
 export default {
     async fetch(request, env, ctx) {
-        // 1. CORS Headers Helper
+        // 1. CONSTANT CORS HEADERS
         const corsHeaders = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -16,7 +8,6 @@ export default {
             'Access-Control-Max-Age': '86400',
         };
 
-        // 2. Handle Preflight
         if (request.method === 'OPTIONS') {
             return new Response(null, { headers: corsHeaders });
         }
@@ -32,67 +23,79 @@ export default {
             const body = await request.json();
             const { messages, model } = body;
 
-            // 3. Routing Logic (SambaNova)
-            // Use 90B as it is the most stable Vision model on SN
+            // 2. ROUTING CONFIG
             const isVisionRequest = model && (model.includes('Vision') || model.includes('Llama-3.2'));
 
-            // Default: OpenRouter
-            let targetUrl = "https://openrouter.ai/api/v1/chat/completions";
-            let apiKey = env.OPENROUTER_API_KEY;
-            let providerName = "OpenRouter";
+            // Primary: SambaNova (if Vision & Key exists)
+            // Secondary: OpenRouter
+            let useSambaNova = isVisionRequest && env.SAMBANOVA_API_KEY;
 
-            // SambaNova Override
-            if (isVisionRequest && env.SAMBANOVA_API_KEY) {
-                targetUrl = "https://api.sambanova.ai/v1/chat/completions";
-                apiKey = env.SAMBANOVA_API_KEY;
-                providerName = "SambaNova";
-            }
+            // 3. EXECUTION FUNCTION
+            const callProvider = async (provider, requestModel, requestMessages) => {
+                let url, key;
+                if (provider === 'SambaNova') {
+                    url = "https://api.sambanova.ai/v1/chat/completions";
+                    key = env.SAMBANOVA_API_KEY;
+                } else {
+                    url = "https://openrouter.ai/api/v1/chat/completions";
+                    key = env.OPENROUTER_API_KEY;
+                }
 
-            if (!apiKey) {
-                throw new Error(`Missing API Key for ${providerName}`);
-            }
+                if (!key) throw new Error(`Missing API Key for ${provider}`);
 
-            // 4. Upstream Request
-            const response = await fetch(targetUrl, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${apiKey}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": "https://physioassist.workers.dev", // For OpenRouter
-                },
-                body: JSON.stringify({
-                    model: model, // Client sends exact ID
-                    messages: messages,
-                    max_tokens: 1000
-                    // Note: SambaNova fails if you send extra unsupported params
-                })
-            });
-
-            // 5. Handle Upstream Errors (Seamless Fallback Logic Optional?)
-            // For now, let's just return the error gracefully with CORS
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`${providerName} Failed [${response.status}]:`, errorText);
-
-                // If SambaNova fails, we could try OpenRouter here... 
-                // But let's verify connectivity first.
-                return new Response(JSON.stringify({
-                    error: `Upstream Error (${providerName}): ${response.status} - ${errorText.substring(0, 200)}`
-                }), {
-                    status: 500, // Or response.status? 
-                    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${key}`,
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "https://physioassist.workers.dev",
+                    },
+                    body: JSON.stringify({
+                        model: requestModel,
+                        messages: requestMessages,
+                        max_tokens: 1000
+                    })
                 });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`${provider} Failed [${response.status}]: ${text.substring(0, 200)}`);
+                }
+                return await response.json();
+            };
+
+            let data;
+
+            // 4. ATTEMPT 1: SAMBANOVA
+            if (useSambaNova) {
+                try {
+                    // Try 90B or 11B (Client sends exact ID, but we can override if needed)
+                    // We stick to what client requested for now: Llama-3.2-90B
+                    data = await callProvider('SambaNova', model, messages);
+                } catch (snError) {
+                    console.error("⚠️ SambaNova Failed. Falling back to OpenRouter...", snError.message);
+                    // FALLBACK TRIGGERED
+                    useSambaNova = false;
+                }
             }
 
-            const data = await response.json();
+            // 5. ATTEMPT 2: OPENROUTER (Fallback or Default)
+            if (!useSambaNova && !data) {
+                const fallbackModel = "google/gemini-2.0-flash-exp:free";
+                // If the original model was already an OpenRouter one, keep it. 
+                // If it was a SambaNova one, switch to Gemini.
+                const finalModel = isVisionRequest ? fallbackModel : model;
 
-            // 6. Success
+                data = await callProvider('OpenRouter', finalModel, messages);
+            }
+
+            // 6. SUCCESS
             return new Response(JSON.stringify(data), {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
             });
 
         } catch (error) {
-            // 7. Global Catch (Always CORS)
+            // 7. GLOBAL ERROR
             return new Response(JSON.stringify({ error: error.message }), {
                 status: 500,
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
