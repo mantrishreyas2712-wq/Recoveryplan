@@ -1024,15 +1024,24 @@ async function generateRecoveryPlan(patientData) {
                   "snacks": { "items": [{ "item": "e.g. Almonds", "quantity": "15 pcs", "protein": 5, "carbs": 4, "fats": 8 }, { "item": "Apple", "quantity": "1", "protein": 0, "carbs": 20, "fats": 0 }], "totals": { "cal": 200, "protein": 5, "carbs": 24, "fats": 8 } }
                }
             }
-            CRITICAL NUTRITION REQUIREMENTS:
-            1. Culturally appropriate for ${dietPref}
-            2. EXACT CALORIE TARGET: ${nutritionData?.calories || 1600} kcal/day (±50 kcal tolerance)
-               - Breakfast: ${Math.round((nutritionData?.calories || 1600) * 0.25)} kcal
-               - Lunch: ${Math.round((nutritionData?.calories || 1600) * 0.35)} kcal
-               - Dinner: ${Math.round((nutritionData?.calories || 1600) * 0.25)} kcal
-               - Snacks: ${Math.round((nutritionData?.calories || 1600) * 0.15)} kcal
-            3. PROTEIN TARGET: ${nutritionData?.protein || 80}g/day (±5g tolerance)
-            4. Each meal MUST have realistic portion sizes that add up to exact totals.
+            ⚠️ MANDATORY NUTRITION VALIDATION (v2.63):
+            
+            YOUR MEAL TOTALS WILL BE REJECTED IF THEY DO NOT MEET THESE REQUIREMENTS:
+            
+            1. Cultural fit: ${dietPref}
+            2. EXACT DAILY TOTALS MUST BE:
+               • Calories: ${nutritionData?.calories || 1600} kcal (±50 kcal MAX)
+               • Protein: ${nutritionData?.protein || 80}g (±5g MAX)
+            
+            3. PER-MEAL BREAKDOWN (strict):
+               • Breakfast totals.cal = ${Math.round((nutritionData?.calories || 1600) * 0.25)} kcal (±20)
+               • Lunch totals.cal = ${Math.round((nutritionData?.calories || 1600) * 0.35)} kcal (±20)
+               • Dinner totals.cal = ${Math.round((nutritionData?.calories || 1600) * 0.25)} kcal (±20)
+               • Snacks totals.cal = ${Math.round((nutritionData?.calories || 1600) * 0.15)} kcal (±20)
+            
+            4. VALIDATION: Sum breakfast.totals.cal + lunch.totals.cal + dinner.totals.cal + snacks.totals.cal MUST equal ${nutritionData?.calories || 1600} kcal (±50)
+            
+            DO NOT SUBMIT low-calorie meals. Adjust portion sizes to hit the targets EXACTLY.
             JSON ONLY.`;
 
             const promptContext = `

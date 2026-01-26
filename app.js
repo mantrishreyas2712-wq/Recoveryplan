@@ -451,7 +451,7 @@ function renderResults(plan, userData) {
                     <div>
                         <strong style="color: #4338CA; font-size: 1rem;">Radiology / Imaging Findings (AI Analyzed)</strong>
                         <div style="white-space: pre-line; color: #3730A3; margin-top: 0.5rem; line-height: 1.6; font-size: 0.95rem; background: rgba(255,255,255,0.5); padding: 0.5rem; border-radius: 6px;">
-                            ${(plan.imagingFindings && !plan.imagingFindings.includes('Time Out') && !plan.imagingFindings.includes('Reference Error'))
+                            ${(plan.imagingFindings && !plan.imagingFindings.includes('Timed Out') && !plan.imagingFindings.includes('Reference Error'))
                 ? plan.imagingFindings.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/__(.*?)__/g, '<u>$1</u>')
                 : `⚠️ <strong>AI Could Not Analyze Your Report</strong><br>
                    <span style="font-size:0.9rem; color: #3730A3; margin-top: 0.5rem; display: block;">
