@@ -1660,12 +1660,16 @@ function findVerifiedVideo(exerciseName) {
 
 // --- ENRICHMENT LOGIC ---
 function getExerciseThumbnail(name) {
-    // Use LoremFlickr (Reliable, free, no rate limits for this usage)
+    // v2.67: Professional fallback instead of random LoremFlickr animals
+    // Use a clean, professional exercise placeholder from Unsplash
     const cleanName = String(name || 'exercise').replace(/[^a-zA-Z ]/g, '').trim();
-    // Use diverse keywords to get varied images
-    const keywords = `physiotherapy,stretching,fitness,${cleanName.split(' ')[0]}`;
-    // Lock to ensure consistency for the same exercise name
-    return `https://loremflickr.com/320/180/${keywords}/all?lock=${cleanName.length}`;
+
+    // Option 1: Generic professional exercise image (consistent, no random animals)
+    // Using Unsplash Source API with exercise/physiotherapy theme
+    return `https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=320&h=180&fit=crop&q=80`;
+
+    // Note: This shows a consistent professional exercise image
+    // The YouTube search link will still work to find the correct video
 }
 
 // --- AMAZON AFFILIATE EQUIPMENT LINKS ---
