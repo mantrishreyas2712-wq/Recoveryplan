@@ -1053,20 +1053,6 @@ async function generateRecoveryPlan(patientData) {
                 console.log("🩻 Starting Parallel Vision Task...");
 
                 // Helper: Timeout Promise (45s Limit)
-
-                // ... (lines 1050-1335 unchanged)
-
-                selectedExercises: onlineData?.recovery?.exercises ?
-                    onlineData.recovery.exercises.map(ex => ({
-                        name: ex.name,
-                        sets: ex.sets,
-                        reps: ex.reps,
-                        // STRICT FIX: Ignore AI YouTube ID. Always use Verified Library or Fallback.
-                        youtube_id: findVerifiedVideo(ex.name),
-                        difficulty: "Adaptive",
-                        description: "AI Prescribed specific to your job/sport conflict.",
-                        personalNote: surgeryInfo.isMajor ? "Check with surgeon first." : "Customized for you."
-                    }))
                 const timeout = new Promise(resolve => setTimeout(() => resolve("⚠️ Vision Analysis Timed Out (Skipped)"), 45000));
 
                 const visionLogic = async () => {
@@ -1363,8 +1349,8 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
                     name: ex.name,
                     sets: ex.sets,
                     reps: ex.reps,
-                    // Use AI youtube_id if valid, else fallback
-                    youtube_id: ex.youtube_id && ex.youtube_id.length === 11 ? ex.youtube_id : findVerifiedVideo(ex.name),
+                    // STRICT FIX: Ignore AI YouTube ID. Always use Verified Library or Fallback.
+                    youtube_id: findVerifiedVideo(ex.name),
                     difficulty: "Adaptive",
                     description: "AI Prescribed specific to your job/sport conflict.",
                     personalNote: surgeryInfo.isMajor ? "Check with surgeon first." : "Customized for you."
