@@ -373,6 +373,27 @@ function renderResults(plan, userData) {
                 </div>
             </div>
 
+            <!-- 3.5 DETAILED TIMELINE (v2.48 Fix: actually showing the detailed steps) -->
+            ${plan.recoveryTimeline ? `
+            <div class="anim-entry" style="background: #F0FDFA; border: 1px solid #2DD4BF; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; animation-delay: 0.3s;">
+                <h4 style="color: #0F766E; margin: 0 0 0.8rem 0; font-size: 1rem;">📅 detailed Recovery Phases</h4>
+                <div style="display: grid; gap: 0.8rem;">
+                    <div style="background: white; padding: 0.8rem; border-radius: 8px; border-left: 4px solid #F472B6;">
+                        <strong style="color: #BE185D; font-size: 0.9rem;">Week 1-2 (Protection)</strong>
+                        <div style="font-size: 0.9rem; color: #374151; margin-top: 0.3rem;">${plan.recoveryTimeline.week1.replace(/<.*?>/g, '').replace('Week 1 - Protection Phase', '').trim()}</div>
+                    </div>
+                    <div style="background: white; padding: 0.8rem; border-radius: 8px; border-left: 4px solid #60A5FA;">
+                        <strong style="color: #1D4ED8; font-size: 0.9rem;">Week 3-4 (Progress)</strong>
+                        <div style="font-size: 0.9rem; color: #374151; margin-top: 0.3rem;">${plan.recoveryTimeline.week2_3.replace(/<.*?>/g, '').replace('Week 2-3 - Progress Phase', '').trim()}</div>
+                    </div>
+                    <div style="background: white; padding: 0.8rem; border-radius: 8px; border-left: 4px solid #34D399;">
+                        <strong style="color: #047857; font-size: 0.9rem;">Long Term (Maintenance)</strong>
+                        <div style="font-size: 0.9rem; color: #374151; margin-top: 0.3rem;">${plan.recoveryTimeline.longTerm.replace(/<.*?>/g, '').replace('Long-term - Maintenance', '').trim()}</div>
+                    </div>
+                </div>
+            </div>
+            ` : ''}
+
             <!-- 3. RED FLAGS WARNING -->
             ${plan.consultation.redFlags ? `
             <div class="glass-card-pro" style="background: rgba(254, 242, 242, 0.85); border: 1px solid #FECACA; padding: 1rem; border-radius: 8px; margin-top: 1rem;">

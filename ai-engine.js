@@ -1044,10 +1044,29 @@ async function generateRecoveryPlan(patientData) {
 
             // TASK A: Vision Analysis
             const visionTask = async () => {
-                if (!patientData.reportImage) return null;
+                console.log("🔍 Vision Task Check: Image Present?", !!patientData.reportImage, "Length:", patientData.reportImage ? patientData.reportImage.length : 0);
+
+                if (!patientData.reportImage) {
+                    console.log("ℹ️ No Image Header Found - Skipping Vision.");
+                    return null;
+                }
                 console.log("🩻 Starting Parallel Vision Task...");
 
                 // Helper: Timeout Promise (45s Limit)
+
+                // ... (lines 1050-1335 unchanged)
+
+                selectedExercises: onlineData?.recovery?.exercises ?
+                    onlineData.recovery.exercises.map(ex => ({
+                        name: ex.name,
+                        sets: ex.sets,
+                        reps: ex.reps,
+                        // STRICT FIX: Ignore AI YouTube ID. Always use Verified Library or Fallback.
+                        youtube_id: findVerifiedVideo(ex.name),
+                        difficulty: "Adaptive",
+                        description: "AI Prescribed specific to your job/sport conflict.",
+                        personalNote: surgeryInfo.isMajor ? "Check with surgeon first." : "Customized for you."
+                    }))
                 const timeout = new Promise(resolve => setTimeout(() => resolve("⚠️ Vision Analysis Timed Out (Skipped)"), 45000));
 
                 const visionLogic = async () => {
