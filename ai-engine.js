@@ -997,7 +997,7 @@ async function generateRecoveryPlan(patientData) {
             {
                "diagnosis": "Specific Medical Syndrome (e.g. 'Lumbar Strain + Wrist Tendonitis')",
                "affected_areas": ["primary_area_key", "secondary_area_key"],
-               "assessment": "2-3 sentences linking JOB (${occupation}) + ACTIVITY (${activity}) to PAIN.",
+               "assessment": "Write 4-5 detailed sentences: 1) Link patient's JOB (${occupation}) to pain mechanism. 2) Explain how ${activity} activities contributed. 3) Describe the underlying biomechanical issue. 4) Mention age-related factors if relevant. 5) Personalize with empathy.",
                "causes": "Bullet points explaining biomechanics. Use HTML <strong> tags.",
                "recovery": {
                   "timeline": "e.g. 4-6 weeks",
@@ -1563,9 +1563,9 @@ const EXERCISE_LIBRARY = {
     'cross body': 'IlFPo2Etbnc',
 
     // BACK EXERCISES
-    'cat cow': 'sJq0jW4_P68',
-    'cat-cow': 'sJq0jW4_P68',
-    'cat-cow stretch': 'sJq0jW4_P68',
+    'cat cow': 'kqnua4rHVVA',
+    'cat-cow': 'kqnua4rHVVA',
+    'cat-cow stretch': 'kqnua4rHVVA',
     'childs pose': 'Eq6oMDi00n4',
     'child\'s pose': 'Eq6oMDi00n4',
     'knee to chest': 'bJzM6k9gZ24',
