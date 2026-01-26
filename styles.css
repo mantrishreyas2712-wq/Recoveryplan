@@ -695,7 +695,6 @@ body {
     transform: scale(1.05);
 }
 
-/* --- PRINT OPTIMIZATION (PDF Generation) --- */
 @media print {
 
     /* Hide UI Elements */
@@ -706,9 +705,25 @@ body {
     .nav-buttons,
     .btn,
     .secondary-actions,
-    .play-overlay,
-    .exercise-video-link {
+    .play-overlay {
         display: none !important;
+    }
+
+    /* Show important links in print */
+    .exercise-video-link,
+    .btn-micro-shop {
+        display: inline-block !important;
+        color: #1d4ed8 !important;
+        text-decoration: underline !important;
+        font-size: 10pt !important;
+        page-break-inside: avoid;
+    }
+
+    /* Print URLs after links */
+    .exercise-video-link::after {
+        content: " (" attr(href) ")";
+        font-size: 9pt;
+        color: #666;
     }
 
     /* Reset Layout for A4 */
