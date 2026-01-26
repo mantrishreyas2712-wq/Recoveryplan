@@ -1,29 +1,18 @@
 /**
- * Cloudflare Worker: Physio AI Proxy
+ * Cloudflare Worker: Physio AI Proxy (Hybrid: OpenRouter + SambaNova)
  * 
- * This worker acts as a secure backend proxy for the PhysioAssist app.
- * It hides the API key from the browser and forwards requests to Gemini.
+ * Routes:
+ * - Text Models -> OpenRouter (DeepSeek, etc.)
+ * - Vision Models -> SambaNova (Llama 3.2 Vision) for speed
  * 
- * DEPLOYMENT:
- * 1. Go to https://dash.cloudflare.com/ -> Workers & Pages -> Create Application -> Create Worker
- * 2. Paste this entire file content into the worker editor
- * 3. Go to Settings -> Variables -> Add Variable:
- *    - Name: GEMINI_API_KEY
- *    - Type: Secret
- *    - Value: (Your Gemini API Key from aistudio.google.com)
- * 4. Click "Save and Deploy"
- * 5. Copy your Worker URL (e.g., https://physio-ai-proxy.YOUR_NAME.workers.dev)
- * 6. Paste the URL into your frontend config.js
+ * SECRETS REQUIRED:
+ * - OPENROUTER_API_KEY
+ * - SAMBANOVA_API_KEY (Optional - if missing, falls back to OpenRouter)
  */
-
-// DEPLOYMENT INSTRUCTIONS:
-// 1. npx wrangler deploy
-// 2. npx wrangler secret put OPENROUTER_API_KEY
-//    (Paste your key when prompted)
 
 export default {
     async fetch(request, env, ctx) {
-        // Handle CORS preflight
+        // Cors Preflight
         if (request.method === 'OPTIONS') {
             return new Response(null, {
                 headers: {
@@ -41,34 +30,60 @@ export default {
 
         try {
             const body = await request.json();
-            const { messages } = body; // Expecting Chat Messages array for OpenRouter
+            const { messages, model } = body;
 
-            if (!messages) {
-                return new Response(JSON.stringify({ error: 'Missing messages' }), { status: 400 });
+            // ROUTING LOGIC
+            // Check if it's a SambaNova-supported Vision model
+            const isSambaNovaModel = model && (
+                model.includes('Llama-3.2') && (model.includes('Vision') || model.includes('11B') || model.includes('90B'))
+            );
+
+            // DECIDE PROVIDER
+            let providerUrl = "https://openrouter.ai/api/v1/chat/completions";
+            let apiKey = env.OPENROUTER_API_KEY;
+            let providerName = "OpenRouter";
+
+            // If SambaNova is requested AND Key exists -> Route there
+            if (isSambaNovaModel && env.SAMBANOVA_API_KEY) {
+                providerUrl = "https://api.sambanova.ai/v1/chat/completions";
+                apiKey = env.SAMBANOVA_API_KEY;
+                providerName = "SambaNova";
+
+                // SambaNova requires exact model ID mapping if different from client
+                // But usually "Llama-3.2-11B-Vision-Instruct" works if that's what client sends.
+                // We trust the client sends the correct ID.
             }
 
-            // SECURE KEY INJECTION (Secret from Env)
-            const API_KEY = env.OPENROUTER_API_KEY;
-            if (!API_KEY) {
-                return new Response(JSON.stringify({ error: 'Server misconfiguration: Missing API Key' }), { status: 500 });
+            if (!apiKey) {
+                return new Response(JSON.stringify({ error: `Missing API Key for ${providerName}` }), { status: 500 });
             }
 
-            // Proxy to OpenRouter
-            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            // PROXY REQUEST
+            const response = await fetch(providerUrl, {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${API_KEY}`,
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json",
+                    // OpenRouter Specific Headers (Ignored by SambaNova)
                     "HTTP-Referer": "https://physioassist.workers.dev",
-                    "X-Title": "PhysioAssist Backend",
-                    "Content-Type": "application/json"
+                    "X-Title": "PhysioAssist Backend"
                 },
                 body: JSON.stringify({
-                    "model": body.model || "google/gemini-2.0-flash-exp:free", // Support Client Model Selection
-                    "messages": messages
+                    model: model,
+                    messages: messages,
+                    // SambaNova might need max_tokens
+                    max_tokens: 1000
                 })
             });
 
             const data = await response.json();
+
+            // Standardize potential error responses
+            if (data.error) {
+                console.error(`${providerName} Error:`, data.error);
+                return new Response(JSON.stringify({ error: data.error }), { status: 500 });
+            }
+
             return new Response(JSON.stringify(data), {
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
             });
