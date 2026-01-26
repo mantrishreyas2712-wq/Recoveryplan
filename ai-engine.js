@@ -1018,13 +1018,15 @@ async function generateRecoveryPlan(patientData) {
                "nutrition": {
                   "hydration": "e.g. 3L/day",
                   "timing": { "breakfast": "8:00 AM", "lunch": "1:00 PM", "dinner": "8:00 PM", "midMorningSnack": "11:00 AM", "eveningSnack": "5:00 PM" },
-                  "breakfast": { "items": [{ "item": "e.g. Oats", "quantity": "1 bowl", "protein": 5, "carbs": 20, "fats": 3 }], "totals": { "cal": 150, "protein": 5, "carbs": 20, "fats": 3 } },
-                  "lunch": { "items": [{ "item": "e.g. Roti", "quantity": "2 pcs", "protein": 6, "carbs": 30, "fats": 2 }], "totals": { "cal": 200, "protein": 6, "carbs": 30, "fats": 2 } },
-                  "dinner": { "items": [{ "item": "e.g. Dal", "quantity": "1 bowl", "protein": 8, "carbs": 15, "fats": 2 }], "totals": { "cal": 150, "protein": 8, "carbs": 15, "fats": 2 } },
-                  "snacks": { "items": [{ "item": "e.g. Almonds", "quantity": "10 pcs", "protein": 3, "carbs": 2, "fats": 5 }], "totals": { "cal": 80, "protein": 3, "carbs": 2, "fats": 5 } }
+                  "breakfast": { "items": [{ "item": "e.g. Oats", "quantity": "1.5 bowl", "protein": 8, "carbs": 35, "fats": 5 }, { "item": "Banana", "quantity": "1", "protein": 1, "carbs": 25, "fats": 0 }], "totals": { "cal": 350, "protein": 9, "carbs": 60, "fats": 5 } },
+                  "lunch": { "items": [{ "item": "e.g. Roti", "quantity": "3 pcs", "protein": 9, "carbs": 45, "fats": 3 }, { "item": "Chicken Curry", "quantity": "150g", "protein": 25, "carbs": 8, "fats": 10 }], "totals": { "cal": 500, "protein": 34, "carbs": 53, "fats": 13 } },
+                  "dinner": { "items": [{ "item": "e.g. Dal", "quantity": "1.5 bowl", "protein": 12, "carbs": 25, "fats": 4 }, { "item": "Rice", "quantity": "1 cup", "protein": 4, "carbs": 45, "fats": 1 }], "totals": { "cal": 400, "protein": 16, "carbs": 70, "fats": 5 } },
+                  "snacks": { "items": [{ "item": "e.g. Almonds", "quantity": "15 pcs", "protein": 5, "carbs": 4, "fats": 8 }, { "item": "Apple", "quantity": "1", "protein": 0, "carbs": 20, "fats": 0 }], "totals": { "cal": 200, "protein": 5, "carbs": 24, "fats": 8 } }
                }
             }
-            CRITICAL: Nutrition must be culturally appropriate (${dietPref}). JSON ONLY.`;
+            CRITICAL: Nutrition must be culturally appropriate (${dietPref}). 
+            CALORIE TARGET: The meal totals MUST add up to approximately ${nutritionData?.calories || 1600} kcal/day (Breakfast ~25%, Lunch ~35%, Dinner ~25%, Snacks ~15%).
+            JSON ONLY.`;
 
             const promptContext = `
             Patient: ${name}, ${age}yo ${gender}
