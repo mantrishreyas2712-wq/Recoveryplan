@@ -1062,7 +1062,7 @@ async function generateRecoveryPlan(patientData) {
                     ];
 
                     const VISION_MODELS = [
-                        "Llama-3.2-11B-Vision-Instruct", // Proxies to SambaNova if Key exists
+                        "Llama-3.2-90B-Vision-Instruct", // SambaNova 90B (Most Stable)
                         "google/gemini-2.0-flash-exp:free",
                         "qwen/qwen-2.5-vl-7b-instruct:free"
                     ];
