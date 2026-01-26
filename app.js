@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     let width = img.width;
                     let height = img.height;
 
-                    // Resize logic (Max 1024px)
-                    const MAX_SIZE = 1024;
+                    // Resize logic (Max 800px - Aggressive for Stability)
+                    const MAX_SIZE = 800;
                     if (width > height) {
                         if (width > MAX_SIZE) {
                             height *= MAX_SIZE / width;
@@ -56,11 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Compress to JPEG 70%
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    // Compress to JPEG 60% (Tiny Payload)
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
 
-                    uploadedReportBase64 = compressedBase64; // Optimized Data URL
-                    console.log("Image Compressed:", Math.round(compressedBase64.length / 1024) + "KB");
+                    uploadedReportBase64 = compressedBase64;
+                    console.log("📸 Image Processed: " + Math.round(compressedBase64.length / 1024) + "KB (Safe for API)");
 
                     // UI Update
                     fileNameDisplay.textContent = file.name;
@@ -277,7 +277,9 @@ function renderResults(plan, userData) {
         return `
         <div class="exercise-card">
             <a href="${linkUrl}" target="_blank" class="exercise-video-link">
-                <div class="exercise-thumb" style="background-image: url('${thumbUrl}');">
+                <div class="exercise-thumb" style="background-image: url('${thumbUrl}'); position: relative; overflow: hidden;">
+                    <!-- Fallback Image Logic -->
+                    <img src="${thumbUrl}" onerror="this.parentElement.style.backgroundImage='linear-gradient(135deg, #E2E8F0, #CBD5E1)';" style="display:none;">
                     <div class="play-overlay">
                         <div class="play-btn">${btnIcon}</div>
                         <span>${btnText}</span>
@@ -331,17 +333,19 @@ function renderResults(plan, userData) {
                 </div>
             </div>
 
-            <!-- 1.5. IMAGE FINDINGS (NEW v2.24) -->
-            ${plan.imagingFindings ? `
+            <!-- 1.5. IMAGE FINDINGS (Improved v2.45) -->
+            ${(plan.imagingFindings || userData.hasReport) ? `
             <div class="anim-entry" style="background: #EEF2FF; border: 1px solid #6366F1; padding: 1rem; border-radius: 10px; margin-bottom: 0.75rem; animation-delay: 0.1s;">
                 <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
                     <span style="font-size: 1.5rem;">🩻</span>
                     <div>
                         <strong style="color: #4338CA; font-size: 1rem;">Radiology / Imaging Findings (AI Analyzed)</strong>
-                        <div style="white-space: pre-line; color: #3730A3; margin-top: 0.5rem; line-height: 1.6; font-size: 0.95rem; background: rgba(255,255,255,0.5); padding: 0.5rem; border-radius: 6px;">${plan.imagingFindings
-                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // Fix Bold
-                .replace(/__(.*?)__/g, '<u>$1</u>')    // Fix Underline
-            }</div>
+                        <div style="white-space: pre-line; color: #3730A3; margin-top: 0.5rem; line-height: 1.6; font-size: 0.95rem; background: rgba(255,255,255,0.5); padding: 0.5rem; border-radius: 6px;">
+                            ${(plan.imagingFindings && !plan.imagingFindings.includes('Time Out') && !plan.imagingFindings.includes('Reference Error'))
+                ? plan.imagingFindings.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/__(.*?)__/g, '<u>$1</u>')
+                : `⚠️ <strong>Analysis Skipped:</strong> The image could not be processed fully. <br><span style="font-size:0.8rem; opacity:0.8;">Possible reasons: Image too complex, network interrupt, or server busy. The rest of your plan is accurate.</span>`
+            }
+                        </div>
                     </div>
                 </div>
             </div>

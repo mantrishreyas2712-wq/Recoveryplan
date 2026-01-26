@@ -1249,7 +1249,7 @@ ${painData.description}
 
             // CAUSES - Now shows DEEPER WHY (AI + Static)
             likelyCauses: onlineData?.causes ?
-                `<strong>🔎 AI Analysis:</strong>\n${onlineData.causes}` :
+                `<strong>🔎 AI Analysis:</strong>\n${Array.isArray(onlineData.causes) ? onlineData.causes.map(c => `• ${c}`).join('\n') : onlineData.causes}` :
                 `${conditionData.causes ? `<strong>🔎 AI Analysis:</strong>\n${conditionData.causes}\n\n` : ''}<strong>Why Your ${areaKey.charAt(0).toUpperCase() + areaKey.slice(1)} Is Hurting:</strong>
 
 <strong>The Anatomy Behind Your Pain:</strong>
