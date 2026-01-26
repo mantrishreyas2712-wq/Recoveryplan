@@ -1050,6 +1050,13 @@ async function generateRecoveryPlan(patientData) {
                     console.log("ℹ️ No Image Header Found - Skipping Vision.");
                     return null;
                 }
+
+                // FIX v2.55: Skip vision for PDFs (vision models can only read images, not PDFs)
+                if (patientData.reportImage.startsWith('data:application/pdf')) {
+                    console.log("📄 PDF Detected - Vision models cannot read PDFs. Skipping vision analysis.");
+                    return "📄 PDF Report Uploaded. Vision analysis is not available for PDF files - please refer to your radiologist's written findings on the document.";
+                }
+
                 console.log("🩻 Starting Parallel Vision Task...");
 
                 // Helper: Timeout Promise (45s Limit)
@@ -1103,8 +1110,33 @@ async function generateRecoveryPlan(patientData) {
                 const rawResponse = await window.OpenRouter.analyze(safePrompt, systemPrompt, "deepseek/deepseek-chat");
                 if (!rawResponse) throw new Error("DeepSeek returned empty.");
 
-                const cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-                return JSON.parse(cleanJson);
+                let cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+
+                // FIX v2.55: Repair truncated JSON
+                try {
+                    return JSON.parse(cleanJson);
+                } catch (parseError) {
+                    console.warn("⚠️ JSON truncated, attempting repair...");
+                    // Try to repair by closing open brackets/braces
+                    let repaired = cleanJson;
+                    // Count unclosed braces and brackets
+                    const openBraces = (repaired.match(/{/g) || []).length;
+                    const closeBraces = (repaired.match(/}/g) || []).length;
+                    const openBrackets = (repaired.match(/\[/g) || []).length;
+                    const closeBrackets = (repaired.match(/]/g) || []).length;
+
+                    // Remove trailing incomplete string/number
+                    repaired = repaired.replace(/,\s*"[^"]*$/, ''); // Remove incomplete string at end
+                    repaired = repaired.replace(/:\s*"[^"]*$/, ': ""'); // Close incomplete string value
+                    repaired = repaired.replace(/:\s*\d+$/, ': 0'); // Replace incomplete number
+
+                    // Close arrays and objects
+                    for (let i = 0; i < openBrackets - closeBrackets; i++) repaired += ']';
+                    for (let i = 0; i < openBraces - closeBraces; i++) repaired += '}';
+
+                    console.log("🔧 Repaired JSON, retrying parse...");
+                    return JSON.parse(repaired);
+                }
             };
 
             // EXECUTE BOTH
