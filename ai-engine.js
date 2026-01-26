@@ -1024,8 +1024,15 @@ async function generateRecoveryPlan(patientData) {
                   "snacks": { "items": [{ "item": "e.g. Almonds", "quantity": "15 pcs", "protein": 5, "carbs": 4, "fats": 8 }, { "item": "Apple", "quantity": "1", "protein": 0, "carbs": 20, "fats": 0 }], "totals": { "cal": 200, "protein": 5, "carbs": 24, "fats": 8 } }
                }
             }
-            CRITICAL: Nutrition must be culturally appropriate (${dietPref}). 
-            CALORIE TARGET: The meal totals MUST add up to approximately ${nutritionData?.calories || 1600} kcal/day (Breakfast ~25%, Lunch ~35%, Dinner ~25%, Snacks ~15%).
+            CRITICAL NUTRITION REQUIREMENTS:
+            1. Culturally appropriate for ${dietPref}
+            2. EXACT CALORIE TARGET: ${nutritionData?.calories || 1600} kcal/day (±50 kcal tolerance)
+               - Breakfast: ${Math.round((nutritionData?.calories || 1600) * 0.25)} kcal
+               - Lunch: ${Math.round((nutritionData?.calories || 1600) * 0.35)} kcal
+               - Dinner: ${Math.round((nutritionData?.calories || 1600) * 0.25)} kcal
+               - Snacks: ${Math.round((nutritionData?.calories || 1600) * 0.15)} kcal
+            3. PROTEIN TARGET: ${nutritionData?.protein || 80}g/day (±5g tolerance)
+            4. Each meal MUST have realistic portion sizes that add up to exact totals.
             JSON ONLY.`;
 
             const promptContext = `

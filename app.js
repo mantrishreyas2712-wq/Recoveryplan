@@ -359,10 +359,75 @@ function renderResults(plan, userData) {
     const drVanshikaMsg = encodeURIComponent(`Hi Dr. Vanshika, I just generated a PhysioAssist Recovery Plan for my ${userData.problemArea} problem. I'd like to book a consultation with you.\n\nPatient: ${userData.name}\nAge: ${userData.age}\nCondition: ${userData.problemStatement || userData.problemArea}`);
     const drVanshikaLink = `https://wa.me/${DR_VANSHIKA_NUMBER}?text=${drVanshikaMsg}`;
 
+    // Critical Alert Detection (v2.62)
+    const isCritical =
+        parseInt(userData.painLevel) >= 7 ||
+        plan.recovery?.urgency === 'High' ||
+        (plan.imagingFindings && (
+            plan.imagingFindings.toLowerCase().includes('disc bulge') ||
+            plan.imagingFindings.toLowerCase().includes('herniation') ||
+            plan.imagingFindings.toLowerCase().includes('fracture') ||
+            plan.imagingFindings.toLowerCase().includes('tear') ||
+            plan.imagingFindings.toLowerCase().includes('rupture')
+        ));
+
     // Inject HTML
     resultsSection.innerHTML = `
         <div class="results-header">
             <h2>Recovery Plan for ${userData.name}</h2>
+            
+            ${isCritical ? `
+            <!-- CRITICAL ALERT BANNER -->
+            <div class="critical-alert" style="
+                background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+                border: 2px solid #DC2626;
+                padding: 1.25rem;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
+                animation: criticalPulse 2s ease-in-out infinite;
+                box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+            ">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 2.5rem; animation: shake 0.5s ease-in-out infinite;">🚨</span>
+                    <div style="flex: 1;">
+                        <strong style="color: #991B1B; font-size: 1.3rem; display: block; margin-bottom: 0.5rem;">
+                            ⚠️ URGENT: Immediate Professional Attention Required
+                        </strong>
+                        <p style="color: #7F1D1D; margin: 0; line-height: 1.6;">
+                            Your condition shows serious findings that need specialist consultation. Do not delay treatment.
+                        </p>
+                        <a href="${drVanshikaLink}" target="_blank" style="
+                            display: inline-block;
+                            margin-top: 1rem;
+                            padding: 0.75rem 1.5rem;
+                            background: #DC2626;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            animation: buttonPulse 1.5s ease-in-out infinite;
+                        ">
+                            📞 Contact Dr. Vanshika Immediately
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <style>
+                @keyframes criticalPulse {
+                    0%, 100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.3); }
+                    50% { box-shadow: 0 0 30px rgba(220, 38, 38, 0.6); }
+                }
+                @keyframes shake {
+                    0%, 100% { transform: rotate(0deg); }
+                    25% { transform: rotate(-10deg); }
+                    75% { transform: rotate(10deg); }
+                }
+                @keyframes buttonPulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                }
+            </style>
+            ` : ''}
             
             <!-- 1. PERSONALIZED ANALYSIS + DR VANSHIKA CTA -->
             <div class="ai-insight anim-entry" style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border:1px solid #7DD3FC;">
@@ -388,7 +453,12 @@ function renderResults(plan, userData) {
                         <div style="white-space: pre-line; color: #3730A3; margin-top: 0.5rem; line-height: 1.6; font-size: 0.95rem; background: rgba(255,255,255,0.5); padding: 0.5rem; border-radius: 6px;">
                             ${(plan.imagingFindings && !plan.imagingFindings.includes('Time Out') && !plan.imagingFindings.includes('Reference Error'))
                 ? plan.imagingFindings.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/__(.*?)__/g, '<u>$1</u>')
-                : `⚠️ <strong>Analysis Skipped:</strong> The image could not be processed fully. <br><span style="font-size:0.8rem; opacity:0.8;">Possible reasons: Image too complex, network interrupt, or server busy. The rest of your plan is accurate.</span>`
+                : `⚠️ <strong>AI Could Not Analyze Your Report</strong><br>
+                   <span style="font-size:0.9rem; color: #3730A3; margin-top: 0.5rem; display: block;">
+                   Our AI vision system was unable to process your medical report. This could be due to image quality, format, or complexity.<br><br>
+                   <strong style="color: #DC2626;">📞 Please share your report directly with Dr. Vanshika for expert analysis:</strong><br>
+                   <a href="${waLink}" target="_blank" style="color: #059669; text-decoration: underline;">Contact Dr. Vanshika on WhatsApp</a>
+                   </span>`
             }
                         </div>
                     </div>
