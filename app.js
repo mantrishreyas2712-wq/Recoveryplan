@@ -407,37 +407,47 @@ function renderResults(plan, userData) {
                 </div>
             </div>
 
-            <!-- 3. PROGNOSIS / RECOVERY OUTLOOK (Separate Section) -->
-            <div class="anim-entry" style="background: #ECFDF5; border: 1px solid #6EE7B7; padding: 1rem; border-radius: 10px; margin-bottom: 0.75rem; animation-delay: 0.2s;">
-                <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
+            <!-- 3. UNIFIED RECOVERY SECTION (v2.58: Combined Outlook + Phases) -->
+            <div class="anim-entry" style="background: linear-gradient(135deg, #ECFDF5 0%, #F0FDFA 100%); border: 1px solid #6EE7B7; padding: 1.25rem; border-radius: 12px; margin-bottom: 1rem; animation-delay: 0.2s;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;">
                     <span style="font-size: 1.5rem;"><span class="icon-graph"></span></span>
-                    <div>
-                        <strong style="color: #065F46; font-size: 1rem;">Your Recovery Outlook</strong>
-                        <p style="white-space: pre-line; color: #047857; margin-top: 0.5rem; line-height: 1.6;">${plan.analysis.prognosis}</p>
+                    <strong style="color: #065F46; font-size: 1.1rem;">Your Complete Recovery Plan</strong>
+                </div>
+                
+                <!-- Summary Row -->
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; padding: 0.8rem; background: rgba(255,255,255,0.7); border-radius: 8px;">
+                    <div style="flex: 1; min-width: 120px;">
+                        <div style="font-size: 0.75rem; color: #065F46; text-transform: uppercase; font-weight: 600;">Timeline</div>
+                        <div style="font-size: 1rem; color: #047857; font-weight: 500;">${plan.recovery?.timeline || '4-6 weeks'}</div>
+                    </div>
+                    <div style="flex: 1; min-width: 120px;">
+                        <div style="font-size: 0.75rem; color: #065F46; text-transform: uppercase; font-weight: 600;">Your Age Factor</div>
+                        <div style="font-size: 0.85rem; color: #047857;">${plan.recovery?.ageFactor || 'Standard recovery expected'}</div>
+                    </div>
+                    <div style="flex: 1; min-width: 100px;">
+                        <div style="font-size: 0.75rem; color: #065F46; text-transform: uppercase; font-weight: 600;">Urgency</div>
+                        <div style="font-size: 1rem; color: ${plan.recovery?.urgency === 'High' ? '#DC2626' : '#047857'}; font-weight: 600;">${plan.recovery?.urgency || 'Moderate'}</div>
                     </div>
                 </div>
-            </div>
-
-            <!-- 3.5 DETAILED TIMELINE (v2.48 Fix: actually showing the detailed steps) -->
-            ${plan.recoveryTimeline ? `
-            <div class="anim-entry" style="background: #F0FDFA; border: 1px solid #2DD4BF; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; animation-delay: 0.3s;">
-                <h4 style="color: #0F766E; margin: 0 0 0.8rem 0; font-size: 1rem;">📅 detailed Recovery Phases</h4>
-                <div style="display: grid; gap: 0.8rem;">
+                
+                <!-- Detailed Phases -->
+                ${plan.recoveryTimeline ? `
+                <div style="display: grid; gap: 0.6rem;">
                     <div style="background: white; padding: 0.8rem; border-radius: 8px; border-left: 4px solid #F472B6;">
-                        <strong style="color: #BE185D; font-size: 0.9rem;">Week 1-2 (Protection)</strong>
+                        <strong style="color: #BE185D; font-size: 0.9rem;">📅 Week 1-2 (Protection)</strong>
                         <div style="font-size: 0.9rem; color: #374151; margin-top: 0.3rem;">${plan.recoveryTimeline.week1.replace(/<.*?>/g, '').replace('Week 1 - Protection Phase', '').trim()}</div>
                     </div>
                     <div style="background: white; padding: 0.8rem; border-radius: 8px; border-left: 4px solid #60A5FA;">
-                        <strong style="color: #1D4ED8; font-size: 0.9rem;">Week 3-4 (Progress)</strong>
+                        <strong style="color: #1D4ED8; font-size: 0.9rem;">📅 Week 3-4 (Progress)</strong>
                         <div style="font-size: 0.9rem; color: #374151; margin-top: 0.3rem;">${plan.recoveryTimeline.week2_3.replace(/<.*?>/g, '').replace('Week 2-3 - Progress Phase', '').trim()}</div>
                     </div>
                     <div style="background: white; padding: 0.8rem; border-radius: 8px; border-left: 4px solid #34D399;">
-                        <strong style="color: #047857; font-size: 0.9rem;">Long Term (Maintenance)</strong>
+                        <strong style="color: #047857; font-size: 0.9rem;">📅 Long Term (Maintenance)</strong>
                         <div style="font-size: 0.9rem; color: #374151; margin-top: 0.3rem;">${plan.recoveryTimeline.longTerm.replace(/<.*?>/g, '').replace('Long-term - Maintenance', '').trim()}</div>
                     </div>
                 </div>
+                ` : `<p style="color: #047857; margin: 0;">${plan.analysis.prognosis}</p>`}
             </div>
-            ` : ''}
 
             <!-- 3. RED FLAGS WARNING -->
             ${plan.consultation.redFlags ? `
