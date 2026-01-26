@@ -28,9 +28,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 3. Compress & Resize (v2.44 Fix for 500 Errors)
+            // 3. Compress & Resize (v2.49 Fix for PDF)
             const reader = new FileReader();
             reader.onload = function (e) {
+                // A. PDF Handling (Bypass Resize)
+                if (file.type === 'application/pdf') {
+                    uploadedReportBase64 = e.target.result;
+                    console.log("📄 PDF Selected (No Resize):", Math.round(file.size / 1024) + "KB");
+
+                    fileNameDisplay.textContent = file.name;
+                    previewContainer.style.display = 'flex';
+                    uploadLabelText.textContent = "PDF Report Ready";
+                    return;
+                }
+
+                // B. Image Handling (Resize to 800px)
                 const img = new Image();
                 img.onload = function () {
                     const canvas = document.createElement('canvas');
