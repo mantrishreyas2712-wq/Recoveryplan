@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- SECURITY POLICY: Allow TensorFlow, Worker, and OpenRouter -->
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline' https: https://cdn.jsdelivr.net https://mantrishreyas2712-wq.github.io https://cdn.segment.com; connect-src 'self' https://physio-ai-proxy.mantrishreyas2712.workers.dev https://cdn.jsdelivr.net https://openrouter.ai https://storage.googleapis.com https://tfhub.dev https://www.kaggle.com https://*.kaggle.com https://script.google.com https://*.google.com https://www.google-analytics.com https://cdn.segment.com https://api.segment.io https://mantrishreyas2712-wq.github.io;">
+    <!-- CSP Removed: Third-party extensions were causing conflicts. Static site doesn't need strict CSP. -->
     <title>PhysioAssist - AI Recovery</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon"
@@ -261,7 +259,7 @@
     </main>
 
     <div style="text-align: center; color: #cbd5e1; font-size: 0.8rem; padding: 20px;">
-        PhysioAssist AI v2.53 (CSP Explicit Domains) • <span id="statusIndicator">System Ready</span>
+        PhysioAssist AI v2.54 (CSP Removed - Clean Console) • <span id="statusIndicator">System Ready</span>
     </div>
     </div>
 
@@ -316,12 +314,12 @@
         }
     </script>
     <!-- SCRIPTS (Order is Critical) -->
-    <script src="config.js?v=final55"></script>
-    <script src="openrouter-client.js?v=final55"></script>
-    <script src="semantic-core.js?v=final55"></script>
-    <script src="ai-engine.js?v=final55"></script>
-    <script src="sheets-webhook.js?v=final55"></script>
-    <script src="app.js?v=final55"></script>
+    <script src="config.js?v=final56"></script>
+    <script src="openrouter-client.js?v=final56"></script>
+    <script src="semantic-core.js?v=final56"></script>
+    <script src="ai-engine.js?v=final56"></script>
+    <script src="sheets-webhook.js?v=final56"></script>
+    <script src="app.js?v=final56"></script>
 </body>
 
 </html>
