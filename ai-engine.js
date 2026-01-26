@@ -1365,9 +1365,9 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
         },
 
         workAdvice: onlineData?.work_advice ? {
-            impact: formatAI(onlineData.work_advice.impact),
-            restrictions: formatAI(onlineData.work_advice.restrictions),
-            modifications: formatAI(onlineData.work_advice.modifications),
+            impact: onlineData.work_advice.impact,
+            restrictions: onlineData.work_advice.restrictions,
+            modifications: onlineData.work_advice.modifications,
             returnToWork: "Follow the modifications above.",
             painLevelNote: `At pain ${painLevel}/10: Listen to your body.`
         } : {

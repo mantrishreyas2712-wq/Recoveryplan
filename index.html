@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- SECURITY POLICY: Allow TensorFlow, Worker, and OpenRouter -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https://physio-ai-proxy.mantrishreyas2712.workers.dev https://cdn.jsdelivr.net https://openrouter.ai https://storage.googleapis.com https://tfhub.dev https://www.kaggle.com https://*.kaggle.com https://script.google.com https://*.google.com https://www.google-analytics.com https://cdn.segment.com https://api.segment.io;">
+        content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline' https:; connect-src 'self' https://physio-ai-proxy.mantrishreyas2712.workers.dev https://cdn.jsdelivr.net https://openrouter.ai https://storage.googleapis.com https://tfhub.dev https://www.kaggle.com https://*.kaggle.com https://script.google.com https://*.google.com https://www.google-analytics.com https://cdn.segment.com https://api.segment.io https://mantrishreyas2712-wq.github.io;">
     <title>PhysioAssist - AI Recovery</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon"
@@ -261,7 +261,7 @@
     </main>
 
     <div style="text-align: center; color: #cbd5e1; font-size: 0.8rem; padding: 20px;">
-        PhysioAssist AI v2.51 (All Browser Warnings Fixed) • <span id="statusIndicator">System Ready</span>
+        PhysioAssist AI v2.52 (Root Cause Fix: Rendering + CSP) • <span id="statusIndicator">System Ready</span>
     </div>
     </div>
 
@@ -316,12 +316,12 @@
         }
     </script>
     <!-- SCRIPTS (Order is Critical) -->
-    <script src="config.js?v=final53"></script>
-    <script src="openrouter-client.js?v=final53"></script>
-    <script src="semantic-core.js?v=final53"></script>
-    <script src="ai-engine.js?v=final53"></script>
-    <script src="sheets-webhook.js?v=final53"></script>
-    <script src="app.js?v=final53"></script>
+    <script src="config.js?v=final54"></script>
+    <script src="openrouter-client.js?v=final54"></script>
+    <script src="semantic-core.js?v=final54"></script>
+    <script src="ai-engine.js?v=final54"></script>
+    <script src="sheets-webhook.js?v=final54"></script>
+    <script src="app.js?v=final54"></script>
 </body>
 
 </html>
