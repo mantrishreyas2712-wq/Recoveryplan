@@ -3,20 +3,23 @@ let uploadedReportBase64 = null;
 
 // FILE UPLOAD HANDLING (v2.20)
 document.addEventListener('DOMContentLoaded', () => {
-    // GENDER-BASED BODY MODEL SELECTION
+    // GENDER-BASED BODY MODEL SELECTION (v3.0: SVG overlay system)
     const genderDropdown = document.getElementById('gender');
-    const bodyDiagramImg = document.querySelector('.muscle-model-img-single');
+    const frontPanel = document.getElementById('frontPanel');
+    const backPanel = document.getElementById('backPanel');
 
-    if (genderDropdown && bodyDiagramImg) {
+    if (genderDropdown && frontPanel && backPanel) {
         // Function to update body model based on gender
         function updateBodyModel() {
             const gender = genderDropdown.value;
-            // Swap image source between male-only and female-only diagrams
+            // Swap background images between male and female diagrams
             if (gender === 'female') {
-                bodyDiagramImg.src = 'body_female.png';
+                frontPanel.style.backgroundImage = "url('body_female.png')";
+                backPanel.style.backgroundImage = "url('body_female.png')";
             } else {
                 // Default to male for male/other/empty
-                bodyDiagramImg.src = 'body_male.png';
+                frontPanel.style.backgroundImage = "url('body_male.png')";
+                backPanel.style.backgroundImage = "url('body_male.png')";
             }
         }
 
