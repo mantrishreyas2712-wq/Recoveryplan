@@ -1200,8 +1200,108 @@ body.animations-ready .blob-2 {
 }
 
 /* ============================================
-   v2.71 - PROFESSIONAL ANATOMICAL BODY DIAGRAM
+   v2.73 - 3D MUSCLE MODEL BODY DIAGRAM
    ============================================ */
+.body-diagram-container {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+    padding: 1rem;
+    background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.body-diagram-container.muscle-3d {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid #334155;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+}
+
+.body-diagram-view {
+    flex: 1;
+    max-width: 180px;
+    min-width: 140px;
+}
+
+.body-diagram-container.muscle-3d .body-diagram-view {
+    max-width: 220px;
+    min-width: 180px;
+}
+
+.body-diagram-view h4 {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #64748B;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.body-diagram-container.muscle-3d .body-diagram-view h4 {
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+/* 3D Muscle Model Image Wrapper */
+.muscle-model-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.muscle-model-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    filter: brightness(1.05) contrast(1.1);
+}
+
+/* Clickable Hotspots (invisible until hover) */
+.hotspot {
+    position: absolute;
+    cursor: pointer;
+    background: rgba(56, 189, 248, 0);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+    z-index: 10;
+}
+
+.hotspot:hover {
+    background: rgba(56, 189, 248, 0.3);
+    border-color: rgba(56, 189, 248, 0.8);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+}
+
+.hotspot.selected {
+    background: rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.9);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.7);
+    animation: hotspot-pulse 1.5s infinite;
+}
+
+@keyframes hotspot-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(239, 68, 68, 0.9);
+    }
+}
+
 .body-diagram-container {
     display: flex;
     gap: 1.5rem;

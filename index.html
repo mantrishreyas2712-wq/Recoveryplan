@@ -105,18 +105,18 @@
                         <div class="input-group">
                             <div class="floating-input">
                                 <input type="text" id="name" name="name" required placeholder=" " class="input-field">
-                                <label for="name">Full Name</label>
+                                <label for="name" data-translate="fullName">Full Name</label>
                             </div>
                             <div class="floating-input">
                                 <input type="tel" id="mobile" name="mobile" required placeholder=" " class="input-field"
                                     pattern="[0-9]{10}" maxlength="10" autocomplete="tel">
-                                <label for="mobile">Mobile Number</label>
+                                <label for="mobile" data-translate="mobile">Mobile Number</label>
                             </div>
                             <div class="row-inputs">
                                 <div class="floating-input">
                                     <input type="number" id="age" name="age" required placeholder=" "
                                         class="input-field">
-                                    <label for="age">Age</label>
+                                    <label for="age" data-translate="age">Age</label>
                                 </div>
                                 <div class="floating-input">
                                     <select id="gender" name="gender" required class="input-field">
@@ -126,19 +126,19 @@
                                         <option value="female">Female</option>
                                         <option value="other">Other</option>
                                     </select>
-                                    <label for="gender">Gender</label>
+                                    <label for="gender" data-translate="gender">Gender</label>
                                 </div>
                             </div>
                             <div class="row-inputs">
                                 <div class="floating-input">
                                     <input type="number" id="weight" name="weight" required placeholder=" "
                                         class="input-field" min="20" max="200" step="0.1">
-                                    <label for="weight">Weight (kg)</label>
+                                    <label for="weight" data-translate="weight">Weight (kg)</label>
                                 </div>
                                 <div class="floating-input">
                                     <input type="number" id="height" name="height" required placeholder=" "
                                         class="input-field" min="100" max="220">
-                                    <label for="height">Height (cm)</label>
+                                    <label for="height" data-translate="height">Height (cm)</label>
                                 </div>
                             </div>
                         </div>
@@ -152,12 +152,13 @@
                             <div class="floating-input">
                                 <input type="text" id="occupation" name="occupation" placeholder=" "
                                     class="input-field">
-                                <label for="occupation">Occupation</label>
+                                <label for="occupation" data-translate="occupation">Occupation</label>
                             </div>
                             <!-- NEW: Activity Field (v2.7) -->
                             <div class="floating-input">
                                 <input type="text" id="activity" name="activity" placeholder=" " class="input-field">
-                                <label for="activity">Daily Activity (e.g. Badminton, Yoga, Gardening)</label>
+                                <label for="activity" data-translate="activity">Daily Activity (e.g. Badminton, Yoga,
+                                    Gardening)</label>
                             </div>
                             <div class="floating-input">
                                 <select id="dietPreference" name="dietPreference" required class="input-field">
@@ -167,7 +168,7 @@
                                     <option value="vegan">Vegan</option>
                                     <option value="keto">Keto</option>
                                 </select>
-                                <label for="dietPreference">Diet Type</label>
+                                <label for="dietPreference" data-translate="dietType">Diet Type</label>
                             </div>
                         </div>
                         <div class="nav-buttons">
@@ -180,20 +181,20 @@
                     <!-- STEP 3: MEDICAL HISTORY -->
                     <div class="form-step hidden" id="step3">
                         <div class="clinical-group">
-                            <h3>Medical Profile</h3>
+                            <h3 data-translate="medicalProfile">Medical Profile</h3>
                             <div class="checkbox-group">
                                 <label class="custom-checkbox">
                                     <input type="checkbox" id="condition_diabetes" name="condition_diabetes"
                                         value="yes">
-                                    <span>Diabetes</span>
+                                    <span data-translate="diabetes">Diabetes</span>
                                 </label>
                                 <label class="custom-checkbox">
                                     <input type="checkbox" id="condition_bp" name="condition_bp" value="yes">
-                                    <span>High BP</span>
+                                    <span data-translate="highBP">High BP</span>
                                 </label>
                                 <label class="custom-checkbox">
                                     <input type="checkbox" id="condition_heart" name="condition_heart" value="yes">
-                                    <span>Heart Issue</span>
+                                    <span data-translate="heartIssue">Heart Issue</span>
                                 </label>
                             </div>
 
@@ -204,7 +205,7 @@
                                     <option value="yes_minor">Yes (Minor / < 3 months)</option>
                                     <option value="yes_major">Yes (Major Operation)</option>
                                 </select>
-                                <label for="recentSurgery">Recent Operations?</label>
+                                <label for="recentSurgery" data-translate="recentSurgery">Recent Operations?</label>
                             </div>
 
                             <!-- UPLOAD SECTION (v2.20) -->
@@ -241,309 +242,100 @@
                     <!-- STEP 4: SYMPTOMS -->
                     <div class="form-step hidden" id="step4">
                         <div class="clinical-group">
-                            <h3>📍 Tap Where It Hurts</h3>
+                            <h3 data-translate="tapHurts">📍 Tap Where It Hurts</h3>
 
-                            <!-- v2.71: PROFESSIONAL ANATOMICAL BODY DIAGRAM -->
-                            <div class="body-diagram-container professional" id="bodyDiagramContainer">
-                                <!-- FRONT VIEW -->
+                            <!-- v2.73: 3D MUSCLE MODEL BODY DIAGRAM -->
+                            <div class="body-diagram-container muscle-3d" id="bodyDiagramContainer">
+                                <!-- FRONT VIEW with 3D Muscle Model -->
                                 <div class="body-diagram-view">
                                     <h4>Front</h4>
-                                    <svg class="body-svg anatomical" viewBox="0 0 200 450" id="bodyFront">
-                                        <!-- Body Silhouette Background -->
-                                        <defs>
-                                            <linearGradient id="skinGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" style="stop-color:#f5e6d3;stop-opacity:1" />
-                                                <stop offset="50%" style="stop-color:#ffe4c9;stop-opacity:1" />
-                                                <stop offset="100%" style="stop-color:#f5e6d3;stop-opacity:1" />
-                                            </linearGradient>
-                                            <linearGradient id="muscleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                <stop offset="0%" style="stop-color:#fecaca;stop-opacity:0.3" />
-                                                <stop offset="100%" style="stop-color:#fca5a5;stop-opacity:0.1" />
-                                            </linearGradient>
-                                        </defs>
-
-                                        <!-- Human Outline (Background) -->
-                                        <path class="body-outline" d="M100,10 
-                                            C120,10 135,25 135,45 C135,60 125,75 115,80 
-                                            L120,85 C145,90 160,100 165,115 L175,140 
-                                            C178,148 180,165 178,180 L172,210 C170,220 165,235 160,250 
-                                            L155,265 L150,290 L148,320 
-                                            C148,340 150,360 152,380 L155,400 L158,430 L155,440 L145,445 
-                                            L130,445 L127,430 L124,380 C122,360 120,340 120,320 
-                                            L118,300 L115,280 L108,300 L108,320 
-                                            C108,340 110,360 112,380 L115,400 L118,430 L115,440 L105,445 
-                                            L90,445 L87,440 L82,430 L85,400 L88,380 
-                                            C90,360 92,340 92,320 L92,300 L85,280 L82,300 L80,320 
-                                            C80,340 78,360 76,380 L73,400 L70,430 L55,445 L45,445 
-                                            L42,430 L45,400 L48,380 C50,360 52,340 52,320 
-                                            L50,290 L45,265 L40,250 C35,235 30,220 28,210 
-                                            L22,180 C20,165 22,148 25,140 L35,115 
-                                            C40,100 55,90 80,85 L85,80 C75,75 65,60 65,45 
-                                            C65,25 80,10 100,10 Z" fill="url(#skinGradient)" stroke="#d4a574"
-                                            stroke-width="1.5" />
-
-                                        <!-- HEAD -->
-                                        <ellipse class="body-region muscle-region" data-region="head"
-                                            data-name="Head (Cranium & Face)" cx="100" cy="40" rx="28" ry="32" />
-
-                                        <!-- NECK -->
-                                        <path class="body-region muscle-region" data-region="neck"
-                                            data-name="Neck (Sternocleidomastoid)"
-                                            d="M85,72 L85,85 Q100,90 115,85 L115,72 Q100,78 85,72" />
-
-                                        <!-- LEFT SHOULDER (Deltoid) -->
-                                        <path class="body-region muscle-region" data-region="left-shoulder"
+                                    <div class="muscle-model-wrapper" id="bodyFront">
+                                        <img src="OIP.webp" alt="Anatomical Front View" class="muscle-model-img">
+                                        <!-- Clickable Hotspots (positioned with CSS) -->
+                                        <div class="hotspot" data-region="head" data-name="Head & Neck"
+                                            style="top: 2%; left: 35%; width: 30%; height: 12%;"></div>
+                                        <div class="hotspot" data-region="left-shoulder"
                                             data-name="Left Shoulder (Deltoid)"
-                                            d="M45,95 Q35,105 30,120 L40,130 Q50,115 55,100 Q50,95 45,95" />
-
-                                        <!-- RIGHT SHOULDER (Deltoid) -->
-                                        <path class="body-region muscle-region" data-region="right-shoulder"
+                                            style="top: 14%; left: 10%; width: 18%; height: 10%;"></div>
+                                        <div class="hotspot" data-region="right-shoulder"
                                             data-name="Right Shoulder (Deltoid)"
-                                            d="M155,95 Q165,105 170,120 L160,130 Q150,115 145,100 Q150,95 155,95" />
-
-                                        <!-- LEFT PECTORAL -->
-                                        <path class="body-region muscle-region" data-region="left-pec"
-                                            data-name="Left Chest (Pectoralis Major)"
-                                            d="M55,100 L55,135 Q70,145 95,145 L95,100 Q75,95 55,100" />
-
-                                        <!-- RIGHT PECTORAL -->
-                                        <path class="body-region muscle-region" data-region="right-pec"
-                                            data-name="Right Chest (Pectoralis Major)"
-                                            d="M145,100 L145,135 Q130,145 105,145 L105,100 Q125,95 145,100" />
-
-                                        <!-- LEFT BICEP -->
-                                        <path class="body-region muscle-region" data-region="left-bicep"
+                                            style="top: 14%; left: 72%; width: 18%; height: 10%;"></div>
+                                        <div class="hotspot" data-region="chest" data-name="Chest (Pectoralis Major)"
+                                            style="top: 18%; left: 28%; width: 44%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="left-bicep"
                                             data-name="Left Bicep (Biceps Brachii)"
-                                            d="M30,125 L25,155 Q22,175 24,190 L38,195 Q42,175 40,155 L45,125 Q38,120 30,125" />
-
-                                        <!-- RIGHT BICEP -->
-                                        <path class="body-region muscle-region" data-region="right-bicep"
+                                            style="top: 24%; left: 5%; width: 14%; height: 16%;"></div>
+                                        <div class="hotspot" data-region="right-bicep"
                                             data-name="Right Bicep (Biceps Brachii)"
-                                            d="M170,125 L175,155 Q178,175 176,190 L162,195 Q158,175 160,155 L155,125 Q162,120 170,125" />
-
-                                        <!-- LEFT FOREARM -->
-                                        <path class="body-region muscle-region" data-region="left-forearm"
-                                            data-name="Left Forearm (Brachioradialis)"
-                                            d="M24,195 L20,230 Q18,250 20,265 L35,270 Q38,250 36,230 L38,195 Q30,192 24,195" />
-
-                                        <!-- RIGHT FOREARM -->
-                                        <path class="body-region muscle-region" data-region="right-forearm"
-                                            data-name="Right Forearm (Brachioradialis)"
-                                            d="M176,195 L180,230 Q182,250 180,265 L165,270 Q162,250 164,230 L162,195 Q170,192 176,195" />
-
-                                        <!-- LEFT HAND -->
-                                        <ellipse class="body-region muscle-region" data-region="left-hand"
-                                            data-name="Left Hand & Wrist" cx="27" cy="285" rx="12" ry="18" />
-
-                                        <!-- RIGHT HAND -->
-                                        <ellipse class="body-region muscle-region" data-region="right-hand"
-                                            data-name="Right Hand & Wrist" cx="173" cy="285" rx="12" ry="18" />
-
-                                        <!-- CORE UPPER (Rectus Abdominis Upper) -->
-                                        <rect class="body-region muscle-region" data-region="upper-abs"
-                                            data-name="Upper Abs (Rectus Abdominis)" x="75" y="148" width="50"
-                                            height="35" rx="8" />
-
-                                        <!-- CORE LOWER (Rectus Abdominis Lower) -->
-                                        <rect class="body-region muscle-region" data-region="lower-abs"
-                                            data-name="Lower Abs (Rectus Abdominis)" x="75" y="186" width="50"
-                                            height="35" rx="8" />
-
-                                        <!-- LEFT OBLIQUE -->
-                                        <path class="body-region muscle-region" data-region="left-oblique"
-                                            data-name="Left Oblique"
-                                            d="M55,145 L50,185 Q52,210 55,220 L70,225 L75,185 L75,145 Z" />
-
-                                        <!-- RIGHT OBLIQUE -->
-                                        <path class="body-region muscle-region" data-region="right-oblique"
-                                            data-name="Right Oblique"
-                                            d="M145,145 L150,185 Q148,210 145,220 L130,225 L125,185 L125,145 Z" />
-
-                                        <!-- HIP FLEXOR -->
-                                        <path class="body-region muscle-region" data-region="hip-flexor"
-                                            data-name="Hip Flexor (Iliopsoas)"
-                                            d="M65,225 L60,250 L140,250 L135,225 Q100,235 65,225" />
-
-                                        <!-- LEFT QUADRICEP -->
-                                        <path class="body-region muscle-region" data-region="left-quad"
-                                            data-name="Left Quadriceps"
-                                            d="M60,255 L55,295 Q52,330 55,360 L90,360 Q92,330 90,295 L88,255 Q74,258 60,255" />
-
-                                        <!-- RIGHT QUADRICEP -->
-                                        <path class="body-region muscle-region" data-region="right-quad"
-                                            data-name="Right Quadriceps"
-                                            d="M140,255 L145,295 Q148,330 145,360 L110,360 Q108,330 110,295 L112,255 Q126,258 140,255" />
-
-                                        <!-- LEFT KNEE -->
-                                        <ellipse class="body-region muscle-region knee-region" data-region="left-knee"
-                                            data-name="Left Knee (Patella & Ligaments)" cx="72" cy="368" rx="18"
-                                            ry="12" />
-
-                                        <!-- RIGHT KNEE -->
-                                        <ellipse class="body-region muscle-region knee-region" data-region="right-knee"
-                                            data-name="Right Knee (Patella & Ligaments)" cx="128" cy="368" rx="18"
-                                            ry="12" />
-
-                                        <!-- LEFT SHIN/CALF FRONT -->
-                                        <path class="body-region muscle-region" data-region="left-shin"
-                                            data-name="Left Shin (Tibialis Anterior)"
-                                            d="M55,382 L52,415 Q50,430 52,440 L88,440 Q92,430 90,415 L88,382 Q72,385 55,382" />
-
-                                        <!-- RIGHT SHIN/CALF FRONT -->
-                                        <path class="body-region muscle-region" data-region="right-shin"
-                                            data-name="Right Shin (Tibialis Anterior)"
-                                            d="M145,382 L148,415 Q150,430 148,440 L112,440 Q108,430 110,415 L112,382 Q128,385 145,382" />
-
-                                        <!-- Muscle line hints for visual detail -->
-                                        <g class="muscle-lines" stroke="#d4a574" stroke-width="0.5" opacity="0.4">
-                                            <line x1="100" y1="155" x2="100" y2="215" />
-                                            <line x1="85" y1="160" x2="85" y2="210" />
-                                            <line x1="115" y1="160" x2="115" y2="210" />
-                                        </g>
-                                    </svg>
+                                            style="top: 24%; left: 81%; width: 14%; height: 16%;"></div>
+                                        <div class="hotspot" data-region="abs" data-name="Abs (Rectus Abdominis)"
+                                            style="top: 32%; left: 32%; width: 36%; height: 18%;"></div>
+                                        <div class="hotspot" data-region="left-forearm" data-name="Left Forearm"
+                                            style="top: 40%; left: 0%; width: 14%; height: 16%;"></div>
+                                        <div class="hotspot" data-region="right-forearm" data-name="Right Forearm"
+                                            style="top: 40%; left: 86%; width: 14%; height: 16%;"></div>
+                                        <div class="hotspot" data-region="hip" data-name="Hip & Pelvis"
+                                            style="top: 50%; left: 28%; width: 44%; height: 8%;"></div>
+                                        <div class="hotspot" data-region="left-quad" data-name="Left Quadriceps"
+                                            style="top: 58%; left: 20%; width: 22%; height: 20%;"></div>
+                                        <div class="hotspot" data-region="right-quad" data-name="Right Quadriceps"
+                                            style="top: 58%; left: 58%; width: 22%; height: 20%;"></div>
+                                        <div class="hotspot" data-region="left-knee" data-name="Left Knee (Patella)"
+                                            style="top: 76%; left: 22%; width: 18%; height: 6%;"></div>
+                                        <div class="hotspot" data-region="right-knee" data-name="Right Knee (Patella)"
+                                            style="top: 76%; left: 60%; width: 18%; height: 6%;"></div>
+                                        <div class="hotspot" data-region="left-shin" data-name="Left Shin (Tibialis)"
+                                            style="top: 82%; left: 22%; width: 16%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="right-shin" data-name="Right Shin (Tibialis)"
+                                            style="top: 82%; left: 62%; width: 16%; height: 14%;"></div>
+                                    </div>
                                 </div>
 
-                                <!-- BACK VIEW -->
+                                <!-- BACK VIEW with 3D Muscle Model -->
                                 <div class="body-diagram-view">
                                     <h4>Back</h4>
-                                    <svg class="body-svg anatomical" viewBox="0 0 200 450" id="bodyBack">
-                                        <!-- Body Silhouette Background -->
-                                        <path class="body-outline" d="M100,10 
-                                            C120,10 135,25 135,45 C135,60 125,75 115,80 
-                                            L120,85 C145,90 160,100 165,115 L175,140 
-                                            C178,148 180,165 178,180 L172,210 C170,220 165,235 160,250 
-                                            L155,265 L150,290 L148,320 
-                                            C148,340 150,360 152,380 L155,400 L158,430 L155,440 L145,445 
-                                            L130,445 L127,430 L124,380 C122,360 120,340 120,320 
-                                            L118,300 L115,280 L108,300 L108,320 
-                                            C108,340 110,360 112,380 L115,400 L118,430 L115,440 L105,445 
-                                            L90,445 L87,440 L82,430 L85,400 L88,380 
-                                            C90,360 92,340 92,320 L92,300 L85,280 L82,300 L80,320 
-                                            C80,340 78,360 76,380 L73,400 L70,430 L55,445 L45,445 
-                                            L42,430 L45,400 L48,380 C50,360 52,340 52,320 
-                                            L50,290 L45,265 L40,250 C35,235 30,220 28,210 
-                                            L22,180 C20,165 22,148 25,140 L35,115 
-                                            C40,100 55,90 80,85 L85,80 C75,75 65,60 65,45 
-                                            C65,25 80,10 100,10 Z" fill="url(#skinGradient)" stroke="#d4a574"
-                                            stroke-width="1.5" />
-
-                                        <!-- HEAD BACK -->
-                                        <ellipse class="body-region muscle-region" data-region="head-back"
-                                            data-name="Head (Occipital)" cx="100" cy="40" rx="28" ry="32" />
-
-                                        <!-- CERVICAL SPINE -->
-                                        <rect class="body-region muscle-region spine-region" data-region="cervical"
-                                            data-name="Cervical Spine (C1-C7)" x="90" y="72" width="20" height="25"
-                                            rx="4" />
-
-                                        <!-- LEFT TRAPEZIUS -->
-                                        <path class="body-region muscle-region" data-region="left-trap"
-                                            data-name="Left Trapezius"
-                                            d="M45,95 L55,100 L75,105 L90,100 L90,130 L60,145 L45,135 Q40,115 45,95" />
-
-                                        <!-- RIGHT TRAPEZIUS -->
-                                        <path class="body-region muscle-region" data-region="right-trap"
-                                            data-name="Right Trapezius"
-                                            d="M155,95 L145,100 L125,105 L110,100 L110,130 L140,145 L155,135 Q160,115 155,95" />
-
-                                        <!-- LEFT RHOMBOID / UPPER BACK -->
-                                        <path class="body-region muscle-region" data-region="left-rhomboid"
-                                            data-name="Left Upper Back (Rhomboid)"
-                                            d="M60,110 L50,130 L50,165 L75,175 L90,170 L90,115 Q75,108 60,110" />
-
-                                        <!-- RIGHT RHOMBOID / UPPER BACK -->
-                                        <path class="body-region muscle-region" data-region="right-rhomboid"
-                                            data-name="Right Upper Back (Rhomboid)"
-                                            d="M140,110 L150,130 L150,165 L125,175 L110,170 L110,115 Q125,108 140,110" />
-
-                                        <!-- THORACIC SPINE -->
-                                        <rect class="body-region muscle-region spine-region" data-region="thoracic"
-                                            data-name="Thoracic Spine (T1-T12)" x="92" y="100" width="16" height="75"
-                                            rx="3" />
-
-                                        <!-- LEFT LATISSIMUS -->
-                                        <path class="body-region muscle-region" data-region="left-lat"
-                                            data-name="Left Lat (Latissimus Dorsi)"
-                                            d="M50,168 L45,200 L55,230 L75,235 L90,225 L90,175 Q70,172 50,168" />
-
-                                        <!-- RIGHT LATISSIMUS -->
-                                        <path class="body-region muscle-region" data-region="right-lat"
-                                            data-name="Right Lat (Latissimus Dorsi)"
-                                            d="M150,168 L155,200 L145,230 L125,235 L110,225 L110,175 Q130,172 150,168" />
-
-                                        <!-- LEFT TRICEP -->
-                                        <path class="body-region muscle-region" data-region="left-tricep"
-                                            data-name="Left Tricep"
-                                            d="M30,125 L25,155 Q22,175 24,195 L40,200 Q45,175 42,155 L45,125 Q38,120 30,125" />
-
-                                        <!-- RIGHT TRICEP -->
-                                        <path class="body-region muscle-region" data-region="right-tricep"
-                                            data-name="Right Tricep"
-                                            d="M170,125 L175,155 Q178,175 176,195 L160,200 Q155,175 158,155 L155,125 Q162,120 170,125" />
-
-                                        <!-- LUMBAR SPINE (Lower Back) -->
-                                        <rect class="body-region muscle-region spine-region" data-region="lumbar"
-                                            data-name="Lower Back (Lumbar L1-L5)" x="88" y="178" width="24" height="45"
-                                            rx="5" />
-
-                                        <!-- LEFT ERECTOR SPINAE -->
-                                        <path class="body-region muscle-region" data-region="left-erector"
-                                            data-name="Left Erector Spinae"
-                                            d="M60,180 L55,220 L60,250 L85,248 L85,180 Q72,178 60,180" />
-
-                                        <!-- RIGHT ERECTOR SPINAE -->
-                                        <path class="body-region muscle-region" data-region="right-erector"
-                                            data-name="Right Erector Spinae"
-                                            d="M140,180 L145,220 L140,250 L115,248 L115,180 Q128,178 140,180" />
-
-                                        <!-- SACRUM -->
-                                        <ellipse class="body-region muscle-region spine-region" data-region="sacrum"
-                                            data-name="Sacrum & Tailbone (Coccyx)" cx="100" cy="238" rx="18" ry="12" />
-
-                                        <!-- LEFT GLUTE -->
-                                        <ellipse class="body-region muscle-region" data-region="left-glute"
-                                            data-name="Left Gluteus (Maximus/Medius)" cx="70" cy="268" rx="25"
-                                            ry="22" />
-
-                                        <!-- RIGHT GLUTE -->
-                                        <ellipse class="body-region muscle-region" data-region="right-glute"
-                                            data-name="Right Gluteus (Maximus/Medius)" cx="130" cy="268" rx="25"
-                                            ry="22" />
-
-                                        <!-- LEFT HAMSTRING -->
-                                        <path class="body-region muscle-region" data-region="left-hamstring"
-                                            data-name="Left Hamstring"
-                                            d="M55,290 L52,330 Q50,355 55,370 L88,370 Q92,355 90,330 L88,290 Q72,295 55,290" />
-
-                                        <!-- RIGHT HAMSTRING -->
-                                        <path class="body-region muscle-region" data-region="right-hamstring"
-                                            data-name="Right Hamstring"
-                                            d="M145,290 L148,330 Q150,355 145,370 L112,370 Q108,355 110,330 L112,290 Q128,295 145,290" />
-
-                                        <!-- LEFT CALF (Gastrocnemius) -->
-                                        <path class="body-region muscle-region" data-region="left-calf"
+                                    <div class="muscle-model-wrapper" id="bodyBack">
+                                        <img src="04_34_55_563_MusclesDetailWire.jpg" alt="Anatomical Back View"
+                                            class="muscle-model-img">
+                                        <!-- Clickable Hotspots for Back -->
+                                        <div class="hotspot" data-region="head-back" data-name="Head (Occipital)"
+                                            style="top: 0%; left: 35%; width: 30%; height: 10%;"></div>
+                                        <div class="hotspot" data-region="trapezius" data-name="Trapezius Muscle"
+                                            style="top: 10%; left: 25%; width: 50%; height: 12%;"></div>
+                                        <div class="hotspot" data-region="left-shoulder-back"
+                                            data-name="Left Shoulder (Rear Deltoid)"
+                                            style="top: 15%; left: 8%; width: 18%; height: 10%;"></div>
+                                        <div class="hotspot" data-region="right-shoulder-back"
+                                            data-name="Right Shoulder (Rear Deltoid)"
+                                            style="top: 15%; left: 74%; width: 18%; height: 10%;"></div>
+                                        <div class="hotspot" data-region="upper-back" data-name="Upper Back (Rhomboids)"
+                                            style="top: 22%; left: 28%; width: 44%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="left-tricep" data-name="Left Tricep"
+                                            style="top: 24%; left: 5%; width: 14%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="right-tricep" data-name="Right Tricep"
+                                            style="top: 24%; left: 81%; width: 14%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="lats" data-name="Lats (Latissimus Dorsi)"
+                                            style="top: 32%; left: 20%; width: 60%; height: 12%;"></div>
+                                        <div class="hotspot" data-region="lower-back"
+                                            data-name="Lower Back (Lumbar Spine)"
+                                            style="top: 44%; left: 30%; width: 40%; height: 12%;"></div>
+                                        <div class="hotspot" data-region="left-glute"
+                                            data-name="Left Glute (Gluteus Maximus)"
+                                            style="top: 54%; left: 20%; width: 24%; height: 12%;"></div>
+                                        <div class="hotspot" data-region="right-glute"
+                                            data-name="Right Glute (Gluteus Maximus)"
+                                            style="top: 54%; left: 56%; width: 24%; height: 12%;"></div>
+                                        <div class="hotspot" data-region="left-hamstring" data-name="Left Hamstring"
+                                            style="top: 66%; left: 22%; width: 20%; height: 18%;"></div>
+                                        <div class="hotspot" data-region="right-hamstring" data-name="Right Hamstring"
+                                            style="top: 66%; left: 58%; width: 20%; height: 18%;"></div>
+                                        <div class="hotspot" data-region="left-calf"
                                             data-name="Left Calf (Gastrocnemius)"
-                                            d="M55,375 L50,410 Q48,430 52,445 L88,445 Q92,430 90,410 L85,375 Q70,380 55,375" />
-
-                                        <!-- RIGHT CALF (Gastrocnemius) -->
-                                        <path class="body-region muscle-region" data-region="right-calf"
+                                            style="top: 84%; left: 24%; width: 16%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="right-calf"
                                             data-name="Right Calf (Gastrocnemius)"
-                                            d="M145,375 L150,410 Q152,430 148,445 L112,445 Q108,430 110,410 L115,375 Q130,380 145,375" />
-
-                                        <!-- Spine visualization -->
-                                        <g class="spine-dots" fill="#d4a574" opacity="0.5">
-                                            <circle cx="100" cy="82" r="2" />
-                                            <circle cx="100" cy="92" r="2" />
-                                            <circle cx="100" cy="110" r="2" />
-                                            <circle cx="100" cy="125" r="2" />
-                                            <circle cx="100" cy="140" r="2" />
-                                            <circle cx="100" cy="155" r="2" />
-                                            <circle cx="100" cy="170" r="2" />
-                                            <circle cx="100" cy="190" r="2" />
-                                            <circle cx="100" cy="205" r="2" />
-                                            <circle cx="100" cy="220" r="2" />
-                                        </g>
-                                    </svg>
+                                            style="top: 84%; left: 60%; width: 16%; height: 14%;"></div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -707,7 +499,8 @@
         const regionData = {}; // Store region names for AI
 
         function initBodyDiagram() {
-            const regions = document.querySelectorAll('.body-region');
+            // v2.73: Handle both SVG regions and image hotspots
+            const regions = document.querySelectorAll('.body-region, .hotspot');
             regions.forEach(region => {
                 region.addEventListener('click', (e) => {
                     e.preventDefault();
