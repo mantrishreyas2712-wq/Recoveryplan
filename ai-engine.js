@@ -192,7 +192,8 @@ function calculateNutrition(weight, height, age, gender, activityLevel = 'modera
         water: waterLiters,
         idealWeightMin: idealWeightMin,
         idealWeightMax: idealWeightMax,
-        weightToLose: weight > idealWeightMax ? Math.round(weight - idealWeightMax) : 0
+        weightToLose: weight > idealWeightMax ? Math.round(weight - idealWeightMax) : 0,
+        weightToGain: weight < idealWeightMin ? Math.round(idealWeightMin - weight) : 0  // v2.70: Underweight support
     };
 }
 
@@ -219,6 +220,7 @@ function generateMealPlan(nutritionData, dietPref, bmiCategory, age) {
     // If IS Vegetarian but NOT Eggetarian, ensure strict veg
     const strictVeg = isVeg && !isEggetarian;
     const needsWeightLoss = bmiCategory === 'Overweight' || bmiCategory === 'Obese';
+    const needsWeightGain = bmiCategory === 'Underweight';  // v2.70: Support underweight patients
 
     // VEG/NON-VEG FOOD DATABASE with macros per 100g
     const foods = {
@@ -366,10 +368,15 @@ function generateMealPlan(nutritionData, dietPref, bmiCategory, age) {
         cal: mealPlan.breakfast.totals.cal + mealPlan.lunch.totals.cal + mealPlan.dinner.totals.cal + mealPlan.snacks.totals.cal
     };
 
-    // Weight loss note
-    const weightNote = needsWeightLoss
-        ? `This plan creates a mild calorie deficit for healthy weight loss (0.3-0.5kg/week). Stick to portion sizes for best results.`
-        : `This plan maintains your current healthy weight while supporting tissue repair.`;
+    // v2.70: Weight note for all BMI categories
+    let weightNote;
+    if (needsWeightGain) {
+        weightNote = `⚠️ You are underweight. This plan includes extra calories and protein to help you gain healthy weight (0.3-0.5kg/week). Focus on nutrient-dense foods and don't skip meals.`;
+    } else if (needsWeightLoss) {
+        weightNote = `This plan creates a mild calorie deficit for healthy weight loss (0.3-0.5kg/week). Stick to portion sizes for best results.`;
+    } else {
+        weightNote = `✅ You're in a healthy weight range - this plan maintains your weight while supporting tissue repair.`;
+    }
 
     return {
         ...mealPlan,
@@ -1463,7 +1470,7 @@ ${surgeryInfo.hasSurgery && !surgeryInfo.isMajor ? surgeryInfo.exerciseNote + "\
 • <strong>Fats:</strong> ${nutritionData.fats}g (healthy fats for inflammation control)
 • <strong>Water:</strong> ${onlineData?.nutrition?.hydration || nutritionData.water + "L/day minimum"}
 
-${nutritionData.weightToLose > 0 ? `<strong>Weight Goal:</strong> Your ideal weight range is ${nutritionData.idealWeightMin}-${nutritionData.idealWeightMax}kg. Losing ${nutritionData.weightToLose}kg would significantly reduce ${areaKey} strain.` : `<strong>Weight Status:</strong> You're within a healthy weight range - maintain this for optimal joint health.`}`
+${nutritionData.weightToGain > 0 ? `<strong>⚠️ Weight Goal:</strong> You are underweight. Your ideal weight range is ${nutritionData.idealWeightMin}-${nutritionData.idealWeightMax}kg. Gaining ${nutritionData.weightToGain}kg will improve your strength and recovery.` : nutritionData.weightToLose > 0 ? `<strong>Weight Goal:</strong> Your ideal weight range is ${nutritionData.idealWeightMin}-${nutritionData.idealWeightMax}kg. Losing ${nutritionData.weightToLose}kg would significantly reduce ${areaKey} strain.` : `<strong>✅ Weight Status:</strong> You're within a healthy weight range - maintain this for optimal joint health.`}`
         },
 
         // IMAGING FINDINGS (Added Fix v2.35)
@@ -1615,8 +1622,8 @@ const EXERCISE_LIBRARY = {
     'mckenzie press-up': 'lENwGExoj4E',
     'press up': 'lENwGExoj4E',
     'prone press': 'lENwGExoj4E',
-    'pelvic tilt': 'nmZsbjKKjBw',
-    'pelvic tilts': 'nmZsbjKKjBw',
+    'pelvic tilt': 'xEPcIlIQiGg',    // v2.70: Updated to working video (Bob & Brad)
+    'pelvic tilts': 'xEPcIlIQiGg',
     'bird dog': 'wiFNA3sqjCA',
     'bird-dog': 'wiFNA3sqjCA',
     'dead bug': 'm2xJ2F2_pkk',
