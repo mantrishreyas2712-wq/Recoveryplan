@@ -1853,4 +1853,77 @@ body.animations-ready .blob-2 {
     .hotspot {
         border-width: 1.5px;
     }
+}/* ===== SVG BODY DIAGRAM STYLES v3.0 ===== */
+.svg-body-container {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.svg-view-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.svg-view-btn {
+    padding: 10px 25px;
+    border: 2px solid #475569;
+    border-radius: 25px;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.svg-view-btn:hover {
+    border-color: #60a5fa;
+    color: #60a5fa;
+}
+
+.svg-view-btn.active {
+    background: linear-gradient(135deg, #2dd4bf, #14b8a6);
+    border-color: transparent;
+    color: white;
+}
+
+.svg-panel {
+    display: none;
+}
+
+.svg-panel.active {
+    display: block;
+}
+
+.body-svg {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+}
+
+.body-part {
+    fill: #fca5a5;
+    stroke: #dc2626;
+    stroke-width: 0.8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.body-part:hover {
+    fill: #60a5fa;
+    stroke: #3b82f6;
+    stroke-width: 1.5;
+    filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.5));
+}
+
+.body-part.selected {
+    fill: #22c55e;
+    stroke: #16a34a;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.6));
 }

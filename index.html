@@ -244,169 +244,232 @@
                         <div class="clinical-group">
                             <h3 data-translate="tapHurts">📍 Tap Where It Hurts</h3>
 
-                            <!-- v2.75: COMPLETE FRESH BODY DIAGRAM - Single Panel with Accurate Hotspots -->
-                            <div class="body-diagram-container muscle-3d" id="bodyDiagramContainer">
-                                <div class="body-diagram-single-view">
-                                    <div class="view-labels">
-                                        <span class="view-label-front">👆 Front</span>
-                                        <span class="view-label-back">Back 👆</span>
-                                    </div>
-                                    <div class="muscle-model-wrapper-single" id="bodyDiagram">
-                                        <img src="Wt-P5exewPtbrRbXeTGlyw_b.jpg" alt="Body Diagram"
-                                            class="muscle-model-img-single">
+                            <!-- v3.0: SVG-BASED BODY DIAGRAM - Perfect Click Sync -->
+                            <div class="svg-body-container" id="bodyDiagramContainer">
+                                <!-- View Toggle -->
+                                <div class="svg-view-toggle">
+                                    <button class="svg-view-btn active" onclick="switchSVGView('front')">👤
+                                        Front</button>
+                                    <button class="svg-view-btn" onclick="switchSVGView('back')">🔄 Back</button>
+                                </div>
 
-                                        <!-- ====== FRONT BODY HOTSPOTS (Left body in image ~10-32%) ====== -->
-                                        <!-- HEAD & NECK -->
-                                        <div class="hotspot" data-region="head" data-name="Head & Face"
-                                            style="top: 2%; left: 19%; width: 7%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="neck-front" data-name="Neck (Front)"
-                                            style="top: 12%; left: 20.5%; width: 4%; height: 4%;"></div>
+                                <!-- FRONT VIEW SVG -->
+                                <div class="svg-panel active" id="frontPanel">
+                                    <svg viewBox="0 0 200 400" class="body-svg">
+                                        <!-- HEAD -->
+                                        <ellipse data-region="head" data-name="Head" cx="100" cy="25" rx="20" ry="22"
+                                            class="body-part" />
+
+                                        <!-- NECK -->
+                                        <rect data-region="neck" data-name="Neck" x="92" y="47" width="16" height="15"
+                                            class="body-part" />
 
                                         <!-- SHOULDERS -->
-                                        <div class="hotspot" data-region="left-shoulder" data-name="Left Shoulder"
-                                            style="top: 15%; left: 13%; width: 6%; height: 5%;"></div>
-                                        <div class="hotspot" data-region="right-shoulder" data-name="Right Shoulder"
-                                            style="top: 15%; left: 26%; width: 6%; height: 5%;"></div>
+                                        <path data-region="left-shoulder" data-name="Left Shoulder"
+                                            d="M60,62 L92,62 L92,78 L55,85 Z" class="body-part" />
+                                        <path data-region="right-shoulder" data-name="Right Shoulder"
+                                            d="M108,62 L140,62 L145,85 L108,78 Z" class="body-part" />
 
                                         <!-- CHEST -->
-                                        <div class="hotspot" data-region="chest" data-name="Chest"
-                                            style="top: 20%; left: 18%; width: 9%; height: 8%;"></div>
+                                        <path data-region="chest" data-name="Chest"
+                                            d="M70,78 L130,78 L128,120 L72,120 Z" class="body-part" />
 
                                         <!-- UPPER ARMS (BICEPS) -->
-                                        <div class="hotspot" data-region="left-bicep" data-name="Left Upper Arm"
-                                            style="top: 20%; left: 9%; width: 4%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="right-bicep" data-name="Right Upper Arm"
-                                            style="top: 20%; left: 32%; width: 4%; height: 10%;"></div>
+                                        <path data-region="left-bicep" data-name="Left Upper Arm"
+                                            d="M55,85 L70,78 L72,130 L48,135 Z" class="body-part" />
+                                        <path data-region="right-bicep" data-name="Right Upper Arm"
+                                            d="M130,78 L145,85 L152,135 L128,130 Z" class="body-part" />
 
                                         <!-- ELBOWS -->
-                                        <div class="hotspot" data-region="left-elbow" data-name="Left Elbow"
-                                            style="top: 30%; left: 8%; width: 3%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="right-elbow" data-name="Right Elbow"
-                                            style="top: 30%; left: 34%; width: 3%; height: 4%;"></div>
+                                        <ellipse data-region="left-elbow" data-name="Left Elbow" cx="46" cy="142" rx="8"
+                                            ry="10" class="body-part" />
+                                        <ellipse data-region="right-elbow" data-name="Right Elbow" cx="154" cy="142"
+                                            rx="8" ry="10" class="body-part" />
 
                                         <!-- FOREARMS -->
-                                        <div class="hotspot" data-region="left-forearm" data-name="Left Forearm"
-                                            style="top: 34%; left: 6%; width: 4%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="right-forearm" data-name="Right Forearm"
-                                            style="top: 34%; left: 35%; width: 4%; height: 10%;"></div>
+                                        <path data-region="left-forearm" data-name="Left Forearm"
+                                            d="M38,152 L54,152 L50,195 L35,195 Z" class="body-part" />
+                                        <path data-region="right-forearm" data-name="Right Forearm"
+                                            d="M146,152 L162,152 L165,195 L150,195 Z" class="body-part" />
 
-                                        <!-- WRISTS & HANDS -->
-                                        <div class="hotspot" data-region="left-wrist" data-name="Left Wrist & Hand"
-                                            style="top: 44%; left: 4%; width: 4%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-wrist" data-name="Right Wrist & Hand"
-                                            style="top: 44%; left: 37%; width: 4%; height: 7%;"></div>
+                                        <!-- WRISTS -->
+                                        <rect data-region="left-wrist" data-name="Left Wrist" x="33" y="195" width="19"
+                                            height="10" class="body-part" />
+                                        <rect data-region="right-wrist" data-name="Right Wrist" x="148" y="195"
+                                            width="19" height="10" class="body-part" />
 
-                                        <!-- ABDOMEN -->
-                                        <div class="hotspot" data-region="upper-abs" data-name="Upper Belly"
-                                            style="top: 28%; left: 19%; width: 7%; height: 6%;"></div>
-                                        <div class="hotspot" data-region="lower-abs" data-name="Lower Belly"
-                                            style="top: 34%; left: 19%; width: 7%; height: 6%;"></div>
-                                        <div class="hotspot" data-region="left-side" data-name="Left Side (Waist)"
-                                            style="top: 28%; left: 14%; width: 5%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="right-side" data-name="Right Side (Waist)"
-                                            style="top: 28%; left: 26%; width: 5%; height: 10%;"></div>
+                                        <!-- HANDS -->
+                                        <path data-region="left-hand" data-name="Left Hand"
+                                            d="M30,205 L55,205 L58,230 L27,230 Z" class="body-part" />
+                                        <path data-region="right-hand" data-name="Right Hand"
+                                            d="M145,205 L170,205 L173,230 L142,230 Z" class="body-part" />
 
-                                        <!-- HIP & GROIN -->
-                                        <div class="hotspot" data-region="hip-groin" data-name="Hip & Groin"
-                                            style="top: 40%; left: 17%; width: 11%; height: 6%;"></div>
+                                        <!-- UPPER ABDOMEN -->
+                                        <rect data-region="upper-abs" data-name="Upper Belly" x="75" y="120" width="50"
+                                            height="28" class="body-part" />
 
-                                        <!-- THIGHS FRONT -->
-                                        <div class="hotspot" data-region="left-thigh-front"
-                                            data-name="Left Thigh (Front)"
-                                            style="top: 46%; left: 16%; width: 5%; height: 14%;"></div>
-                                        <div class="hotspot" data-region="right-thigh-front"
-                                            data-name="Right Thigh (Front)"
-                                            style="top: 46%; left: 24%; width: 5%; height: 14%;"></div>
+                                        <!-- LOWER ABDOMEN -->
+                                        <rect data-region="lower-abs" data-name="Lower Belly" x="75" y="148" width="50"
+                                            height="28" class="body-part" />
 
-                                        <!-- KNEES FRONT -->
-                                        <div class="hotspot" data-region="left-knee" data-name="Left Knee"
-                                            style="top: 60%; left: 17%; width: 4%; height: 5%;"></div>
-                                        <div class="hotspot" data-region="right-knee" data-name="Right Knee"
-                                            style="top: 60%; left: 24%; width: 4%; height: 5%;"></div>
+                                        <!-- SIDES/WAIST -->
+                                        <path data-region="left-side" data-name="Left Side"
+                                            d="M72,120 L75,120 L75,176 L68,180 Z" class="body-part" />
+                                        <path data-region="right-side" data-name="Right Side"
+                                            d="M125,120 L128,120 L132,180 L125,176 Z" class="body-part" />
 
-                                        <!-- SHINS -->
-                                        <div class="hotspot" data-region="left-shin" data-name="Left Shin"
-                                            style="top: 65%; left: 17%; width: 4%; height: 14%;"></div>
-                                        <div class="hotspot" data-region="right-shin" data-name="Right Shin"
-                                            style="top: 65%; left: 24%; width: 4%; height: 14%;"></div>
+                                        <!-- HIPS -->
+                                        <path data-region="left-hip" data-name="Left Hip"
+                                            d="M68,180 L80,176 L78,205 L62,205 Z" class="body-part" />
+                                        <path data-region="right-hip" data-name="Right Hip"
+                                            d="M120,176 L132,180 L138,205 L122,205 Z" class="body-part" />
 
-                                        <!-- ANKLES & FEET FRONT -->
-                                        <div class="hotspot" data-region="left-ankle" data-name="Left Ankle & Foot"
-                                            style="top: 79%; left: 16%; width: 5%; height: 8%;"></div>
-                                        <div class="hotspot" data-region="right-ankle" data-name="Right Ankle & Foot"
-                                            style="top: 79%; left: 23%; width: 5%; height: 8%;"></div>
+                                        <!-- GROIN -->
+                                        <path data-region="groin" data-name="Groin Area"
+                                            d="M80,176 L120,176 L118,210 L82,210 Z" class="body-part" />
 
-                                        <!-- ====== BACK BODY HOTSPOTS (Right body in image ~55-76%) ====== -->
+                                        <!-- UPPER THIGHS -->
+                                        <path data-region="left-upper-thigh" data-name="Left Upper Thigh"
+                                            d="M62,205 L82,210 L80,260 L60,260 Z" class="body-part" />
+                                        <path data-region="right-upper-thigh" data-name="Right Upper Thigh"
+                                            d="M118,210 L138,205 L140,260 L120,260 Z" class="body-part" />
+
+                                        <!-- LOWER THIGHS -->
+                                        <path data-region="left-lower-thigh" data-name="Left Lower Thigh"
+                                            d="M60,260 L80,260 L78,295 L62,295 Z" class="body-part" />
+                                        <path data-region="right-lower-thigh" data-name="Right Lower Thigh"
+                                            d="M120,260 L140,260 L138,295 L122,295 Z" class="body-part" />
+
+                                        <!-- KNEES -->
+                                        <ellipse data-region="left-knee" data-name="Left Knee" cx="70" cy="305" rx="12"
+                                            ry="14" class="body-part" />
+                                        <ellipse data-region="right-knee" data-name="Right Knee" cx="130" cy="305"
+                                            rx="12" ry="14" class="body-part" />
+
+                                        <!-- UPPER SHINS -->
+                                        <path data-region="left-upper-shin" data-name="Left Upper Shin"
+                                            d="M58,319 L82,319 L80,355 L60,355 Z" class="body-part" />
+                                        <path data-region="right-upper-shin" data-name="Right Upper Shin"
+                                            d="M118,319 L142,319 L140,355 L120,355 Z" class="body-part" />
+
+                                        <!-- LOWER SHINS -->
+                                        <path data-region="left-lower-shin" data-name="Left Lower Shin"
+                                            d="M60,355 L80,355 L78,382 L62,382 Z" class="body-part" />
+                                        <path data-region="right-lower-shin" data-name="Right Lower Shin"
+                                            d="M120,355 L140,355 L138,382 L122,382 Z" class="body-part" />
+
+                                        <!-- ANKLES -->
+                                        <rect data-region="left-ankle" data-name="Left Ankle" x="60" y="382" width="20"
+                                            height="8" class="body-part" />
+                                        <rect data-region="right-ankle" data-name="Right Ankle" x="120" y="382"
+                                            width="20" height="8" class="body-part" />
+
+                                        <!-- FEET -->
+                                        <path data-region="left-foot" data-name="Left Foot"
+                                            d="M55,390 L85,390 L88,400 L52,400 Z" class="body-part" />
+                                        <path data-region="right-foot" data-name="Right Foot"
+                                            d="M115,390 L145,390 L148,400 L112,400 Z" class="body-part" />
+                                    </svg>
+                                </div>
+
+                                <!-- BACK VIEW SVG -->
+                                <div class="svg-panel" id="backPanel">
+                                    <svg viewBox="0 0 200 400" class="body-svg">
                                         <!-- HEAD BACK -->
-                                        <div class="hotspot" data-region="head-back" data-name="Back of Head"
-                                            style="top: 2%; left: 63%; width: 7%; height: 8%;"></div>
-                                        <div class="hotspot" data-region="neck-back" data-name="Neck (Back)"
-                                            style="top: 10%; left: 64%; width: 5%; height: 5%;"></div>
+                                        <ellipse data-region="head-back" data-name="Back of Head" cx="100" cy="25"
+                                            rx="20" ry="22" class="body-part" />
+
+                                        <!-- NECK BACK -->
+                                        <rect data-region="neck-back" data-name="Neck (Back)" x="92" y="47" width="16"
+                                            height="15" class="body-part" />
 
                                         <!-- SHOULDERS BACK -->
-                                        <div class="hotspot" data-region="left-shoulder-back"
-                                            data-name="Left Shoulder (Back)"
-                                            style="top: 14%; left: 55%; width: 6%; height: 5%;"></div>
-                                        <div class="hotspot" data-region="right-shoulder-back"
-                                            data-name="Right Shoulder (Back)"
-                                            style="top: 14%; left: 72%; width: 6%; height: 5%;"></div>
+                                        <path data-region="left-shoulder-back" data-name="Left Shoulder (Back)"
+                                            d="M60,62 L92,62 L92,78 L55,85 Z" class="body-part" />
+                                        <path data-region="right-shoulder-back" data-name="Right Shoulder (Back)"
+                                            d="M108,62 L140,62 L145,85 L108,78 Z" class="body-part" />
 
                                         <!-- UPPER BACK -->
-                                        <div class="hotspot" data-region="upper-back" data-name="Upper Back"
-                                            style="top: 14%; left: 61%; width: 11%; height: 8%;"></div>
+                                        <path data-region="upper-back" data-name="Upper Back"
+                                            d="M70,78 L130,78 L128,110 L72,110 Z" class="body-part" />
 
                                         <!-- TRICEPS -->
-                                        <div class="hotspot" data-region="left-tricep"
-                                            data-name="Left Tricep (Back of Arm)"
-                                            style="top: 20%; left: 51%; width: 4%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="right-tricep"
-                                            data-name="Right Tricep (Back of Arm)"
-                                            style="top: 20%; left: 78%; width: 4%; height: 10%;"></div>
+                                        <path data-region="left-tricep" data-name="Left Tricep"
+                                            d="M55,85 L70,78 L72,130 L48,135 Z" class="body-part" />
+                                        <path data-region="right-tricep" data-name="Right Tricep"
+                                            d="M130,78 L145,85 L152,135 L128,130 Z" class="body-part" />
 
-                                        <!-- MID BACK & SPINE -->
-                                        <div class="hotspot" data-region="mid-back" data-name="Mid Back"
-                                            style="top: 22%; left: 61%; width: 11%; height: 10%;"></div>
+                                        <!-- ELBOWS BACK -->
+                                        <ellipse data-region="left-elbow-back" data-name="Left Elbow (Back)" cx="46"
+                                            cy="142" rx="8" ry="10" class="body-part" />
+                                        <ellipse data-region="right-elbow-back" data-name="Right Elbow (Back)" cx="154"
+                                            cy="142" rx="8" ry="10" class="body-part" />
+
+                                        <!-- FOREARMS BACK -->
+                                        <path data-region="left-forearm-back" data-name="Left Forearm (Back)"
+                                            d="M38,152 L54,152 L50,195 L35,195 Z" class="body-part" />
+                                        <path data-region="right-forearm-back" data-name="Right Forearm (Back)"
+                                            d="M146,152 L162,152 L165,195 L150,195 Z" class="body-part" />
+
+                                        <!-- WRISTS BACK -->
+                                        <rect data-region="left-wrist-back" data-name="Left Wrist (Back)" x="33" y="195"
+                                            width="19" height="10" class="body-part" />
+                                        <rect data-region="right-wrist-back" data-name="Right Wrist (Back)" x="148"
+                                            y="195" width="19" height="10" class="body-part" />
+
+                                        <!-- HANDS BACK -->
+                                        <path data-region="left-hand-back" data-name="Left Hand (Back)"
+                                            d="M30,205 L55,205 L58,230 L27,230 Z" class="body-part" />
+                                        <path data-region="right-hand-back" data-name="Right Hand (Back)"
+                                            d="M145,205 L170,205 L173,230 L142,230 Z" class="body-part" />
+
+                                        <!-- MID BACK -->
+                                        <rect data-region="mid-back" data-name="Mid Back" x="72" y="110" width="56"
+                                            height="35" class="body-part" />
 
                                         <!-- LOWER BACK -->
-                                        <div class="hotspot" data-region="lower-back" data-name="Lower Back"
-                                            style="top: 32%; left: 61%; width: 11%; height: 9%;"></div>
+                                        <rect data-region="lower-back" data-name="Lower Back" x="72" y="145" width="56"
+                                            height="30" class="body-part" />
 
                                         <!-- BUTTOCKS -->
-                                        <div class="hotspot" data-region="left-glute" data-name="Left Buttock"
-                                            style="top: 41%; left: 58%; width: 7%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-glute" data-name="Right Buttock"
-                                            style="top: 41%; left: 68%; width: 7%; height: 7%;"></div>
+                                        <path data-region="left-glute" data-name="Left Buttock"
+                                            d="M68,175 L100,175 L100,215 L62,210 Z" class="body-part" />
+                                        <path data-region="right-glute" data-name="Right Buttock"
+                                            d="M100,175 L132,175 L138,210 L100,215 Z" class="body-part" />
 
                                         <!-- HAMSTRINGS (BACK OF THIGHS) -->
-                                        <div class="hotspot" data-region="left-hamstring" data-name="Left Thigh (Back)"
-                                            style="top: 48%; left: 58%; width: 6%; height: 13%;"></div>
-                                        <div class="hotspot" data-region="right-hamstring"
-                                            data-name="Right Thigh (Back)"
-                                            style="top: 48%; left: 69%; width: 6%; height: 13%;"></div>
+                                        <path data-region="left-hamstring" data-name="Left Thigh (Back)"
+                                            d="M62,210 L100,215 L98,295 L62,295 Z" class="body-part" />
+                                        <path data-region="right-hamstring" data-name="Right Thigh (Back)"
+                                            d="M100,215 L138,210 L138,295 L102,295 Z" class="body-part" />
 
                                         <!-- KNEES BACK -->
-                                        <div class="hotspot" data-region="left-knee-back" data-name="Back of Left Knee"
-                                            style="top: 61%; left: 59%; width: 5%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="right-knee-back"
-                                            data-name="Back of Right Knee"
-                                            style="top: 61%; left: 69%; width: 5%; height: 4%;"></div>
+                                        <ellipse data-region="left-knee-back" data-name="Back of Left Knee" cx="80"
+                                            cy="305" rx="20" ry="12" class="body-part" />
+                                        <ellipse data-region="right-knee-back" data-name="Back of Right Knee" cx="120"
+                                            cy="305" rx="20" ry="12" class="body-part" />
 
                                         <!-- CALVES -->
-                                        <div class="hotspot" data-region="left-calf" data-name="Left Calf"
-                                            style="top: 65%; left: 58%; width: 5%; height: 14%;"></div>
-                                        <div class="hotspot" data-region="right-calf" data-name="Right Calf"
-                                            style="top: 65%; left: 70%; width: 5%; height: 14%;"></div>
+                                        <path data-region="left-calf" data-name="Left Calf"
+                                            d="M60,317 L100,317 L98,370 L62,370 Z" class="body-part" />
+                                        <path data-region="right-calf" data-name="Right Calf"
+                                            d="M100,317 L140,317 L138,370 L102,370 Z" class="body-part" />
+
+                                        <!-- ACHILLES -->
+                                        <rect data-region="left-achilles" data-name="Left Achilles" x="68" y="370"
+                                            width="12" height="15" class="body-part" />
+                                        <rect data-region="right-achilles" data-name="Right Achilles" x="120" y="370"
+                                            width="12" height="15" class="body-part" />
 
                                         <!-- HEELS -->
-                                        <div class="hotspot" data-region="left-heel" data-name="Left Heel"
-                                            style="top: 79%; left: 58%; width: 5%; height: 6%;"></div>
-                                        <div class="hotspot" data-region="right-heel" data-name="Right Heel"
-                                            style="top: 79%; left: 70%; width: 5%; height: 6%;"></div>
-                                    </div>
+                                        <path data-region="left-heel" data-name="Left Heel"
+                                            d="M60,385 L85,385 L88,400 L57,400 Z" class="body-part" />
+                                        <path data-region="right-heel" data-name="Right Heel"
+                                            d="M115,385 L140,385 L143,400 L112,400 Z" class="body-part" />
+                                    </svg>
                                 </div>
                             </div>
 
-                            <!-- Selected Regions Display -->
                             <div id="selectedRegionsDisplay" class="selected-regions-display" style="display: none;">
                                 <span style="font-size: 0.8rem; color: #92400E;">Selected pain areas:</span>
                                 <div id="selectedRegionTags"></div>
@@ -565,9 +628,28 @@
         const selectedRegions = new Set();
         const regionData = {}; // Store region names for AI
 
+        // v3.0: SVG View Switching
+        function switchSVGView(view) {
+            const frontPanel = document.getElementById('frontPanel');
+            const backPanel = document.getElementById('backPanel');
+            const buttons = document.querySelectorAll('.svg-view-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (view === 'front') {
+                frontPanel.classList.add('active');
+                backPanel.classList.remove('active');
+                buttons[0].classList.add('active');
+            } else {
+                frontPanel.classList.remove('active');
+                backPanel.classList.add('active');
+                buttons[1].classList.add('active');
+            }
+        }
+
         function initBodyDiagram() {
-            // v2.73: Handle both SVG regions and image hotspots
-            const regions = document.querySelectorAll('.body-region, .hotspot');
+            // v2.73: Handle SVG regions, body regions, and image hotspots
+            const regions = document.querySelectorAll('.body-region, .hotspot, .body-part');
             regions.forEach(region => {
                 region.addEventListener('click', (e) => {
                     e.preventDefault();
