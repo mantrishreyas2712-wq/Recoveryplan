@@ -1793,14 +1793,14 @@ body.animations-ready .blob-2 {
     max-width: 600px;
     border-radius: 12px;
     overflow: hidden;
-    background: #475569;
+    background: transparent;
 }
 
 .muscle-model-img-single {
     width: 100%;
     height: auto;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 /* Hotspot Styles */
