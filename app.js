@@ -11,14 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Function to update body model based on gender
         function updateBodyModel() {
             const gender = genderDropdown.value;
-            // Combined image layout: [Male Front | Male Back | Female Front | Female Back]
-            // Each takes 25% width
+            // Swap image source between male-only and female-only diagrams
             if (gender === 'female') {
-                // Show female bodies (right half: 50-100%)
-                bodyDiagramImg.style.objectPosition = '75% 50%';
+                bodyDiagramImg.src = 'body_female.png';
             } else {
-                // Show male bodies (left half: 0-50%) - default for male/other/empty
-                bodyDiagramImg.style.objectPosition = '25% 50%';
+                // Default to male for male/other/empty
+                bodyDiagramImg.src = 'body_male.png';
             }
         }
 
