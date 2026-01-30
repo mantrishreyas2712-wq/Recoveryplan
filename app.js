@@ -167,6 +167,36 @@ document.getElementById('patientForm').addEventListener('submit', async function
         }
     }
 
+    // v3.1: NORMALIZE BODY PART NAMES - Fix knee→lumbar bug
+    // SVG uses "left-knee", "right-shoulder-back" etc, but AI expects simple names
+    function normalizeBodyPartName(bodyPartString) {
+        if (!bodyPartString) return 'back';
+        const normalized = bodyPartString.toLowerCase()
+            .replace(/^(left|right)-/, '')
+            .replace(/-(back|front)$/, '')
+            .trim();
+        const areaMap = {
+            'head': 'neck', 'neck': 'neck',
+            'shoulder': 'shoulder', 'bicep': 'shoulder', 'tricep': 'shoulder',
+            'elbow': 'elbow', 'forearm': 'wrist', 'wrist': 'wrist', 'hand': 'wrist',
+            'chest': 'back', 'upper-abs': 'back', 'lower-abs': 'back', 'side': 'back',
+            'hip': 'back', 'groin': 'back', 'upper-back': 'back', 'mid-back': 'back',
+            'lower-back': 'back', 'glute': 'back', 'upper-thigh': 'knee', 'lower-thigh': 'knee',
+            'hamstring': 'knee', 'knee': 'knee', 'upper-shin': 'ankle', 'lower-shin': 'ankle',
+            'calf': 'ankle', 'ankle': 'ankle', 'achilles': 'ankle', 'heel': 'ankle', 'foot': 'ankle'
+        };
+        return areaMap[normalized] || 'back';
+    }
+
+    // If body regions selected, normalize the first region as problemArea
+    if (data.anatomicalRegions && Object.keys(data.anatomicalRegions).length > 0) {
+        const firstRegion = Object.keys(data.anatomicalRegions)[0];
+        data.problemArea = normalizeBodyPartName(firstRegion);
+    } else if (data.problemArea) {
+        // Otherwise normalize dropdown selection
+        data.problemArea = normalizeBodyPartName(data.problemArea);
+    }
+
     // v2.69: Include selected language preference
     data.language = localStorage.getItem('physioLanguage') || 'english';
 
