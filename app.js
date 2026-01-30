@@ -3,6 +3,32 @@ let uploadedReportBase64 = null;
 
 // FILE UPLOAD HANDLING (v2.20)
 document.addEventListener('DOMContentLoaded', () => {
+    // GENDER-BASED BODY MODEL SELECTION
+    const genderDropdown = document.getElementById('gender');
+    const bodyDiagramImg = document.querySelector('.muscle-model-img-single');
+
+    if (genderDropdown && bodyDiagramImg) {
+        // Function to update body model based on gender
+        function updateBodyModel() {
+            const gender = genderDropdown.value;
+            // Combined image layout: [Male Front | Male Back | Female Front | Female Back]
+            // Each takes 25% width
+            if (gender === 'female') {
+                // Show female bodies (right half: 50-100%)
+                bodyDiagramImg.style.objectPosition = '75% 50%';
+            } else {
+                // Show male bodies (left half: 0-50%) - default for male/other/empty
+                bodyDiagramImg.style.objectPosition = '25% 50%';
+            }
+        }
+
+        // Listen for gender changes
+        genderDropdown.addEventListener('change', updateBodyModel);
+
+        // Set initial model on page load
+        updateBodyModel();
+    }
+
     const reportInput = document.getElementById('reportUpload');
     const previewContainer = document.getElementById('previewContainer');
     const fileNameDisplay = document.getElementById('fileName');
