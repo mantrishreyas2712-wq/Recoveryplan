@@ -1,6 +1,22 @@
 // Global Store for Uploaded Report (Base64)
 let uploadedReportBase64 = null;
 
+// v2.76: Body Diagram View Switcher
+function switchBodyView(view) {
+    // Update buttons
+    document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Update panels
+    document.querySelectorAll('.body-panel').forEach(panel => panel.classList.remove('active'));
+    if (view === 'front') {
+        document.getElementById('frontPanel').classList.add('active');
+    } else {
+        document.getElementById('backPanel').classList.add('active');
+    }
+}
+
+
 // FILE UPLOAD HANDLING (v2.20)
 document.addEventListener('DOMContentLoaded', () => {
     const reportInput = document.getElementById('reportUpload');
