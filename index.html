@@ -244,298 +244,164 @@
                         <div class="clinical-group">
                             <h3 data-translate="tapHurts">📍 Tap Where It Hurts</h3>
 
-                            <!-- v2.76: CLEAN DUAL-PANEL BODY DIAGRAM with Comprehensive Labeling -->
-                            <div class="body-diagram-wrapper">
-                                <!-- View Switcher Buttons -->
-                                <div class="view-switcher">
-                                    <button class="view-btn active" onclick="switchView('front')">👤 Front View</button>
-                                    <button class="view-btn" onclick="switchView('back')">🔄 Back View</button>
-                                </div>
-                            
-                                <!-- FRONT VIEW -->
-                                <div class="body-panel active" id="frontPanel">
-                                    <div class="body-container">
-                                        <img src="body_front.png" alt="Front View" class="body-image">
-                            
-                                        <!-- HEAD & FACE -->
+                            <!-- v2.75: COMPLETE FRESH BODY DIAGRAM - Single Panel with Accurate Hotspots -->
+                            <div class="body-diagram-container muscle-3d" id="bodyDiagramContainer">
+                                <div class="body-diagram-single-view">
+                                    <div class="view-labels">
+                                        <span class="view-label-front">👆 Front</span>
+                                        <span class="view-label-back">Back 👆</span>
+                                    </div>
+                                    <div class="muscle-model-wrapper-single" id="bodyDiagram">
+                                        <img src="Wt-P5exewPtbrRbXeTGlyw_b.jpg" alt="Body Diagram"
+                                            class="muscle-model-img-single">
+
+                                        <!-- ====== FRONT BODY HOTSPOTS (Left body in image ~10-32%) ====== -->
+                                        <!-- HEAD & NECK -->
                                         <div class="hotspot" data-region="head" data-name="Head & Face"
-                                            style="top: 3%; left: 38%; width: 24%; height: 9%;"></div>
-                                        <div class="hotspot" data-region="forehead" data-name="Forehead"
-                                            style="top: 3%; left: 40%; width: 20%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="eyes" data-name="Eyes"
-                                            style="top: 6%; left: 40%; width: 20%; height: 2%;"></div>
-                                        <div class="hotspot" data-region="jaw" data-name="Jaw" style="top: 9%; left: 42%; width: 16%; height: 3%;">
-                                        </div>
-                            
-                                        <!-- NECK -->
-                                        <div class="hotspot" data-region="neck" data-name="Neck"
-                                            style="top: 12%; left: 42%; width: 16%; height: 4%;"></div>
-                            
+                                            style="top: 2%; left: 19%; width: 7%; height: 10%;"></div>
+                                        <div class="hotspot" data-region="neck-front" data-name="Neck (Front)"
+                                            style="top: 12%; left: 20.5%; width: 4%; height: 4%;"></div>
+
                                         <!-- SHOULDERS -->
                                         <div class="hotspot" data-region="left-shoulder" data-name="Left Shoulder"
-                                            style="top: 15%; left: 20%; width: 16%; height: 7%;"></div>
+                                            style="top: 15%; left: 13%; width: 6%; height: 5%;"></div>
                                         <div class="hotspot" data-region="right-shoulder" data-name="Right Shoulder"
-                                            style="top: 15%; left: 64%; width: 16%; height: 7%;"></div>
-                            
+                                            style="top: 15%; left: 26%; width: 6%; height: 5%;"></div>
+
                                         <!-- CHEST -->
                                         <div class="hotspot" data-region="chest" data-name="Chest"
-                                            style="top: 22%; left: 36%; width: 28%; height: 10%;"></div>
-                            
-                                        <!-- UPPER ARMS -->
+                                            style="top: 20%; left: 18%; width: 9%; height: 8%;"></div>
+
+                                        <!-- UPPER ARMS (BICEPS) -->
                                         <div class="hotspot" data-region="left-bicep" data-name="Left Upper Arm"
-                                            style="top: 23%; left: 14%; width: 10%; height: 12%;"></div>
+                                            style="top: 20%; left: 9%; width: 4%; height: 10%;"></div>
                                         <div class="hotspot" data-region="right-bicep" data-name="Right Upper Arm"
-                                            style="top: 23%; left: 76%; width: 10%; height: 12%;"></div>
-                            
+                                            style="top: 20%; left: 32%; width: 4%; height: 10%;"></div>
+
                                         <!-- ELBOWS -->
                                         <div class="hotspot" data-region="left-elbow" data-name="Left Elbow"
-                                            style="top: 35%; left: 12%; width: 8%; height: 4%;"></div>
+                                            style="top: 30%; left: 8%; width: 3%; height: 4%;"></div>
                                         <div class="hotspot" data-region="right-elbow" data-name="Right Elbow"
-                                            style="top: 35%; left: 80%; width: 8%; height: 4%;"></div>
-                            
+                                            style="top: 30%; left: 34%; width: 3%; height: 4%;"></div>
+
                                         <!-- FOREARMS -->
                                         <div class="hotspot" data-region="left-forearm" data-name="Left Forearm"
-                                            style="top: 39%; left: 8%; width: 10%; height: 11%;"></div>
+                                            style="top: 34%; left: 6%; width: 4%; height: 10%;"></div>
                                         <div class="hotspot" data-region="right-forearm" data-name="Right Forearm"
-                                            style="top: 39%; left: 82%; width: 10%; height: 11%;"></div>
-                            
-                                        <!-- WRISTS -->
-                                        <div class="hotspot" data-region="left-wrist" data-name="Left Wrist"
-                                            style="top: 50%; left: 7%; width:8%; height: 3%;"></div>
-                                        <div class="hotspot" data-region="right-wrist" data-name="Right Wrist"
-                                            style="top: 50%; left: 85%; width: 8%; height: 3%;"></div>
-                            
-                                        <!-- HANDS & FINGERS -->
-                                        <div class="hotspot" data-region="left-palm" data-name="Left Palm"
-                                            style="top: 53%; left: 6%; width: 7%; height: 3%;"></div>
-                                        <div class="hotspot" data-region="right-palm" data-name="Right Palm"
-                                            style="top: 53%; left: 87%; width: 7%; height: 3%;"></div>
-                                        <div class="hotspot" data-region="left-fingers" data-name="Left Fingers"
-                                            style="top: 56%; left: 6%; width: 10%; height: 2%;"></div>
-                                        <div class="hotspot" data-region="right-fingers" data-name="Right Fingers"
-                                            style="top: 56%; left: 84%; width: 10%; height: 2%;"></div>
-                            
+                                            style="top: 34%; left: 35%; width: 4%; height: 10%;"></div>
+
+                                        <!-- WRISTS & HANDS -->
+                                        <div class="hotspot" data-region="left-wrist" data-name="Left Wrist & Hand"
+                                            style="top: 44%; left: 4%; width: 4%; height: 7%;"></div>
+                                        <div class="hotspot" data-region="right-wrist" data-name="Right Wrist & Hand"
+                                            style="top: 44%; left: 37%; width: 4%; height: 7%;"></div>
+
                                         <!-- ABDOMEN -->
                                         <div class="hotspot" data-region="upper-abs" data-name="Upper Belly"
-                                            style="top: 32%; left: 38%; width: 24%; height: 7%;"></div>
+                                            style="top: 28%; left: 19%; width: 7%; height: 6%;"></div>
                                         <div class="hotspot" data-region="lower-abs" data-name="Lower Belly"
-                                            style="top: 39%; left: 38%; width: 24%; height: 8%;"></div>
-                            
-                                        <!-- WAIST/SIDES -->
+                                            style="top: 34%; left: 19%; width: 7%; height: 6%;"></div>
                                         <div class="hotspot" data-region="left-side" data-name="Left Side (Waist)"
-                                            style="top: 33%; left: 28%; width: 10%; height: 12%;"></div>
+                                            style="top: 28%; left: 14%; width: 5%; height: 10%;"></div>
                                         <div class="hotspot" data-region="right-side" data-name="Right Side (Waist)"
-                                            style="top: 33%; left: 62%; width: 10%; height: 12%;"></div>
-                            
+                                            style="top: 28%; left: 26%; width: 5%; height: 10%;"></div>
+
                                         <!-- HIP & GROIN -->
-                                        <div class="hotspot" data-region="hip-left" data-name="Left Hip"
-                                            style="top: 47%; left: 30%; width: 12%; height: 6%;"></div>
-                                        <div class="hotspot" data-region="hip-right" data-name="Right Hip"
-                                            style="top: 47%; left: 58%; width: 12%; height: 6%;"></div>
-                                        <div class="hotspot" data-region="groin" data-name="Groin Area"
-                                            style="top: 48%; left: 42%; width: 16%; height: 5%;"></div>
-                            
-                                        <!-- UPPER THIGHS -->
-                                        <div class="hotspot" data-region="left-upper-thigh" data-name="Left Upper Thigh"
-                                            style="top: 53%; left: 32%; width: 14%; height: 9%;"></div>
-                                        <div class="hotspot" data-region="right-upper-thigh" data-name="Right Upper Thigh"
-                                            style="top: 53%; left: 54%; width: 14%; height: 9%;"></div>
-                            
-                                        <!-- MID THIGHS -->
-                                        <div class="hotspot" data-region="left-mid-thigh" data-name="Left Mid Thigh"
-                                            style="top: 62%; left: 34%; width: 12%; height: 9%;"></div>
-                                        <div class="hotspot" data-region="right-mid-thigh" data-name="Right Mid Thigh"
-                                            style="top: 62%; left: 54%; width: 12%; height: 9%;"></div>
-                            
-                                        <!-- KNEES -->
+                                        <div class="hotspot" data-region="hip-groin" data-name="Hip & Groin"
+                                            style="top: 40%; left: 17%; width: 11%; height: 6%;"></div>
+
+                                        <!-- THIGHS FRONT -->
+                                        <div class="hotspot" data-region="left-thigh-front"
+                                            data-name="Left Thigh (Front)"
+                                            style="top: 46%; left: 16%; width: 5%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="right-thigh-front"
+                                            data-name="Right Thigh (Front)"
+                                            style="top: 46%; left: 24%; width: 5%; height: 14%;"></div>
+
+                                        <!-- KNEES FRONT -->
                                         <div class="hotspot" data-region="left-knee" data-name="Left Knee"
-                                            style="top: 71%; left: 34%; width: 12%; height: 5%;"></div>
+                                            style="top: 60%; left: 17%; width: 4%; height: 5%;"></div>
                                         <div class="hotspot" data-region="right-knee" data-name="Right Knee"
-                                            style="top: 71%; left: 54%; width: 12%; height: 5%;"></div>
-                            
-                                        <!-- UPPER SHINS -->
-                                        <div class="hotspot" data-region="left-upper-shin" data-name="Left Upper Shin"
-                                            style="top: 76%; left: 34%; width: 12%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-upper-shin" data-name="Right Upper Shin"
-                                            style="top: 76%; left: 54%; width: 12%; height: 7%;"></div>
-                            
-                                        <!-- LOWER SHINS -->
-                                        <div class="hotspot" data-region="left-lower-shin" data-name="Left Lower Shin"
-                                            style="top: 83%; left: 34%; width: 12%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-lower-shin" data-name="Right Lower Shin"
-                                            style="top: 83%; left: 54%; width: 12%; height: 7%;"></div>
-                            
-                                        <!-- ANKLES -->
-                                        <div class="hotspot" data-region="left-ankle" data-name="Left Ankle"
-                                            style="top: 90%; left: 34%; width: 12%; height: 3%;"></div>
-                                        <div class="hotspot" data-region="right-ankle" data-name="Right Ankle"
-                                            style="top: 90%; left: 54%; width: 12%; height: 3%;"></div>
-                            
-                                        <!-- FEET & TOES -->
-                                        <div class="hotspot" data-region="left-foot" data-name="Left Foot"
-                                            style="top: 93%; left: 32%; width: 14%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="right-foot" data-name="Right Foot"
-                                            style="top: 93%; left: 54%; width: 14%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="left-toes" data-name="Left Toes"
-                                            style="top: 96%; left: 32%; width: 14%; height: 2%;"></div>
-                                        <div class="hotspot" data-region="right-toes" data-name="Right Toes"
-                                            style="top: 96%; left: 54%; width: 14%; height: 2%;"></div>
-                                    </div>
-                                </div>
-                            
-                                <!-- BACK VIEW -->
-                                <div class="body-panel" id="backPanel">
-                                    <div class="body-container">
-                                        <img src="body_back.png" alt="Back View" class="body-image">
-                            
-                                        <!-- HEAD -->
+                                            style="top: 60%; left: 24%; width: 4%; height: 5%;"></div>
+
+                                        <!-- SHINS -->
+                                        <div class="hotspot" data-region="left-shin" data-name="Left Shin"
+                                            style="top: 65%; left: 17%; width: 4%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="right-shin" data-name="Right Shin"
+                                            style="top: 65%; left: 24%; width: 4%; height: 14%;"></div>
+
+                                        <!-- ANKLES & FEET FRONT -->
+                                        <div class="hotspot" data-region="left-ankle" data-name="Left Ankle & Foot"
+                                            style="top: 79%; left: 16%; width: 5%; height: 8%;"></div>
+                                        <div class="hotspot" data-region="right-ankle" data-name="Right Ankle & Foot"
+                                            style="top: 79%; left: 23%; width: 5%; height: 8%;"></div>
+
+                                        <!-- ====== BACK BODY HOTSPOTS (Right body in image ~55-76%) ====== -->
+                                        <!-- HEAD BACK -->
                                         <div class="hotspot" data-region="head-back" data-name="Back of Head"
-                                            style="top: 1%; left: 38%; width: 24%; height: 8%;"></div>
-                            
-                                        <!-- NECK & UPPER BACK -->
+                                            style="top: 2%; left: 63%; width: 7%; height: 8%;"></div>
                                         <div class="hotspot" data-region="neck-back" data-name="Neck (Back)"
-                                            style="top: 9%; left: 42%; width: 16%; height: 6%;"></div>
-                                        <div class="hotspot" data-region="upper-back-center" data-name="Upper Back (Center)"
-                                            style="top: 15%; left: 38%; width: 24%; height: 8%;"></div>
-                            
+                                            style="top: 10%; left: 64%; width: 5%; height: 5%;"></div>
+
                                         <!-- SHOULDERS BACK -->
-                                        <div class="hotspot" data-region="left-shoulder-back" data-name="Left Shoulder (Back)"
-                                            style="top: 15%; left: 20%; width: 16%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-shoulder-back" data-name="Right Shoulder (Back)"
-                                            style="top: 15%; left: 64%; width: 16%; height: 7%;"></div>
-                            
+                                        <div class="hotspot" data-region="left-shoulder-back"
+                                            data-name="Left Shoulder (Back)"
+                                            style="top: 14%; left: 55%; width: 6%; height: 5%;"></div>
+                                        <div class="hotspot" data-region="right-shoulder-back"
+                                            data-name="Right Shoulder (Back)"
+                                            style="top: 14%; left: 72%; width: 6%; height: 5%;"></div>
+
+                                        <!-- UPPER BACK -->
+                                        <div class="hotspot" data-region="upper-back" data-name="Upper Back"
+                                            style="top: 14%; left: 61%; width: 11%; height: 8%;"></div>
+
                                         <!-- TRICEPS -->
-                                        <div class="hotspot" data-region="left-tricep" data-name="Left Tricep"
-                                            style="top: 23%; left: 14%; width: 10%; height: 12%;"></div>
-                                        <div class="hotspot" data-region="right-tricep" data-name="Right Tricep"
-                                            style="top: 23%; left: 76%; width: 10%; height: 12%;"></div>
-                            
-                                        <!-- ELBOWS BACK -->
-                                        <div class="hotspot" data-region="left-elbow-back" data-name="Left Elbow (Back)"
-                                            style="top: 35%; left: 12%; width: 8%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="right-elbow-back" data-name="Right Elbow (Back)"
-                                            style="top: 35%; left: 80%; width: 8%; height: 4%;"></div>
-                            
-                                        <!-- MID & LOWER BACK -->
-                                        <div class="hotspot" data-region="mid-back-left" data-name="Left Mid Back"
-                                            style="top: 23%; left: 28%; width: 14%; height: 12%;"></div>
-                                        <div class="hotspot" data-region="mid-back-right" data-name="Right Mid Back"
-                                            style="top: 23%; left: 58%; width: 14%; height: 12%;"></div>
-                                        <div class="hotspot" data-region="lower-back-center" data-name="Lower Back (Center)"
-                                            style="top: 35%; left: 36%; width: 28%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="lower-back-left" data-name="Left Lower Back"
-                                            style="top: 39%; left: 28%; width: 12%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="lower-back-right" data-name="Right Lower Back"
-                                            style="top: 39%; left: 60%; width: 12%; height: 10%;"></div>
-                            
+                                        <div class="hotspot" data-region="left-tricep"
+                                            data-name="Left Tricep (Back of Arm)"
+                                            style="top: 20%; left: 51%; width: 4%; height: 10%;"></div>
+                                        <div class="hotspot" data-region="right-tricep"
+                                            data-name="Right Tricep (Back of Arm)"
+                                            style="top: 20%; left: 78%; width: 4%; height: 10%;"></div>
+
+                                        <!-- MID BACK & SPINE -->
+                                        <div class="hotspot" data-region="mid-back" data-name="Mid Back"
+                                            style="top: 22%; left: 61%; width: 11%; height: 10%;"></div>
+
+                                        <!-- LOWER BACK -->
+                                        <div class="hotspot" data-region="lower-back" data-name="Lower Back"
+                                            style="top: 32%; left: 61%; width: 11%; height: 9%;"></div>
+
                                         <!-- BUTTOCKS -->
                                         <div class="hotspot" data-region="left-glute" data-name="Left Buttock"
-                                            style="top: 49%; left: 36%; width: 14%; height: 8%;"></div>
+                                            style="top: 41%; left: 58%; width: 7%; height: 7%;"></div>
                                         <div class="hotspot" data-region="right-glute" data-name="Right Buttock"
-                                            style="top: 49%; left: 50%; width: 14%; height: 8%;"></div>
-                            
-                                        <!-- HAMSTRINGS (BACK OF THIGH) -->
-                                        <div class="hotspot" data-region="left-upper-hamstring" data-name="Left Upper Thigh (Back)"
-                                            style="top: 57%; left: 34%; width: 14%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-upper-hamstring" data-name="Right Upper Thigh (Back)"
-                                            style="top: 57%; left: 52%; width: 14%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="left-lower-hamstring" data-name="Left Lower Thigh (Back)"
-                                            style="top: 64%; left: 36%; width: 12%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-lower-hamstring" data-name="Right Lower Thigh (Back)"
-                                            style="top: 64%; left: 52%; width: 12%; height: 7%;"></div>
-                            
+                                            style="top: 41%; left: 68%; width: 7%; height: 7%;"></div>
+
+                                        <!-- HAMSTRINGS (BACK OF THIGHS) -->
+                                        <div class="hotspot" data-region="left-hamstring" data-name="Left Thigh (Back)"
+                                            style="top: 48%; left: 58%; width: 6%; height: 13%;"></div>
+                                        <div class="hotspot" data-region="right-hamstring"
+                                            data-name="Right Thigh (Back)"
+                                            style="top: 48%; left: 69%; width: 6%; height: 13%;"></div>
+
                                         <!-- KNEES BACK -->
                                         <div class="hotspot" data-region="left-knee-back" data-name="Back of Left Knee"
-                                            style="top: 71%; left: 36%; width: 12%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="right-knee-back" data-name="Back of Right Knee"
-                                            style="top: 71%; left: 52%; width: 12%; height: 4%;"></div>
-                            
+                                            style="top: 61%; left: 59%; width: 5%; height: 4%;"></div>
+                                        <div class="hotspot" data-region="right-knee-back"
+                                            data-name="Back of Right Knee"
+                                            style="top: 61%; left: 69%; width: 5%; height: 4%;"></div>
+
                                         <!-- CALVES -->
-                                        <div class="hotspot" data-region="left-upper-calf" data-name="Left Upper Calf"
-                                            style="top: 75%; left: 36%; width: 12%; height: 8%;"></div>
-                                        <div class="hotspot" data-region="right-upper-calf" data-name="Right Upper Calf"
-                                            style="top: 75%; left: 52%; width: 12%; height: 8%;"></div>
-                                        <div class="hotspot" data-region="left-lower-calf" data-name="Left Lower Calf"
-                                            style="top: 83%; left: 36%; width: 12%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-lower-calf" data-name="Right Lower Calf"
-                                            style="top: 83%; left: 52%; width: 12%; height: 7%;"></div>
-                            
-                                        <!-- ACHILLES & HEELS -->
-                                        <div class="hotspot" data-region="left-achilles" data-name="Left Achilles Tendon"
-                                            style="top: 90%; left: 38%; width: 10%; height: 3%;"></div>
-                                        <div class="hotspot" data-region="right-achilles" data-name="Right Achilles Tendon"
-                                            style="top: 90%; left: 52%; width: 10%; height: 3%;"></div>
+                                        <div class="hotspot" data-region="left-calf" data-name="Left Calf"
+                                            style="top: 65%; left: 58%; width: 5%; height: 14%;"></div>
+                                        <div class="hotspot" data-region="right-calf" data-name="Right Calf"
+                                            style="top: 65%; left: 70%; width: 5%; height: 14%;"></div>
+
+                                        <!-- HEELS -->
                                         <div class="hotspot" data-region="left-heel" data-name="Left Heel"
-                                            style="top: 93%; left: 34%; width: 14%; height: 5%;"></div>
+                                            style="top: 79%; left: 58%; width: 5%; height: 6%;"></div>
                                         <div class="hotspot" data-region="right-heel" data-name="Right Heel"
-                                            style="top: 93%; left: 52%; width: 14%; height: 5%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                                        <div class="hotspot" data-region="left-tricep" data-name="Left Tricep"
-                                            style="top: 23%; left: 14%; width: 10%; height: 12%;"></div>
-                                        <div class="hotspot" data-region="right-tricep" data-name="Right Tricep"
-                                            style="top: 23%; left: 76%; width: 10%; height: 12%;"></div>
-                            
-                                        <!-- ELBOWS BACK -->
-                                        <div class="hotspot" data-region="left-elbow-back" data-name="Left Elbow (Back)"
-                                            style="top: 35%; left: 12%; width: 8%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="right-elbow-back" data-name="Right Elbow (Back)"
-                                            style="top: 35%; left: 80%; width: 8%; height: 4%;"></div>
-                            
-                                        <!-- MID & LOWER BACK -->
-                                        <div class="hotspot" data-region="mid-back-left" data-name="Left Mid Back"
-                                            style="top: 23%; left: 28%; width: 14%; height: 12%;"></div>
-                                        <div class="hotspot" data-region="mid-back-right" data-name="Right Mid Back"
-                                            style="top: 23%; left: 58%; width: 14%; height: 12%;"></div>
-                                        <div class="hotspot" data-region="lower-back-center" data-name="Lower Back (Center)"
-                                            style="top: 35%; left: 36%; width: 28%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="lower-back-left" data-name="Left Lower Back"
-                                            style="top: 39%; left: 28%; width: 12%; height: 10%;"></div>
-                                        <div class="hotspot" data-region="lower-back-right" data-name="Right Lower Back"
-                                            style="top: 39%; left: 60%; width: 12%; height: 10%;"></div>
-                            
-                                        <!-- BUTTOCKS -->
-                                        <div class="hotspot" data-region="left-glute" data-name="Left Buttock"
-                                            style="top: 49%; left: 36%; width: 14%; height: 8%;"></div>
-                                        <div class="hotspot" data-region="right-glute" data-name="Right Buttock"
-                                            style="top: 49%; left: 50%; width: 14%; height: 8%;"></div>
-                            
-                                        <!-- HAMSTRINGS (BACK OF THIGH) -->
-                                        <div class="hotspot" data-region="left-upper-hamstring" data-name="Left Upper Thigh (Back)"
-                                            style="top: 57%; left: 34%; width: 14%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-upper-hamstring" data-name="Right Upper Thigh (Back)"
-                                            style="top: 57%; left: 52%; width: 14%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="left-lower-hamstring" data-name="Left Lower Thigh (Back)"
-                                            style="top: 64%; left: 36%; width: 12%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-lower-hamstring" data-name="Right Lower Thigh (Back)"
-                                            style="top: 64%; left: 52%; width: 12%; height: 7%;"></div>
-                            
-                                        <!-- KNEES BACK -->
-                                        <div class="hotspot" data-region="left-knee-back" data-name="Back of Left Knee"
-                                            style="top: 71%; left: 36%; width: 12%; height: 4%;"></div>
-                                        <div class="hotspot" data-region="right-knee-back" data-name="Back of Right Knee"
-                                            style="top: 71%; left: 52%; width: 12%; height: 4%;"></div>
-                            
-                                        <!-- CALVES -->
-                                        <div class="hotspot" data-region="left-upper-calf" data-name="Left Upper Calf"
-                                            style="top: 75%; left: 36%; width: 12%; height: 8%;"></div>
-                                        <div class="hotspot" data-region="right-upper-calf" data-name="Right Upper Calf"
-                                            style="top: 75%; left: 52%; width: 12%; height: 8%;"></div>
-                                        <div class="hotspot" data-region="left-lower-calf" data-name="Left Lower Calf"
-                                            style="top: 83%; left: 36%; width: 12%; height: 7%;"></div>
-                                        <div class="hotspot" data-region="right-lower-calf" data-name="Right Lower Calf"
-                                            style="top: 83%; left: 52%; width: 12%; height: 7%;"></div>
-                            
-                                        <!-- ACHILLES & HEELS -->
-                                        <div class="hotspot" data-region="left-achilles" data-name="Left Achilles Tendon"
-                                            style="top: 90%; left: 38%; width: 10%; height: 3%;"></div>
-                                        <div class="hotspot" data-region="right-achilles" data-name="Right Achilles Tendon"
-                                            style="top: 90%; left: 52%; width: 10%; height: 3%;"></div>
-                                        <div class="hotspot" data-region="left-heel" data-name="Left Heel"
-                                            style="top: 93%; left: 34%; width: 14%; height: 5%;"></div>
-                                        <div class="hotspot" data-region="right-heel" data-name="Right Heel"
-                                            style="top: 93%; left: 52%; width: 14%; height: 5%;"></div>
+                                            style="top: 79%; left: 70%; width: 5%; height: 6%;"></div>
                                     </div>
                                 </div>
                             </div>
