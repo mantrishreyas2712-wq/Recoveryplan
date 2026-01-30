@@ -1747,3 +1747,110 @@ body.animations-ready .blob-2 {
     display: block;
     margin-top: 2px;
 }
+
+/* ============================================
+   v2.75: BODY DIAGRAM - Single Panel Layout
+   ============================================ */
+
+.body-diagram-container.muscle-3d {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.body-diagram-single-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.view-labels {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 0.75rem;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.view-label-front {
+    color: #38bdf8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.view-label-back {
+    color: #fbbf24;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.muscle-model-wrapper-single {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #475569;
+}
+
+.muscle-model-img-single {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+/* Hotspot Styles */
+.hotspot {
+    position: absolute;
+    cursor: pointer;
+    background: rgba(56, 189, 248, 0.08);
+    border: 2px solid transparent;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.hotspot:hover {
+    background: rgba(56, 189, 248, 0.35);
+    border-color: rgba(56, 189, 248, 0.9);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+    transform: scale(1.02);
+}
+
+.hotspot.selected {
+    background: rgba(239, 68, 68, 0.45);
+    border-color: rgba(239, 68, 68, 1);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+    animation: hotspot-pulse 1.5s infinite;
+}
+
+@keyframes hotspot-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(239, 68, 68, 1);
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .body-diagram-container.muscle-3d {
+        padding: 1rem;
+    }
+
+    .view-labels {
+        font-size: 0.95rem;
+    }
+
+    .hotspot {
+        border-width: 1.5px;
+    }
+}
