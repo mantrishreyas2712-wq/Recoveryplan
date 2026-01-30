@@ -1200,35 +1200,69 @@ body.animations-ready .blob-2 {
 }
 
 /* ============================================
-   v2.69 - INTERACTIVE BODY DIAGRAM
+   v2.71 - PROFESSIONAL ANATOMICAL BODY DIAGRAM
    ============================================ */
 .body-diagram-container {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     justify-content: center;
     align-items: flex-start;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
     flex-wrap: wrap;
+    padding: 1rem;
+    background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.body-diagram-container.professional {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid #334155;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 .body-diagram-view {
     flex: 1;
+    max-width: 180px;
+    min-width: 140px;
+}
+
+.body-diagram-container.professional .body-diagram-view {
     max-width: 200px;
-    min-width: 150px;
+    min-width: 160px;
 }
 
 .body-diagram-view h4 {
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #64748B;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.body-diagram-container.professional .body-diagram-view h4 {
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-size: 0.75rem;
 }
 
 .body-svg {
     width: 100%;
     cursor: pointer;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
+.body-svg.anatomical {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+/* Body Outline (Background Silhouette) */
+.body-svg .body-outline {
+    transition: all 0.3s ease;
+}
+
+/* Muscle Region Styling */
 .body-svg .body-region {
     fill: #E2E8F0;
     stroke: #94A3B8;
@@ -1237,17 +1271,54 @@ body.animations-ready .blob-2 {
     cursor: pointer;
 }
 
+.body-svg.anatomical .body-region.muscle-region {
+    fill: rgba(226, 232, 240, 0.4);
+    stroke: rgba(148, 163, 184, 0.6);
+    stroke-width: 0.8;
+}
+
+/* Spine-specific regions (more prominent) */
+.body-svg .body-region.spine-region {
+    fill: rgba(254, 202, 202, 0.3);
+    stroke: rgba(239, 68, 68, 0.5);
+}
+
+/* Knee-specific regions */
+.body-svg .body-region.knee-region {
+    fill: rgba(254, 215, 170, 0.4);
+    stroke: rgba(249, 115, 22, 0.5);
+}
+
+/* Hover State */
 .body-svg .body-region:hover {
     fill: #BAE6FD;
     stroke: #0284C7;
     stroke-width: 2;
+    filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.5));
 }
 
+.body-svg.anatomical .body-region:hover {
+    fill: rgba(186, 230, 253, 0.6);
+    stroke: #38bdf8;
+    stroke-width: 1.5;
+    filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+}
+
+/* Selected State */
 .body-svg .body-region.selected {
     fill: #FCA5A5;
     stroke: #DC2626;
     stroke-width: 2.5;
     animation: pulse-region 1.5s infinite;
+    filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.6));
+}
+
+.body-svg.anatomical .body-region.selected {
+    fill: rgba(252, 165, 165, 0.8);
+    stroke: #ef4444;
+    stroke-width: 2;
+    animation: pulse-anatomical 1.5s infinite;
+    filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.7));
 }
 
 @keyframes pulse-region {
@@ -1262,6 +1333,26 @@ body.animations-ready .blob-2 {
     }
 }
 
+@keyframes pulse-anatomical {
+
+    0%,
+    100% {
+        opacity: 1;
+        filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.7));
+    }
+
+    50% {
+        opacity: 0.85;
+        filter: drop-shadow(0 0 18px rgba(239, 68, 68, 0.9));
+    }
+}
+
+/* Muscle Lines (anatomical detail) */
+.body-svg .muscle-lines,
+.body-svg .spine-dots {
+    pointer-events: none;
+}
+
 .selected-regions-display {
     margin-top: 1rem;
     padding: 0.75rem;
@@ -1270,22 +1361,37 @@ body.animations-ready .blob-2 {
     border: 1px solid #FDE047;
 }
 
+.body-diagram-container.professional+.selected-regions-display {
+    background: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+    border: 1px solid #a16207;
+}
+
 .selected-regions-display .region-tag {
     display: inline-block;
-    background: #DC2626;
+    background: linear-gradient(135deg, #DC2626 0%, #b91c1c 100%);
     color: white;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 16px;
-    font-size: 0.8rem;
-    margin: 2px;
+    font-size: 0.78rem;
+    margin: 3px;
     font-weight: 600;
+    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.selected-regions-display .region-tag:hover {
+    transform: scale(1.05);
 }
 
 .body-diagram-hint {
     text-align: center;
     font-size: 0.8rem;
     color: #94A3B8;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.body-diagram-container.professional~.body-diagram-hint {
+    color: #64748b;
 }
 
 .skip-diagram-link {
@@ -1296,6 +1402,11 @@ body.animations-ready .blob-2 {
     margin-top: 0.5rem;
     cursor: pointer;
     text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.skip-diagram-link:hover {
+    color: #0369a1;
 }
 
 /* ============================================
