@@ -1894,22 +1894,10 @@ body.animations-ready .blob-2 {
 
 .svg-panel {
     display: none;
-    position: relative;
 }
 
 .svg-panel.active {
     display: block;
-}
-
-/* Add realistic muscle anatomy as background */
-.svg-panel#frontPanel {
-    background: url('body_male.png') center/contain no-repeat;
-    min-height: 600px;
-}
-
-.svg-panel#backPanel {
-    background: url('body_male.png') center/contain no-repeat;
-    min-height: 600px;
 }
 
 .body-svg {
@@ -1918,28 +1906,28 @@ body.animations-ready .blob-2 {
     height: auto;
     margin: 0 auto;
     display: block;
-    position: relative;
-    z-index: 10;
 }
 
 .body-part {
-    fill: transparent;
-    stroke: transparent;
-    stroke-width: 0;
+    fill: #e8b4b4;
+    stroke: #c97878;
+    stroke-width: 1.2;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    stroke-linejoin: round;
+    stroke-linecap: round;
 }
 
 .body-part:hover {
-    fill: rgba(96, 165, 250, 0.25);
-    stroke: #3b82f6;
-    stroke-width: 1.5;
-    filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.5));
+    fill: #93c5fd;
+    stroke: #2563eb;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 12px rgba(37, 99, 235, 0.6));
 }
 
 .body-part.selected {
-    fill: rgba(34, 197, 94, 0.4);
-    stroke: #16a34a;
-    stroke-width: 2;
-    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.6));
+    fill: #86efac;
+    stroke: #059669;
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 15px rgba(5, 150, 105, 0.7));
 }
