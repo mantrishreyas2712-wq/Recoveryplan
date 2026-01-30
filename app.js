@@ -134,6 +134,18 @@ document.getElementById('patientForm').addEventListener('submit', async function
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
+    // v2.69: Inject Body Diagram Region Data for AI
+    if (window.getSelectedBodyRegions) {
+        const bodyRegions = window.getSelectedBodyRegions();
+        if (Object.keys(bodyRegions).length > 0) {
+            data.anatomicalRegions = bodyRegions;
+            data.painLocations = Object.values(bodyRegions).join(', ');
+        }
+    }
+
+    // v2.69: Include selected language preference
+    data.language = localStorage.getItem('physioLanguage') || 'english';
+
     // Inject Computed Fields
     if (uploadedReportBase64) {
         data.reportImage = uploadedReportBase64;
@@ -901,13 +913,27 @@ function renderResults(plan, userData) {
         <div class="action-bar sticky-bottom business-bar">
             <a href="${waLink}" target="_blank" class="btn btn-whatsapp">💬 Book Expert</a>
             <div class="secondary-actions">
-                <button onclick="window.print()" class="btn-icon" title="Print Plan">🖨️</button>
+                <button onclick="triggerPrintWithReminder()" class="btn-icon" title="Print Plan">🖨️</button>
                 <button onclick="location.reload()" class="btn-icon" title="New Patient">🔄</button>
             </div>
         </div>
     `;
 
+    // v2.69: Store plan data for reminder modal
+    window.currentRecoveryPlan = plan;
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// v2.69: Trigger reminder before print
+function triggerPrintWithReminder() {
+    if (window.showReminderModal && window.currentRecoveryPlan) {
+        window.showReminderModal(window.currentRecoveryPlan);
+        // Small delay then print
+        setTimeout(() => window.print(), 500);
+    } else {
+        window.print();
+    }
 }
 
 // =============================================================================

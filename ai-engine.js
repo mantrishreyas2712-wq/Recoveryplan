@@ -987,8 +987,20 @@ async function generateRecoveryPlan(patientData) {
     if (window.OpenRouter && window.OpenRouter.isConfigured()) {
         try {
             console.log("🌐 Attempting Online AI Analysis (via Proxy)...");
-            // Rich Context Prompt (v2.2 Comprehensive)
+
+            // v2.69: Get language preference for AI response
+            const userLanguage = patientData.language || 'english';
+            const languageInstruction = {
+                'hindi': 'RESPOND ENTIRELY IN HINDI (Devanagari script). All text, advice, exercise names, and diet items should be in Hindi.',
+                'hinglish': 'RESPOND IN HINGLISH (Hindi words written in English/Roman script mixed with English). Example: "Aapko yeh exercise daily karna chahiye". Make it conversational and easy to read.',
+                'english': 'Respond in clear, simple English.'
+            }[userLanguage];
+
+            // Rich Context Prompt (v2.2 Comprehensive + v2.69 Language Support)
             const systemPrompt = `You are Dr. Vanshika, a specialist Sports Physiotherapist.
+            
+            LANGUAGE INSTRUCTION: ${languageInstruction}
+            
             DIAGNOSIS RULE: You MUST correlate 'Occupation' + 'Story' + 'Body Part' to find specific syndromes.
             - IT/Desk + Neck Pain -> "Tech Neck / Upper Cross Syndrome"
             - Cricket/Tennis + Thumb -> "De Quervain's Tenosynovitis"

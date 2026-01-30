@@ -1,7 +1,8 @@
 /* ============================================
    PhysioAssist - Next-Gen Medical Interface
+   v2.69 - Performance Optimized
    ============================================ */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+/* FONT: Loaded via preload in HTML for faster FCP - removed @import */
 
 :root {
     --primary: #0F766E;
@@ -22,14 +23,14 @@
 }
 
 body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg-gradient);
     color: #0F172A;
     overflow-x: hidden;
     min-height: 100vh;
 }
 
-/* --- Dynamic Background --- */
+/* --- Dynamic Background (DEFERRED for faster FCP) --- */
 .dynamic-bg {
     position: fixed;
     top: 0;
@@ -44,8 +45,9 @@ body {
     position: absolute;
     border-radius: 50%;
     filter: blur(60px);
-    opacity: 0.4;
-    animation: float 10s infinite;
+    opacity: 0;
+    /* Start invisible - animate in after page load */
+    transition: opacity 0.5s ease;
 }
 
 .blob-1 {
@@ -1183,4 +1185,354 @@ body {
     height: 14px;
     background: #EF4444;
     transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* ============================================
+   v2.69 - PERFORMANCE: Deferred Animation State
+   ============================================ */
+body.animations-ready .blob {
+    opacity: 0.4;
+    animation: float 10s infinite;
+}
+
+body.animations-ready .blob-2 {
+    animation-delay: 2s;
+}
+
+/* ============================================
+   v2.69 - INTERACTIVE BODY DIAGRAM
+   ============================================ */
+.body-diagram-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.body-diagram-view {
+    flex: 1;
+    max-width: 200px;
+    min-width: 150px;
+}
+
+.body-diagram-view h4 {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #64748B;
+    margin-bottom: 0.5rem;
+}
+
+.body-svg {
+    width: 100%;
+    cursor: pointer;
+}
+
+.body-svg .body-region {
+    fill: #E2E8F0;
+    stroke: #94A3B8;
+    stroke-width: 1;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.body-svg .body-region:hover {
+    fill: #BAE6FD;
+    stroke: #0284C7;
+    stroke-width: 2;
+}
+
+.body-svg .body-region.selected {
+    fill: #FCA5A5;
+    stroke: #DC2626;
+    stroke-width: 2.5;
+    animation: pulse-region 1.5s infinite;
+}
+
+@keyframes pulse-region {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.selected-regions-display {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: #FEF3C7;
+    border-radius: 8px;
+    border: 1px solid #FDE047;
+}
+
+.selected-regions-display .region-tag {
+    display: inline-block;
+    background: #DC2626;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    margin: 2px;
+    font-weight: 600;
+}
+
+.body-diagram-hint {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #94A3B8;
+    margin-top: 0.5rem;
+}
+
+.skip-diagram-link {
+    display: block;
+    text-align: center;
+    color: #0284C7;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* ============================================
+   v2.69 - EXERCISE REMINDER MODAL
+   ============================================ */
+.reminder-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.reminder-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.reminder-modal {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.reminder-modal-overlay.active .reminder-modal {
+    transform: scale(1) translateY(0);
+}
+
+.reminder-modal-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.reminder-modal-header .icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.reminder-modal-header h3 {
+    color: var(--primary-dark);
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.reminder-modal-header p {
+    color: #64748B;
+    font-size: 0.95rem;
+}
+
+.reminder-modal-header .highlight {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.reminder-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.reminder-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.reminder-option-btn:hover {
+    background: #E0F2FE;
+    border-color: #0284C7;
+    transform: translateX(4px);
+}
+
+.reminder-option-btn .icon {
+    font-size: 1.5rem;
+}
+
+.reminder-option-btn .label {
+    flex: 1;
+}
+
+.reminder-option-btn .title {
+    font-weight: 600;
+    color: #0F172A;
+    display: block;
+}
+
+.reminder-option-btn .desc {
+    font-size: 0.8rem;
+    color: #64748B;
+}
+
+.reminder-skip-btn {
+    margin-top: 1rem;
+    text-align: center;
+    color: #94A3B8;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.reminder-skip-btn:hover {
+    color: #64748B;
+}
+
+/* ============================================
+   v2.69 - LANGUAGE SELECTION POPUP
+   ============================================ */
+.language-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.95) 0%, rgba(13, 148, 136, 0.95) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.4s ease;
+}
+
+.language-popup-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.language-popup {
+    background: white;
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: popupBounce 0.5s ease;
+}
+
+@keyframes popupBounce {
+    0% {
+        transform: scale(0.8) translateY(20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.language-popup-header {
+    margin-bottom: 2rem;
+}
+
+.language-popup-header .language-icon {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.language-popup-header h2 {
+    color: var(--primary-dark);
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.language-popup-header p {
+    color: #64748B;
+    font-size: 1rem;
+}
+
+.language-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.language-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    width: 100%;
+}
+
+.language-btn:hover {
+    background: linear-gradient(135deg, #E0F2FE 0%, #F0FDF4 100%);
+    border-color: var(--primary);
+    transform: translateX(8px);
+}
+
+.language-btn:active {
+    transform: scale(0.98);
+}
+
+.language-btn .lang-flag {
+    font-size: 2rem;
+}
+
+.language-btn .lang-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #0F172A;
+}
+
+.language-btn .lang-desc {
+    font-size: 0.75rem;
+    color: #94A3B8;
+    display: block;
+    margin-top: 2px;
 }

@@ -6,17 +6,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- CSP Removed: Third-party extensions were causing conflicts. Static site doesn't need strict CSP. -->
     <title>PhysioAssist - AI Recovery</title>
+
+    <!-- PERFORMANCE OPTIMIZATION v2.69: Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+    </noscript>
+
     <link rel="stylesheet" href="styles.css">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
-    <!-- SMART AI CORE (TensorFlow.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder"></script>
-    <!-- PDF.js for PDF-to-Image Conversion (Vision AI) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- PERFORMANCE v2.69: Defer heavy AI libraries until needed -->
+    <!-- TensorFlow.js & PDF.js loaded async - not needed for initial form render -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
 </head>
 
 <body>
+
+    <!-- v2.69: LANGUAGE SELECTION POPUP (First interaction before form) -->
+    <div class="language-popup-overlay" id="languagePopup">
+        <div class="language-popup">
+            <div class="language-popup-header">
+                <span class="language-icon">🌐</span>
+                <h2>Choose Your Language</h2>
+                <p>अपनी भाषा चुनें</p>
+            </div>
+            <div class="language-options">
+                <button class="language-btn" onclick="selectLanguage('english')">
+                    <span class="lang-flag">🇬🇧</span>
+                    <span class="lang-name">English</span>
+                </button>
+                <button class="language-btn" onclick="selectLanguage('hindi')">
+                    <span class="lang-flag">🇮🇳</span>
+                    <span class="lang-name">हिंदी</span>
+                </button>
+                <button class="language-btn" onclick="selectLanguage('hinglish')">
+                    <span class="lang-flag">🔀</span>
+                    <span class="lang-name">Hinglish</span>
+                    <span class="lang-desc">Mix of Both</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Dynamic Background -->
     <div class="dynamic-bg">
@@ -200,18 +241,166 @@
                     <!-- STEP 4: SYMPTOMS -->
                     <div class="form-step hidden" id="step4">
                         <div class="clinical-group">
-                            <h3>Tell us about the pain</h3>
-                            <div class="floating-input">
-                                <select id="problemArea" name="problemArea" required class="input-field">
-                                    <option value="" disabled selected hidden></option>
-                                    <option value="neck">Neck & Cervical</option>
-                                    <option value="shoulder">Shoulder</option>
-                                    <option value="back">Back (Upper/Lower)</option>
-                                    <option value="knee">Knee</option>
-                                    <option value="ankle">Ankle & Foot</option>
-                                    <option value="wrist">Wrist & Hand</option>
-                                </select>
-                                <label for="problemArea">Affected Area</label>
+                            <h3>📍 Tap Where It Hurts</h3>
+
+                            <!-- v2.69: INTERACTIVE 2D BODY DIAGRAM -->
+                            <div class="body-diagram-container" id="bodyDiagramContainer">
+                                <!-- FRONT VIEW -->
+                                <div class="body-diagram-view">
+                                    <h4>Front</h4>
+                                    <svg class="body-svg" viewBox="0 0 120 240" id="bodyFront">
+                                        <!-- Head -->
+                                        <ellipse class="body-region" data-region="head" data-name="Head (Cranial)"
+                                            cx="60" cy="22" rx="18" ry="20" />
+                                        <!-- Neck -->
+                                        <rect class="body-region" data-region="neck" data-name="Neck (Cervical Spine)"
+                                            x="52" y="42" width="16" height="16" rx="4" />
+                                        <!-- Left Shoulder -->
+                                        <ellipse class="body-region" data-region="left-shoulder"
+                                            data-name="Left Shoulder (Deltoid)" cx="32" cy="62" rx="14" ry="10" />
+                                        <!-- Right Shoulder -->
+                                        <ellipse class="body-region" data-region="right-shoulder"
+                                            data-name="Right Shoulder (Deltoid)" cx="88" cy="62" rx="14" ry="10" />
+                                        <!-- Chest -->
+                                        <rect class="body-region" data-region="chest" data-name="Chest (Pectorals)"
+                                            x="38" y="58" width="44" height="30" rx="6" />
+                                        <!-- Left Arm -->
+                                        <rect class="body-region" data-region="left-arm"
+                                            data-name="Left Arm (Biceps/Triceps)" x="14" y="68" width="14" height="50"
+                                            rx="5" />
+                                        <!-- Right Arm -->
+                                        <rect class="body-region" data-region="right-arm"
+                                            data-name="Right Arm (Biceps/Triceps)" x="92" y="68" width="14" height="50"
+                                            rx="5" />
+                                        <!-- Left Wrist/Hand -->
+                                        <ellipse class="body-region" data-region="left-wrist"
+                                            data-name="Left Wrist & Hand" cx="18" cy="130" rx="8" ry="12" />
+                                        <!-- Right Wrist/Hand -->
+                                        <ellipse class="body-region" data-region="right-wrist"
+                                            data-name="Right Wrist & Hand" cx="102" cy="130" rx="8" ry="12" />
+                                        <!-- Abdomen -->
+                                        <rect class="body-region" data-region="abdomen" data-name="Abdomen (Core)"
+                                            x="40" y="90" width="40" height="32" rx="6" />
+                                        <!-- Hip/Pelvis -->
+                                        <rect class="body-region" data-region="hip" data-name="Hip & Pelvis" x="35"
+                                            y="124" width="50" height="20" rx="8" />
+                                        <!-- Left Thigh -->
+                                        <rect class="body-region" data-region="left-thigh"
+                                            data-name="Left Thigh (Quadriceps)" x="36" y="146" width="18" height="40"
+                                            rx="6" />
+                                        <!-- Right Thigh -->
+                                        <rect class="body-region" data-region="right-thigh"
+                                            data-name="Right Thigh (Quadriceps)" x="66" y="146" width="18" height="40"
+                                            rx="6" />
+                                        <!-- Left Knee -->
+                                        <ellipse class="body-region" data-region="left-knee"
+                                            data-name="Left Knee (Patella)" cx="45" cy="192" rx="10" ry="8" />
+                                        <!-- Right Knee -->
+                                        <ellipse class="body-region" data-region="right-knee"
+                                            data-name="Right Knee (Patella)" cx="75" cy="192" rx="10" ry="8" />
+                                        <!-- Left Lower Leg -->
+                                        <rect class="body-region" data-region="left-calf"
+                                            data-name="Left Calf (Gastrocnemius)" x="38" y="202" width="14" height="28"
+                                            rx="5" />
+                                        <!-- Right Lower Leg -->
+                                        <rect class="body-region" data-region="right-calf"
+                                            data-name="Right Calf (Gastrocnemius)" x="68" y="202" width="14" height="28"
+                                            rx="5" />
+                                        <!-- Left Ankle/Foot -->
+                                        <ellipse class="body-region" data-region="left-ankle"
+                                            data-name="Left Ankle & Foot" cx="45" cy="235" rx="10" ry="5" />
+                                        <!-- Right Ankle/Foot -->
+                                        <ellipse class="body-region" data-region="right-ankle"
+                                            data-name="Right Ankle & Foot" cx="75" cy="235" rx="10" ry="5" />
+                                    </svg>
+                                </div>
+
+                                <!-- BACK VIEW -->
+                                <div class="body-diagram-view">
+                                    <h4>Back</h4>
+                                    <svg class="body-svg" viewBox="0 0 120 240" id="bodyBack">
+                                        <!-- Head Back -->
+                                        <ellipse class="body-region" data-region="head-back"
+                                            data-name="Head (Occipital)" cx="60" cy="22" rx="18" ry="20" />
+                                        <!-- Upper Back/Neck -->
+                                        <rect class="body-region" data-region="cervical" data-name="Upper Neck (C1-C4)"
+                                            x="48" y="42" width="24" height="12" rx="4" />
+                                        <!-- Trapezius -->
+                                        <path class="body-region" data-region="trapezius" data-name="Trapezius Muscle"
+                                            d="M32,54 Q60,48 88,54 L82,72 Q60,68 38,72 Z" />
+                                        <!-- Upper Back -->
+                                        <rect class="body-region" data-region="upper-back"
+                                            data-name="Upper Back (Thoracic T1-T6)" x="38" y="72" width="44" height="24"
+                                            rx="4" />
+                                        <!-- Mid Back -->
+                                        <rect class="body-region" data-region="mid-back"
+                                            data-name="Mid Back (Thoracic T7-T12)" x="40" y="98" width="40" height="22"
+                                            rx="4" />
+                                        <!-- Lower Back -->
+                                        <rect class="body-region" data-region="lower-back"
+                                            data-name="Lower Back (Lumbar L1-L5)" x="42" y="122" width="36" height="22"
+                                            rx="4" />
+                                        <!-- Left Shoulder Blade -->
+                                        <ellipse class="body-region" data-region="left-scapula"
+                                            data-name="Left Shoulder Blade (Scapula)" cx="34" cy="82" rx="10" ry="14" />
+                                        <!-- Right Shoulder Blade -->
+                                        <ellipse class="body-region" data-region="right-scapula"
+                                            data-name="Right Shoulder Blade (Scapula)" cx="86" cy="82" rx="10"
+                                            ry="14" />
+                                        <!-- Sacrum/Tailbone -->
+                                        <ellipse class="body-region" data-region="sacrum" data-name="Sacrum & Tailbone"
+                                            cx="60" cy="152" rx="16" ry="10" />
+                                        <!-- Left Glute -->
+                                        <ellipse class="body-region" data-region="left-glute"
+                                            data-name="Left Gluteus (Buttock)" cx="46" cy="165" rx="14" ry="12" />
+                                        <!-- Right Glute -->
+                                        <ellipse class="body-region" data-region="right-glute"
+                                            data-name="Right Gluteus (Buttock)" cx="74" cy="165" rx="14" ry="12" />
+                                        <!-- Left Hamstring -->
+                                        <rect class="body-region" data-region="left-hamstring"
+                                            data-name="Left Hamstring" x="36" y="178" width="18" height="35" rx="6" />
+                                        <!-- Right Hamstring -->
+                                        <rect class="body-region" data-region="right-hamstring"
+                                            data-name="Right Hamstring" x="66" y="178" width="18" height="35" rx="6" />
+                                        <!-- Left Calf Back -->
+                                        <rect class="body-region" data-region="left-calf-back"
+                                            data-name="Left Calf (Soleus)" x="38" y="215" width="14" height="20"
+                                            rx="5" />
+                                        <!-- Right Calf Back -->
+                                        <rect class="body-region" data-region="right-calf-back"
+                                            data-name="Right Calf (Soleus)" x="68" y="215" width="14" height="20"
+                                            rx="5" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Selected Regions Display -->
+                            <div id="selectedRegionsDisplay" class="selected-regions-display" style="display: none;">
+                                <span style="font-size: 0.8rem; color: #92400E;">Selected pain areas:</span>
+                                <div id="selectedRegionTags"></div>
+                            </div>
+
+                            <p class="body-diagram-hint">👆 Tap multiple areas if pain spreads</p>
+                            <span class="skip-diagram-link" onclick="toggleTextInput()">Or type location manually
+                                ↓</span>
+
+                            <!-- Hidden field for selected regions -->
+                            <input type="hidden" id="selectedBodyRegions" name="selectedBodyRegions" value="">
+
+                            <!-- Fallback Text Input (Initially Hidden) -->
+                            <div id="textInputFallback" style="display: none; margin-top: 1rem;">
+                                <div class="floating-input">
+                                    <select id="problemArea" name="problemArea" class="input-field">
+                                        <option value="" disabled selected hidden></option>
+                                        <option value="neck">Neck & Cervical</option>
+                                        <option value="shoulder">Shoulder</option>
+                                        <option value="back">Back (Upper/Lower)</option>
+                                        <option value="knee">Knee</option>
+                                        <option value="ankle">Ankle & Foot</option>
+                                        <option value="wrist">Wrist & Hand</option>
+                                    </select>
+                                    <label for="problemArea">Affected Area</label>
+                                </div>
                             </div>
 
                             <div class="floating-input">
@@ -260,8 +449,45 @@
 
     </main>
 
+    <!-- v2.69: EXERCISE REMINDER MODAL -->
+    <div class="reminder-modal-overlay" id="reminderModal">
+        <div class="reminder-modal">
+            <div class="reminder-modal-header">
+                <div class="icon">📅</div>
+                <h3>Never Miss Your Recovery Exercises!</h3>
+                <p>Your plan recommends exercises <span class="highlight" id="exerciseFrequency">3x daily</span></p>
+            </div>
+            <div class="reminder-options">
+                <button class="reminder-option-btn" onclick="setPhoneAlarm()">
+                    <span class="icon">📱</span>
+                    <div class="label">
+                        <span class="title">Set Phone Alarm</span>
+                        <span class="desc">Recommended times: 8 AM, 2 PM, 8 PM</span>
+                    </div>
+                </button>
+                <button class="reminder-option-btn" onclick="downloadCalendar()">
+                    <span class="icon">📆</span>
+                    <div class="label">
+                        <span class="title">Add to Calendar</span>
+                        <span class="desc">Download .ics file for Google/Apple Calendar</span>
+                    </div>
+                </button>
+                <button class="reminder-option-btn" onclick="whatsappReminder()">
+                    <span class="icon">💬</span>
+                    <div class="label">
+                        <span class="title">WhatsApp Reminder</span>
+                        <span class="desc">Send yourself a reminder message</span>
+                    </div>
+                </button>
+            </div>
+            <div class="reminder-skip-btn" onclick="closeReminderModal()">
+                No thanks, I'll remember
+            </div>
+        </div>
+    </div>
+
     <div style="text-align: center; color: #cbd5e1; font-size: 0.8rem; padding: 20px;">
-        PhysioAssist AI v2.68 (Professional Fallback) • <span id="statusIndicator">System Ready</span>
+        PhysioAssist AI v2.69 (Body Diagram + Reminders) • <span id="statusIndicator">System Ready</span>
     </div>
     </div>
 
@@ -292,6 +518,366 @@
         }
         document.addEventListener('DOMContentLoaded', initFloatingLabels);
 
+        // ========================================
+        // v2.69: PERFORMANCE - Defer Animations
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.body.classList.add('animations-ready');
+            }, 300);
+        });
+
+        // ========================================
+        // v2.69: INTERACTIVE BODY DIAGRAM
+        // ========================================
+        const selectedRegions = new Set();
+        const regionData = {}; // Store region names for AI
+
+        function initBodyDiagram() {
+            const regions = document.querySelectorAll('.body-region');
+            regions.forEach(region => {
+                region.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const regionId = region.dataset.region;
+                    const regionName = region.dataset.name;
+
+                    if (selectedRegions.has(regionId)) {
+                        // Deselect
+                        selectedRegions.delete(regionId);
+                        delete regionData[regionId];
+                        region.classList.remove('selected');
+                    } else {
+                        // Select
+                        selectedRegions.add(regionId);
+                        regionData[regionId] = regionName;
+                        region.classList.add('selected');
+                    }
+
+                    updateSelectedDisplay();
+                });
+            });
+        }
+
+        function updateSelectedDisplay() {
+            const display = document.getElementById('selectedRegionsDisplay');
+            const tagsContainer = document.getElementById('selectedRegionTags');
+            const hiddenInput = document.getElementById('selectedBodyRegions');
+
+            if (selectedRegions.size > 0) {
+                display.style.display = 'block';
+                tagsContainer.innerHTML = Array.from(selectedRegions).map(id =>
+                    `<span class="region-tag">${regionData[id]}</span>`
+                ).join('');
+                // Store as JSON for form submission
+                hiddenInput.value = JSON.stringify(regionData);
+            } else {
+                display.style.display = 'none';
+                hiddenInput.value = '';
+            }
+        }
+
+        function toggleTextInput() {
+            const fallback = document.getElementById('textInputFallback');
+            const diagram = document.getElementById('bodyDiagramContainer');
+            const hint = document.querySelector('.body-diagram-hint');
+            const link = document.querySelector('.skip-diagram-link');
+
+            if (fallback.style.display === 'none') {
+                fallback.style.display = 'block';
+                link.textContent = 'Use body diagram instead ↑';
+            } else {
+                fallback.style.display = 'none';
+                link.textContent = 'Or type location manually ↓';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initBodyDiagram);
+
+        // ========================================
+        // v2.69: EXERCISE REMINDER SYSTEM
+        // ========================================
+        let currentPlanData = null; // Stored when plan is generated
+        let hasShownReminder = false;
+
+        function showReminderModal(planData) {
+            if (hasShownReminder || sessionStorage.getItem('reminderShown')) return;
+
+            currentPlanData = planData;
+            const modal = document.getElementById('reminderModal');
+            modal.classList.add('active');
+            hasShownReminder = true;
+            sessionStorage.setItem('reminderShown', 'true');
+        }
+
+        function closeReminderModal() {
+            const modal = document.getElementById('reminderModal');
+            modal.classList.remove('active');
+        }
+
+        function setPhoneAlarm() {
+            alert('📱 Set alarms on your phone for:\n\n• 8:00 AM - Morning exercises\n• 2:00 PM - Afternoon stretches\n• 8:00 PM - Evening recovery\n\nTip: Name each alarm with your exercise!');
+            closeReminderModal();
+        }
+
+        function downloadCalendar() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            const formatDate = (date, hours) => {
+                date.setHours(hours, 0, 0);
+                return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            };
+
+            const exercises = currentPlanData?.exercises?.slice(0, 3)?.map(e => e.name).join(', ') || 'PhysioAssist Exercises';
+
+            const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//PhysioAssist//Recovery//EN
+BEGIN:VEVENT
+UID:physio-morning-${Date.now()}@physioassist
+DTSTAMP:${formatDate(new Date(), 8)}
+DTSTART:${formatDate(new Date(tomorrow), 8)}
+DTEND:${formatDate(new Date(tomorrow), 8).replace('T080000', 'T081500')}
+RRULE:FREQ=DAILY;COUNT=30
+SUMMARY:🏋️ Morning Exercises
+DESCRIPTION:${exercises}
+END:VEVENT
+BEGIN:VEVENT
+UID:physio-afternoon-${Date.now()}@physioassist
+DTSTAMP:${formatDate(new Date(), 14)}
+DTSTART:${formatDate(new Date(tomorrow), 14)}
+DTEND:${formatDate(new Date(tomorrow), 14).replace('T140000', 'T141500')}
+RRULE:FREQ=DAILY;COUNT=30
+SUMMARY:🧘 Afternoon Stretches
+DESCRIPTION:${exercises}
+END:VEVENT
+BEGIN:VEVENT
+UID:physio-evening-${Date.now()}@physioassist
+DTSTAMP:${formatDate(new Date(), 20)}
+DTSTART:${formatDate(new Date(tomorrow), 20)}
+DTEND:${formatDate(new Date(tomorrow), 20).replace('T200000', 'T201500')}
+RRULE:FREQ=DAILY;COUNT=30
+SUMMARY:😌 Evening Recovery
+DESCRIPTION:${exercises}
+END:VEVENT
+END:VCALENDAR`;
+
+            const blob = new Blob([icsContent], { type: 'text/calendar' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'physioassist-reminders.ics';
+            link.click();
+
+            closeReminderModal();
+        }
+
+        function whatsappReminder() {
+            const exercises = currentPlanData?.exercises?.slice(0, 3)?.map(e => `• ${e.name}`).join('\n') || '• Your exercises';
+            const msg = encodeURIComponent(
+                `🏥 EXERCISE REMINDER\n\n` +
+                `Today's Exercises:\n${exercises}\n\n` +
+                `⏰ Times: 8 AM, 2 PM, 8 PM\n\n` +
+                `💪 Stay consistent for faster recovery!`
+            );
+            window.open(`https://wa.me/?text=${msg}`, '_blank');
+            closeReminderModal();
+        }
+
+        // Expose for app.js to call after plan generation
+        window.showReminderModal = showReminderModal;
+        window.getSelectedBodyRegions = () => regionData;
+
+        // ========================================
+        // v2.69: LANGUAGE SELECTION SYSTEM
+        // ========================================
+        const TRANSLATIONS = {
+            english: {
+                // Form Headers
+                patientProfile: '📋 Patient Profile',
+                stepIndicator: 'Step {n} of 4',
+                nextLifestyle: 'Next: Lifestyle ➔',
+                nextMedical: 'Next: Medical History ➔',
+                nextSymptoms: 'Next: Symptoms ➔',
+                back: 'Back',
+                generatePlan: 'Generate Plan ⚡',
+                // Labels
+                fullName: 'Full Name',
+                mobile: 'Mobile Number',
+                age: 'Age',
+                gender: 'Gender',
+                weight: 'Weight (kg)',
+                height: 'Height (cm)',
+                occupation: 'Occupation',
+                activity: 'Daily Activity (e.g. Badminton, Yoga, Gardening)',
+                dietType: 'Diet Type',
+                // Medical
+                medicalProfile: 'Medical Profile',
+                diabetes: 'Diabetes',
+                highBP: 'High BP',
+                heartIssue: 'Heart Issue',
+                recentSurgery: 'Recent Operations?',
+                uploadReport: 'Have an X-Ray, MRI, or Report? (Optional)',
+                clickUpload: 'Click to Upload Image/Report (Max 1MB)',
+                // Symptoms
+                tapHurts: '📍 Tap Where It Hurts',
+                tapMultiple: '👆 Tap multiple areas if pain spreads',
+                typeManually: 'Or type location manually ↓',
+                describeSymptoms: 'Describe symptoms...',
+                painLevel: 'Pain Level',
+                mild: '🙂 Mild',
+                moderate: '😐 Moderate',
+                severe: '😫 Severe',
+                affectedArea: 'Affected Area',
+                // Diet Options
+                vegetarian: 'Vegetarian',
+                nonVeg: 'Non-Vegetarian',
+                vegan: 'Vegan',
+                keto: 'Keto',
+                // Gender Options
+                male: 'Male',
+                female: 'Female',
+                other: 'Other',
+                front: 'Front',
+                backBody: 'Back'
+            },
+            hindi: {
+                patientProfile: '📋 रोगी प्रोफाइल',
+                stepIndicator: 'चरण {n} में से 4',
+                nextLifestyle: 'अगला: जीवनशैली ➔',
+                nextMedical: 'अगला: चिकित्सा इतिहास ➔',
+                nextSymptoms: 'अगला: लक्षण ➔',
+                back: 'वापस',
+                generatePlan: 'योजना बनाएं ⚡',
+                fullName: 'पूरा नाम',
+                mobile: 'मोबाइल नंबर',
+                age: 'उम्र',
+                gender: 'लिंग',
+                weight: 'वजन (किलो)',
+                height: 'ऊंचाई (सेमी)',
+                occupation: 'व्यवसाय',
+                activity: 'दैनिक गतिविधि (जैसे बैडमिंटन, योग)',
+                dietType: 'आहार प्रकार',
+                medicalProfile: 'चिकित्सा प्रोफाइल',
+                diabetes: 'डायबिटीज',
+                highBP: 'उच्च रक्तचाप',
+                heartIssue: 'हृदय समस्या',
+                recentSurgery: 'हाल की सर्जरी?',
+                uploadReport: 'X-Ray, MRI या रिपोर्ट है? (वैकल्पिक)',
+                clickUpload: 'अपलोड करने के लिए क्लिक करें (अधिकतम 1MB)',
+                tapHurts: '📍 दर्द वाली जगह पर टैप करें',
+                tapMultiple: '👆 कई जगह दर्द हो तो सभी पर टैप करें',
+                typeManually: 'या मैन्युअल टाइप करें ↓',
+                describeSymptoms: 'लक्षण बताएं...',
+                painLevel: 'दर्द का स्तर',
+                mild: '🙂 हल्का',
+                moderate: '😐 मध्यम',
+                severe: '😫 गंभीर',
+                affectedArea: 'प्रभावित क्षेत्र',
+                vegetarian: 'शाकाहारी',
+                nonVeg: 'मांसाहारी',
+                vegan: 'वीगन',
+                keto: 'कीटो',
+                male: 'पुरुष',
+                female: 'महिला',
+                other: 'अन्य',
+                front: 'सामने',
+                backBody: 'पीछे'
+            },
+            hinglish: {
+                patientProfile: '📋 Patient Profile',
+                stepIndicator: 'Step {n} of 4',
+                nextLifestyle: 'Next: Lifestyle ➔',
+                nextMedical: 'Next: Medical History ➔',
+                nextSymptoms: 'Next: Symptoms ➔',
+                back: 'Back',
+                generatePlan: 'Plan Banao ⚡',
+                fullName: 'Poora Naam',
+                mobile: 'Mobile Number',
+                age: 'Umar',
+                gender: 'Gender',
+                weight: 'Wazan (kg)',
+                height: 'Height (cm)',
+                occupation: 'Kaam/Job',
+                activity: 'Daily Activity (jaise Badminton, Yoga)',
+                dietType: 'Khana Type',
+                medicalProfile: 'Medical History',
+                diabetes: 'Sugar/Diabetes',
+                highBP: 'High BP',
+                heartIssue: 'Heart Problem',
+                recentSurgery: 'Recent Surgery hui?',
+                uploadReport: 'X-Ray, MRI ya Report hai? (Optional)',
+                clickUpload: 'Upload karne ke liye click karo (Max 1MB)',
+                tapHurts: '📍 Jahan dard hai wahan tap karo',
+                tapMultiple: '👆 Agar kai jagah dard hai toh sab pe tap karo',
+                typeManually: 'Ya manually type karo ↓',
+                describeSymptoms: 'Symptoms batao...',
+                painLevel: 'Dard Level',
+                mild: '🙂 Halka',
+                moderate: '😐 Medium',
+                severe: '😫 Bahut Zyada',
+                affectedArea: 'Affected Area',
+                vegetarian: 'Shakahari',
+                nonVeg: 'Non-Veg',
+                vegan: 'Vegan',
+                keto: 'Keto',
+                male: 'Male',
+                female: 'Female',
+                other: 'Other',
+                front: 'Front',
+                backBody: 'Back'
+            }
+        };
+
+        function selectLanguage(lang) {
+            localStorage.setItem('physioLanguage', lang);
+            document.getElementById('languagePopup').classList.add('hidden');
+            applyTranslations(lang);
+        }
+
+        function applyTranslations(lang) {
+            const t = TRANSLATIONS[lang] || TRANSLATIONS.english;
+
+            // Update form labels using data attributes
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.dataset.translate;
+                if (t[key]) el.textContent = t[key];
+            });
+
+            // Update select options
+            const genderSelect = document.getElementById('gender');
+            if (genderSelect) {
+                const options = genderSelect.querySelectorAll('option');
+                options.forEach(opt => {
+                    if (opt.value === 'male') opt.textContent = t.male;
+                    if (opt.value === 'female') opt.textContent = t.female;
+                    if (opt.value === 'other') opt.textContent = t.other;
+                });
+            }
+
+            // Update body diagram labels
+            const frontLabel = document.querySelector('.body-diagram-view:first-child h4');
+            const backLabel = document.querySelector('.body-diagram-view:last-child h4');
+            if (frontLabel) frontLabel.textContent = t.front;
+            if (backLabel) backLabel.textContent = t.backBody;
+
+            // Update hints
+            const hint = document.querySelector('.body-diagram-hint');
+            if (hint) hint.textContent = t.tapMultiple;
+
+            const skipLink = document.querySelector('.skip-diagram-link');
+            if (skipLink) skipLink.textContent = t.typeManually;
+        }
+
+        // Check if language already selected
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('physioLanguage');
+            if (savedLang) {
+                document.getElementById('languagePopup').classList.add('hidden');
+                applyTranslations(savedLang);
+            }
+        });
+
         function nextStep(stepNumber) {
             // Hide all steps
             document.querySelectorAll('.form-step').forEach(el => el.classList.add('hidden'));
@@ -304,7 +890,9 @@
                 target.classList.add('active');
 
                 // Update indicator
-                document.getElementById('stepIndicator').innerText = `Step ${stepNumber} of 4`;
+                const lang = localStorage.getItem('physioLanguage') || 'english';
+                const t = TRANSLATIONS[lang];
+                document.getElementById('stepIndicator').innerText = t.stepIndicator.replace('{n}', stepNumber);
 
                 // PERFORMANCE OPTIMIZATION (v2.10)
                 // Initialize Heavy AI Model only AFTER user finishes Step 1 (Typing)
