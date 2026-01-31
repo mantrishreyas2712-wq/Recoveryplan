@@ -1835,21 +1835,11 @@ const HOME_EQUIPMENT = {
 function enrichWithSmartLinks(plan, age = 30, surgeryInfo = {}) {
     if (plan.exercisePlan?.selectedExercises) {
         plan.exercisePlan.selectedExercises = plan.exercisePlan.selectedExercises.map((ex) => {
-            const query = encodeURIComponent(`${ex.name} exercise physical therapy`);
+            // THUMBNAIL & VIDEO LOGIC (v3.2) - Always use YouTube Search (No More Broken Videos)
+            const query = encodeURIComponent(`${ex.name} physiotherapy exercise`);
+            const thumbUrl = getExerciseThumbnail(ex.name || 'exercise');
+            const videoUrl = `https://www.youtube.com/results?search_query=${query}`;
 
-            // THUMBNAIL LOGIC (v2.9) - YouTube ID -> AI Keyword -> Fallback
-            let thumbUrl = '';
-            let videoUrl = '';
-
-            if (ex.youtube_id && ex.youtube_id.length === 11) {
-                // High Quality YouTube Thumbnail
-                thumbUrl = `https://img.youtube.com/vi/${ex.youtube_id}/mqdefault.jpg`;
-                videoUrl = `https://www.youtube.com/watch?v=${ex.youtube_id}`;
-            } else {
-                // Fallback to Search/Placeholder
-                thumbUrl = getExerciseThumbnail(ex.name || 'exercise');
-                videoUrl = `https://www.youtube.com/results?search_query=${query}`;
-            }
 
             // Check for equipment - prioritize clinic detection first
             let equipType = null; // 'clinic' or 'home'

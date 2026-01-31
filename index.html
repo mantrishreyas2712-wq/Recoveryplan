@@ -254,79 +254,112 @@
                                 </div>
 
                                 <!-- FRONT VIEW SVG -->
-                                <div class="svg-panel active" id="frontPanel">
+                                < <div class="svg-panel active" id="frontPanel">
                                     <svg viewBox="0 0 200 400" class="body-svg">
-                                        <!-- HEAD -->
-                                        <ellipse data-region="head" data-name="Head" cx="100" cy="25" rx="20" ry="22"
-                                            class="body-part" />
+                                        <!-- GRADIENT DEFINITIONS for realistic muscle depth -->
+                                        <defs>
+                                            <linearGradient id="muscleGradLight" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" style="stop-color:#f0c4b4;stop-opacity:1" />
+                                                <stop offset="50%" style="stop-color:#e8b4b4;stop-opacity:1" />
+                                                <stop offset="100%" style="stop-color:#f0c4b4;stop-opacity:1" />
+                                            </linearGradient>
+                                            <linearGradient id="muscleGradDark" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" style="stop-color:#d8a4a4;stop-opacity:1" />
+                                                <stop offset="50%" style="stop-color:#e8b4b4;stop-opacity:1" />
+                                                <stop offset="100%" style="stop-color:#d8a4a4;stop-opacity:1" />
+                                            </linearGradient>
+                                        </defs>
 
-                                        <!-- NECK -->
-                                        <rect data-region="neck" data-name="Neck" x="92" y="47" width="16" height="15"
-                                            class="body-part" />
+                                        <!-- HEAD (organic oval) -->
+                                        <ellipse data-region="head" data-name="Head" cx="100" cy="25" rx="20" ry="24"
+                                            fill="url(#muscleGradLight)" class="body-part" />
 
-                                        <!-- SHOULDERS -->
+                                        <!-- NECK (trapezoid with curves) -->
+                                        <path data-region="neck" data-name="Neck"
+                                            d="M88,47 Q92,45 100,45 Q108,45 112,47 L108,62 Q100,64 92,62 Z"
+                                            fill="url(#muscleGradLight)" class="body-part" />
+
+                                        <!-- SHOULDERS (deltoid muscle shape with curves) -->
                                         <path data-region="left-shoulder" data-name="Left Shoulder"
-                                            d="M60,62 L92,62 L92,78 L55,85 Z" class="body-part" />
+                                            d="M55,62 Q60,60 70,62 L85,62 Q90,65 92,75 L88,78 Q75,80 60,85 Q55,82 55,75 Z"
+                                            fill="url(#muscleGradDark)" class="body-part" />
                                         <path data-region="right-shoulder" data-name="Right Shoulder"
-                                            d="M108,62 L140,62 L145,85 L108,78 Z" class="body-part" />
+                                            d="M108,62 L115,62 Q130,60 140,62 Q145,65 145,75 Q140,82 130,85 Q115,80 112,78 L108,75 Q108,65 108,62 Z"
+                                            fill="url(#muscleGradDark)" class="body-part" />
 
-                                        <!-- CHEST -->
-                                        <path data-region="chest" data-name="Chest"
-                                            d="M70,78 L130,78 L128,120 L72,120 Z" class="body-part" />
+                                        <!-- CHEST (pectoralis major - organic muscle shape) -->
+                                        <path data-region="chest" data-name="Chest" d="M70,78 Q72,76 85,75 Q100,74 115,75 Q128,76 130,78 
+                                               L128,95 Q125,105 120,112 Q115,118 110,120 
+                                               Q100,122 90,120 Q85,118 80,112 Q75,105 72,95 Z"
+                                            fill="url(#muscleGradLight)" class="body-part" />
 
-                                        <!-- UPPER ARMS (BICEPS) -->
-                                        <path data-region="left-bicep" data-name="Left Upper Arm"
-                                            d="M55,85 L70,78 L72,130 L48,135 Z" class="body-part" />
-                                        <path data-region="right-bicep" data-name="Right Upper Arm"
-                                            d="M130,78 L145,85 L152,135 L128,130 Z" class="body-part" />
+                                        <!-- UPPER ARMS (biceps with muscle bulge) -->
+                                        <path data-region="left-bicep" data-name="Left Upper Arm" d="M55,85 Q58,83 65,82 L72,82 Q75,85 75,95 Q75,110 72,125 
+                                               L70,130 Q62,132 55,132 Q50,128 48,120 Q47,105 50,95 Z"
+                                            fill="url(#muscleGradDark)" class="body-part" />
+                                        <path data-region="right-bicep" data-name="Right Upper Arm" d="M128,82 L135,82 Q142,83 145,85 Q150,95 153,105 Q152,120 150,128 
+                                               Q145,132 135,132 L130,130 Q128,125 125,110 Q125,95 125,85 Z"
+                                            fill="url(#muscleGradDark)" class="body-part" />
 
-                                        <!-- ELBOWS -->
-                                        <ellipse data-region="left-elbow" data-name="Left Elbow" cx="46" cy="142" rx="8"
-                                            ry="10" class="body-part" />
+                                        <!-- ELBOWS (rounded joints) -->
+                                        <ellipse data-region="left-elbow" data-name="Left Elbow" cx="46" cy="142" rx="9"
+                                            ry="11" fill="url(#muscleGradLight)" class="body-part" />
                                         <ellipse data-region="right-elbow" data-name="Right Elbow" cx="154" cy="142"
-                                            rx="8" ry="10" class="body-part" />
+                                            rx="9" ry="11" fill="url(#muscleGradLight)" class="body-part" />
 
-                                        <!-- FOREARMS -->
-                                        <path data-region="left-forearm" data-name="Left Forearm"
-                                            d="M38,152 L54,152 L50,195 L35,195 Z" class="body-part" />
-                                        <path data-region="right-forearm" data-name="Right Forearm"
-                                            d="M146,152 L162,152 L165,195 L150,195 Z" class="body-part" />
+                                        <!-- FOREARMS (tapered muscle shape) -->
+                                        <path data-region="left-forearm" data-name="Left Forearm" d="M38,152 Q42,150 50,150 L54,152 Q55,165 54,180 Q53,190 50,195 
+                                               Q45,196 38,196 Q35,192 35,185 Q35,170 36,160 Z"
+                                            fill="url(#muscleGradLight)" class="body-part" />
+                                        <path data-region="right-forearm" data-name="Right Forearm" d="M146,152 L150,150 Q158,150 162,152 Q164,160 165,170 Q165,185 165,192 
+                                               Q162,196 155,196 L150,195 Q147,190 146,180 Q145,165 146,152 Z"
+                                            fill="url(#muscleGradLight)" class="body-part" />
 
-                                        <!-- WRISTS -->
-                                        <rect data-region="left-wrist" data-name="Left Wrist" x="33" y="195" width="19"
-                                            height="10" class="body-part" />
+                                        <!-- WRISTS (narrow joints) -->
+                                        <rect data-region="left-wrist" data-name="Left Wrist" x="33" y="195" width="20"
+                                            height="10" rx="3" fill="url(#muscleGradDark)" class="body-part" />
                                         <rect data-region="right-wrist" data-name="Right Wrist" x="148" y="195"
-                                            width="19" height="10" class="body-part" />
+                                            width="20" height="10" rx="3" fill="url(#muscleGradDark)"
+                                            class="body-part" />
 
-                                        <!-- HANDS -->
-                                        <path data-region="left-hand" data-name="Left Hand"
-                                            d="M30,205 L55,205 L58,230 L27,230 Z" class="body-part" />
-                                        <path data-region="right-hand" data-name="Right Hand"
-                                            d="M145,205 L170,205 L173,230 L142,230 Z" class="body-part" />
+                                        <!-- HANDS (organic palm shape) -->
+                                        <path data-region="left-hand" data-name="Left Hand" d="M30,205 Q35,203 45,203 L55,205 Q58,215 58,225 L55,230 
+                                               Q45,232 35,232 L27,230 Q27,220 28,212 Z" fill="url(#muscleGradLight)"
+                                            class="body-part" />
+                                        <path data-region="right-hand" data-name="Right Hand" d="M145,203 Q155,203 165,205 L173,207 Q173,217 173,227 L170,230 
+                                               Q160,232 150,232 L142,230 Q142,220 142,210 Z"
+                                            fill="url(#muscleGradLight)" class="body-part" />
 
-                                        <!-- UPPER ABDOMEN -->
-                                        <rect data-region="upper-abs" data-name="Upper Belly" x="75" y="120" width="50"
-                                            height="28" class="body-part" />
+                                        <!-- UPPER ABS (rectus abdominis with 6-pack contour) -->
+                                        <path data-region="upper-abs" data-name="Upper Belly" d="M75,120 Q78,118 90,118 Q100,118 110,118 Q122,118 125,120 
+                                               L125,135 Q122,145 115,146 Q100,147 85,146 Q78,145 75,135 Z"
+                                            fill="url(#muscleGradLight)" class="body-part" />
 
-                                        <!-- LOWER ABDOMEN -->
-                                        <rect data-region="lower-abs" data-name="Lower Belly" x="75" y="148" width="50"
-                                            height="28" class="body-part" />
+                                        <!-- LOWER ABS (tapered toward pelvis) -->
+                                        <path data-region="lower-abs" data-name="Lower Belly" d="M75,148 Q80,146 92,146 Q100,146 108,146 Q120,146 125,148 
+                                               L122,165 Q118,173 112,174 Q100,176 88,174 Q82,173 78,165 Z"
+                                            fill="url(#muscleGradLight)" class="body-part" />
 
-                                        <!-- SIDES/WAIST -->
-                                        <path data-region="left-side" data-name="Left Side"
-                                            d="M72,120 L75,120 L75,176 L68,180 Z" class="body-part" />
-                                        <path data-region="right-side" data-name="Right Side"
-                                            d="M125,120 L128,120 L132,180 L125,176 Z" class="body-part" />
+                                        <!-- SIDES/WAIST (obliques - curved) -->
+                                        <path data-region="left-side" data-name="Left Side" d="M68,120 L72,120 Q72,140 72,155 L72,172 Q70,176 68,178 
+                                               Q66,165 66,145 Q66,130 68,120 Z" fill="url(#muscleGradDark)"
+                                            class="body-part" />
+                                        <path data-region="right-side" data-name="Right Side" d="M128,120 L132,120 Q134,130 134,145 Q134,165 132,178 
+                                               Q130,176 128,172 L128,155 Q128,140 128,120 Z"
+                                            fill="url(#muscleGradDark)" class="body-part" />
 
-                                        <!-- HIPS -->
-                                        <path data-region="left-hip" data-name="Left Hip"
-                                            d="M68,180 L80,176 L78,205 L62,205 Z" class="body-part" />
-                                        <path data-region="right-hip" data-name="Right Hip"
-                                            d="M120,176 L132,180 L138,205 L122,205 Z" class="body-part" />
+                                        <!-- HIPS (iliac crest with curves) -->
+                                        <path data-region="left-hip" data-name="Left Hip" d="M66,178 Q70,176 78,176 L82,178 Q82,190 80,200 L78,205 
+   Q70,206 64,204 Q62,195 62,188 Z" fill="url(#muscleGradLight)" class="body-part" />
+                                        <path data-region="right-hip" data-name="Right Hip" d="M118,176 L122,176 Q130,176 134,178 Q138,188 138,195 
+                                               Q136,204 130,206 L122,205 Q120,200 118,190 Z"
+                                            fill="url(#muscleGradLight)" class="body-part" />
 
-                                        <!-- GROIN -->
-                                        <path data-region="groin" data-name="Groin Area"
-                                            d="M80,176 L120,176 L118,210 L82,210 Z" class="body-part" />
+                                        <!-- GROIN (pelvis region - subtle) -->
+                                        <path data-region="groin" data-name="Groin Area" d="M82,176 Q90,174 100,174 Q110,174 118,176 
+                                               L118,195 Q115,205 110,208 Q100,210 90,208 Q85,205 82,195 Z"
+                                            fill="url(#muscleGradDark)" class="body-part" />
+
 
                                         <!-- UPPER THIGHS -->
                                         <path data-region="left-upper-thigh" data-name="Left Upper Thigh"
@@ -370,161 +403,161 @@
                                         <path data-region="right-foot" data-name="Right Foot"
                                             d="M115,390 L145,390 L148,400 L112,400 Z" class="body-part" />
                                     </svg>
-                                </div>
-
-                                <!-- BACK VIEW SVG -->
-                                <div class="svg-panel" id="backPanel">
-                                    <svg viewBox="0 0 200 400" class="body-svg">
-                                        <!-- HEAD BACK -->
-                                        <ellipse data-region="head-back" data-name="Back of Head" cx="100" cy="25"
-                                            rx="20" ry="22" class="body-part" />
-
-                                        <!-- NECK BACK -->
-                                        <rect data-region="neck-back" data-name="Neck (Back)" x="92" y="47" width="16"
-                                            height="15" class="body-part" />
-
-                                        <!-- SHOULDERS BACK -->
-                                        <path data-region="left-shoulder-back" data-name="Left Shoulder (Back)"
-                                            d="M60,62 L92,62 L92,78 L55,85 Z" class="body-part" />
-                                        <path data-region="right-shoulder-back" data-name="Right Shoulder (Back)"
-                                            d="M108,62 L140,62 L145,85 L108,78 Z" class="body-part" />
-
-                                        <!-- UPPER BACK -->
-                                        <path data-region="upper-back" data-name="Upper Back"
-                                            d="M70,78 L130,78 L128,110 L72,110 Z" class="body-part" />
-
-                                        <!-- TRICEPS -->
-                                        <path data-region="left-tricep" data-name="Left Tricep"
-                                            d="M55,85 L70,78 L72,130 L48,135 Z" class="body-part" />
-                                        <path data-region="right-tricep" data-name="Right Tricep"
-                                            d="M130,78 L145,85 L152,135 L128,130 Z" class="body-part" />
-
-                                        <!-- ELBOWS BACK -->
-                                        <ellipse data-region="left-elbow-back" data-name="Left Elbow (Back)" cx="46"
-                                            cy="142" rx="8" ry="10" class="body-part" />
-                                        <ellipse data-region="right-elbow-back" data-name="Right Elbow (Back)" cx="154"
-                                            cy="142" rx="8" ry="10" class="body-part" />
-
-                                        <!-- FOREARMS BACK -->
-                                        <path data-region="left-forearm-back" data-name="Left Forearm (Back)"
-                                            d="M38,152 L54,152 L50,195 L35,195 Z" class="body-part" />
-                                        <path data-region="right-forearm-back" data-name="Right Forearm (Back)"
-                                            d="M146,152 L162,152 L165,195 L150,195 Z" class="body-part" />
-
-                                        <!-- WRISTS BACK -->
-                                        <rect data-region="left-wrist-back" data-name="Left Wrist (Back)" x="33" y="195"
-                                            width="19" height="10" class="body-part" />
-                                        <rect data-region="right-wrist-back" data-name="Right Wrist (Back)" x="148"
-                                            y="195" width="19" height="10" class="body-part" />
-
-                                        <!-- HANDS BACK -->
-                                        <path data-region="left-hand-back" data-name="Left Hand (Back)"
-                                            d="M30,205 L55,205 L58,230 L27,230 Z" class="body-part" />
-                                        <path data-region="right-hand-back" data-name="Right Hand (Back)"
-                                            d="M145,205 L170,205 L173,230 L142,230 Z" class="body-part" />
-
-                                        <!-- MID BACK -->
-                                        <rect data-region="mid-back" data-name="Mid Back" x="72" y="110" width="56"
-                                            height="35" class="body-part" />
-
-                                        <!-- LOWER BACK -->
-                                        <rect data-region="lower-back" data-name="Lower Back" x="72" y="145" width="56"
-                                            height="30" class="body-part" />
-
-                                        <!-- BUTTOCKS -->
-                                        <path data-region="left-glute" data-name="Left Buttock"
-                                            d="M68,175 L100,175 L100,215 L62,210 Z" class="body-part" />
-                                        <path data-region="right-glute" data-name="Right Buttock"
-                                            d="M100,175 L132,175 L138,210 L100,215 Z" class="body-part" />
-
-                                        <!-- HAMSTRINGS (BACK OF THIGHS) -->
-                                        <path data-region="left-hamstring" data-name="Left Thigh (Back)"
-                                            d="M62,210 L100,215 L98,295 L62,295 Z" class="body-part" />
-                                        <path data-region="right-hamstring" data-name="Right Thigh (Back)"
-                                            d="M100,215 L138,210 L138,295 L102,295 Z" class="body-part" />
-
-                                        <!-- KNEES BACK -->
-                                        <ellipse data-region="left-knee-back" data-name="Back of Left Knee" cx="80"
-                                            cy="305" rx="20" ry="12" class="body-part" />
-                                        <ellipse data-region="right-knee-back" data-name="Back of Right Knee" cx="120"
-                                            cy="305" rx="20" ry="12" class="body-part" />
-
-                                        <!-- CALVES -->
-                                        <path data-region="left-calf" data-name="Left Calf"
-                                            d="M60,317 L100,317 L98,370 L62,370 Z" class="body-part" />
-                                        <path data-region="right-calf" data-name="Right Calf"
-                                            d="M100,317 L140,317 L138,370 L102,370 Z" class="body-part" />
-
-                                        <!-- ACHILLES -->
-                                        <rect data-region="left-achilles" data-name="Left Achilles" x="68" y="370"
-                                            width="12" height="15" class="body-part" />
-                                        <rect data-region="right-achilles" data-name="Right Achilles" x="120" y="370"
-                                            width="12" height="15" class="body-part" />
-
-                                        <!-- HEELS -->
-                                        <path data-region="left-heel" data-name="Left Heel"
-                                            d="M60,385 L85,385 L88,400 L57,400 Z" class="body-part" />
-                                        <path data-region="right-heel" data-name="Right Heel"
-                                            d="M115,385 L140,385 L143,400 L112,400 Z" class="body-part" />
-                                    </svg>
-                                </div>
                             </div>
 
-                            <div id="selectedRegionsDisplay" class="selected-regions-display" style="display: none;">
-                                <span style="font-size: 0.8rem; color: #92400E;">Selected pain areas:</span>
-                                <div id="selectedRegionTags"></div>
-                            </div>
+                            <!-- BACK VIEW SVG -->
+                            <div class="svg-panel" id="backPanel">
+                                <svg viewBox="0 0 200 400" class="body-svg">
+                                    <!-- HEAD BACK -->
+                                    <ellipse data-region="head-back" data-name="Back of Head" cx="100" cy="25" rx="20"
+                                        ry="22" class="body-part" />
 
-                            <p class="body-diagram-hint">👆 Tap multiple areas if pain spreads</p>
-                            <span class="skip-diagram-link" onclick="toggleTextInput()">Or type location manually
-                                ↓</span>
+                                    <!-- NECK BACK -->
+                                    <rect data-region="neck-back" data-name="Neck (Back)" x="92" y="47" width="16"
+                                        height="15" class="body-part" />
 
-                            <!-- Hidden field for selected regions -->
-                            <input type="hidden" id="selectedBodyRegions" name="selectedBodyRegions" value="">
+                                    <!-- SHOULDERS BACK -->
+                                    <path data-region="left-shoulder-back" data-name="Left Shoulder (Back)"
+                                        d="M60,62 L92,62 L92,78 L55,85 Z" class="body-part" />
+                                    <path data-region="right-shoulder-back" data-name="Right Shoulder (Back)"
+                                        d="M108,62 L140,62 L145,85 L108,78 Z" class="body-part" />
 
-                            <!-- Fallback Text Input (Initially Hidden) -->
-                            <div id="textInputFallback" style="display: none; margin-top: 1rem;">
-                                <div class="floating-input">
-                                    <select id="problemArea" name="problemArea" class="input-field">
-                                        <option value="" disabled selected hidden></option>
-                                        <option value="neck">Neck & Cervical</option>
-                                        <option value="shoulder">Shoulder</option>
-                                        <option value="back">Back (Upper/Lower)</option>
-                                        <option value="knee">Knee</option>
-                                        <option value="ankle">Ankle & Foot</option>
-                                        <option value="wrist">Wrist & Hand</option>
-                                    </select>
-                                    <label for="problemArea">Affected Area</label>
-                                </div>
-                            </div>
+                                    <!-- UPPER BACK -->
+                                    <path data-region="upper-back" data-name="Upper Back"
+                                        d="M70,78 L130,78 L128,110 L72,110 Z" class="body-part" />
 
-                            <div class="floating-input">
-                                <textarea id="problemStatement" name="problemStatement" required rows="4"
-                                    placeholder=" " class="input-field textarea"></textarea>
-                                <label for="problemStatement">Describe symptoms...</label>
-                            </div>
+                                    <!-- TRICEPS -->
+                                    <path data-region="left-tricep" data-name="Left Tricep"
+                                        d="M55,85 L70,78 L72,130 L48,135 Z" class="body-part" />
+                                    <path data-region="right-tricep" data-name="Right Tricep"
+                                        d="M130,78 L145,85 L152,135 L128,130 Z" class="body-part" />
 
-                            <!-- PAIN SCALE -->
-                            <div class="pain-scale-container">
-                                <label class="pain-label" for="painLevel">Pain Level: <span id="painValueDisplay"
-                                        style="color:var(--accent); font-weight:800;">5</span>/10</label>
-                                <input type="range" id="painLevel" name="painLevel" min="1" max="10" value="5"
-                                    class="pain-slider"
-                                    oninput="document.getElementById('painValueDisplay').innerText = this.value">
-                                <div class="pain-markers">
-                                    <span>🙂 Mild</span>
-                                    <span>😐 Moderate</span>
-                                    <span>😫 Severe</span>
-                                </div>
+                                    <!-- ELBOWS BACK -->
+                                    <ellipse data-region="left-elbow-back" data-name="Left Elbow (Back)" cx="46"
+                                        cy="142" rx="8" ry="10" class="body-part" />
+                                    <ellipse data-region="right-elbow-back" data-name="Right Elbow (Back)" cx="154"
+                                        cy="142" rx="8" ry="10" class="body-part" />
+
+                                    <!-- FOREARMS BACK -->
+                                    <path data-region="left-forearm-back" data-name="Left Forearm (Back)"
+                                        d="M38,152 L54,152 L50,195 L35,195 Z" class="body-part" />
+                                    <path data-region="right-forearm-back" data-name="Right Forearm (Back)"
+                                        d="M146,152 L162,152 L165,195 L150,195 Z" class="body-part" />
+
+                                    <!-- WRISTS BACK -->
+                                    <rect data-region="left-wrist-back" data-name="Left Wrist (Back)" x="33" y="195"
+                                        width="19" height="10" class="body-part" />
+                                    <rect data-region="right-wrist-back" data-name="Right Wrist (Back)" x="148" y="195"
+                                        width="19" height="10" class="body-part" />
+
+                                    <!-- HANDS BACK -->
+                                    <path data-region="left-hand-back" data-name="Left Hand (Back)"
+                                        d="M30,205 L55,205 L58,230 L27,230 Z" class="body-part" />
+                                    <path data-region="right-hand-back" data-name="Right Hand (Back)"
+                                        d="M145,205 L170,205 L173,230 L142,230 Z" class="body-part" />
+
+                                    <!-- MID BACK -->
+                                    <rect data-region="mid-back" data-name="Mid Back" x="72" y="110" width="56"
+                                        height="35" class="body-part" />
+
+                                    <!-- LOWER BACK -->
+                                    <rect data-region="lower-back" data-name="Lower Back" x="72" y="145" width="56"
+                                        height="30" class="body-part" />
+
+                                    <!-- BUTTOCKS -->
+                                    <path data-region="left-glute" data-name="Left Buttock"
+                                        d="M68,175 L100,175 L100,215 L62,210 Z" class="body-part" />
+                                    <path data-region="right-glute" data-name="Right Buttock"
+                                        d="M100,175 L132,175 L138,210 L100,215 Z" class="body-part" />
+
+                                    <!-- HAMSTRINGS (BACK OF THIGHS) -->
+                                    <path data-region="left-hamstring" data-name="Left Thigh (Back)"
+                                        d="M62,210 L100,215 L98,295 L62,295 Z" class="body-part" />
+                                    <path data-region="right-hamstring" data-name="Right Thigh (Back)"
+                                        d="M100,215 L138,210 L138,295 L102,295 Z" class="body-part" />
+
+                                    <!-- KNEES BACK -->
+                                    <ellipse data-region="left-knee-back" data-name="Back of Left Knee" cx="80" cy="305"
+                                        rx="20" ry="12" class="body-part" />
+                                    <ellipse data-region="right-knee-back" data-name="Back of Right Knee" cx="120"
+                                        cy="305" rx="20" ry="12" class="body-part" />
+
+                                    <!-- CALVES -->
+                                    <path data-region="left-calf" data-name="Left Calf"
+                                        d="M60,317 L100,317 L98,370 L62,370 Z" class="body-part" />
+                                    <path data-region="right-calf" data-name="Right Calf"
+                                        d="M100,317 L140,317 L138,370 L102,370 Z" class="body-part" />
+
+                                    <!-- ACHILLES -->
+                                    <rect data-region="left-achilles" data-name="Left Achilles" x="68" y="370"
+                                        width="12" height="15" class="body-part" />
+                                    <rect data-region="right-achilles" data-name="Right Achilles" x="120" y="370"
+                                        width="12" height="15" class="body-part" />
+
+                                    <!-- HEELS -->
+                                    <path data-region="left-heel" data-name="Left Heel"
+                                        d="M60,385 L85,385 L88,400 L57,400 Z" class="body-part" />
+                                    <path data-region="right-heel" data-name="Right Heel"
+                                        d="M115,385 L140,385 L143,400 L112,400 Z" class="body-part" />
+                                </svg>
                             </div>
                         </div>
-                        <div class="nav-buttons">
-                            <button type="button" class="btn btn-secondary" onclick="nextStep(3)">Back</button>
-                            <button type="submit" class="btn btn-primary btn-pulse">Generate Plan ⚡</button>
+
+                        <div id="selectedRegionsDisplay" class="selected-regions-display" style="display: none;">
+                            <span style="font-size: 0.8rem; color: #92400E;">Selected pain areas:</span>
+                            <div id="selectedRegionTags"></div>
+                        </div>
+
+                        <p class="body-diagram-hint">👆 Tap multiple areas if pain spreads</p>
+                        <span class="skip-diagram-link" onclick="toggleTextInput()">Or type location manually
+                            ↓</span>
+
+                        <!-- Hidden field for selected regions -->
+                        <input type="hidden" id="selectedBodyRegions" name="selectedBodyRegions" value="">
+
+                        <!-- Fallback Text Input (Initially Hidden) -->
+                        <div id="textInputFallback" style="display: none; margin-top: 1rem;">
+                            <div class="floating-input">
+                                <select id="problemArea" name="problemArea" class="input-field">
+                                    <option value="" disabled selected hidden></option>
+                                    <option value="neck">Neck & Cervical</option>
+                                    <option value="shoulder">Shoulder</option>
+                                    <option value="back">Back (Upper/Lower)</option>
+                                    <option value="knee">Knee</option>
+                                    <option value="ankle">Ankle & Foot</option>
+                                    <option value="wrist">Wrist & Hand</option>
+                                </select>
+                                <label for="problemArea">Affected Area</label>
+                            </div>
+                        </div>
+
+                        <div class="floating-input">
+                            <textarea id="problemStatement" name="problemStatement" required rows="4" placeholder=" "
+                                class="input-field textarea"></textarea>
+                            <label for="problemStatement">Describe symptoms...</label>
+                        </div>
+
+                        <!-- PAIN SCALE -->
+                        <div class="pain-scale-container">
+                            <label class="pain-label" for="painLevel">Pain Level: <span id="painValueDisplay"
+                                    style="color:var(--accent); font-weight:800;">5</span>/10</label>
+                            <input type="range" id="painLevel" name="painLevel" min="1" max="10" value="5"
+                                class="pain-slider"
+                                oninput="document.getElementById('painValueDisplay').innerText = this.value">
+                            <div class="pain-markers">
+                                <span>🙂 Mild</span>
+                                <span>😐 Moderate</span>
+                                <span>😫 Severe</span>
+                            </div>
                         </div>
                     </div>
+                    <div class="nav-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="nextStep(3)">Back</button>
+                        <button type="submit" class="btn btn-primary btn-pulse">Generate Plan ⚡</button>
+                    </div>
+            </div>
 
-                </form>
+            </form>
             </div>
         </section>
 
